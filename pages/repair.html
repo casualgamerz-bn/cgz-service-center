@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book a Repair — Casual Gamerz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .ticket-modal-overlay {
+      position:fixed; inset:0; background:rgba(5,10,20,0.92);
+      backdrop-filter:blur(10px); z-index:3000;
+      display:flex; align-items:center; justify-content:center; padding:1.5rem;
+      opacity:0; pointer-events:none; transition:opacity 0.4s ease;
+    }
+    .ticket-modal-overlay.show { opacity:1; pointer-events:all; }
+    .ticket-modal {
+      background:var(--dark-card); border:1px solid var(--neon-cyan);
+      border-radius:24px; padding:3rem; max-width:520px; width:100%;
+      text-align:center; box-shadow:var(--shadow-cyan),0 40px 80px rgba(0,0,0,0.6);
+      transform:scale(0.9) translateY(20px); transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .ticket-modal-overlay.show .ticket-modal { transform:scale(1) translateY(0); }
+    .ticket-number {
+      font-family:var(--font-display); font-size:2.8rem; font-weight:900;
+      background:var(--gradient-main); -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent; background-clip:text;
+      letter-spacing:0.1em; margin:1rem 0;
+    }
+    .ticket-actions { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:2rem; }
+    .success-icon { font-size:3.5rem; animation:bounceIn 0.6s cubic-bezier(0.4,0,0.2,1); }
+    @keyframes bounceIn { 0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)} }
+    .db-badge {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      background:rgba(57,255,20,0.08); border:1px solid rgba(57,255,20,0.25);
+      border-radius:8px; padding:0.5rem 1rem; font-size:0.8rem; color:#39ff14;
+      margin-bottom:1.5rem;
+    }
+    .db-dot { width:8px; height:8px; background:#39ff14; border-radius:50%;
+               box-shadow:0 0 8px #39ff14; animation:pulse 2s infinite; }
+  </style>
+</head>
+<body class="grid-bg">
+
+  <div id="cgz-announcement" style="display:none;padding:0.6rem 1.5rem;text-align:center;font-family:var(--font-display);font-size:0.78rem;letter-spacing:0.08em;position:relative;z-index:999;"></div>
+
+  <nav class="navbar">
+    <a href="../index.html" class="logo">
+      <div class="logo-icon">🎮</div>
+      <div class="logo-text">CASUAL <span>GAMERZ</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="repair.html" class="active">Book Repair</a></li>
+      <li><a href="tracking.html">Track Order</a></li>
+      <li><a href="history.html">Repair History</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+      <li><a href="admin.html" style="color:var(--neon-pink);font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;">⚙ ADMIN</a></li>
+      <li><a href="site-admin.html" style="color:#ffea00;font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;">✏️ CONTENT</a></li>
+    </ul>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> › <span style="color:var(--neon-cyan)">Book Repair</span>
+    </div>
+    <h1>Book a <span class="highlight">Repair</span></h1>
+    <p>Submit your repair request — your ticket is instantly saved to our database and visible in Repair History &amp; Tracking.</p>
+  </div>
+
+  <section class="section" style="padding-top:2rem;">
+    <div class="container">
+      <div style="display:grid; grid-template-columns:1fr 1.6fr; gap:3rem; align-items:start;" class="repair-layout">
+
+        <!-- Info Column -->
+        <div>
+          <!-- DB connection badge -->
+          <div class="db-badge fade-in">
+            <span class="db-dot"></span>
+            Connected to Repair Database
+          </div>
+
+          <div class="contact-form-wrap fade-in" style="margin-bottom:1.5rem;">
+            <h3>📋 What to Expect</h3>
+            <div class="contact-details" style="margin-top:1rem;">
+              <div class="contact-item">
+                <span class="contact-item-icon">1️⃣</span>
+                <div class="contact-item-text">
+                  <span>Submit</span>
+                  <p>Fill in your device details — your ticket is saved to the database instantly</p>
+                </div>
+              </div>
+              <div class="contact-item">
+                <span class="contact-item-icon">2️⃣</span>
+                <div class="contact-item-text">
+                  <span>Track</span>
+                  <p>Use your ticket number on the <a href="tracking.html" style="color:var(--neon-cyan)">Track Order</a> page to see live status</p>
+                </div>
+              </div>
+              <div class="contact-item">
+                <span class="contact-item-icon">3️⃣</span>
+                <div class="contact-item-text">
+                  <span>History</span>
+                  <p>All your repairs appear on <a href="history.html" style="color:var(--neon-cyan)">Repair History</a> with full details</p>
+                </div>
+              </div>
+              <div class="contact-item">
+                <span class="contact-item-icon">4️⃣</span>
+                <div class="contact-item-text">
+                  <span>Excel Export</span>
+                  <p>Export the full database to Excel at any time from the History page</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-form-wrap fade-in" style="margin-bottom:1.5rem;">
+            <h3>📊 Live Database Stats</h3>
+            <div id="liveStats" style="margin-top:1rem; display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+              <div style="text-align:center; padding:1rem; background:rgba(0,245,255,0.05); border:1px solid rgba(0,245,255,0.1); border-radius:10px;">
+                <div id="statTotal" style="font-family:var(--font-display); font-size:1.8rem; font-weight:900; background:var(--gradient-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">—</div>
+                <div style="font-size:0.72rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.1em;">Total Repairs</div>
+              </div>
+              <div style="text-align:center; padding:1rem; background:rgba(57,255,20,0.05); border:1px solid rgba(57,255,20,0.1); border-radius:10px;">
+                <div id="statActive" style="font-family:var(--font-display); font-size:1.8rem; font-weight:900; color:#39ff14;">—</div>
+                <div style="font-size:0.72rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.1em;">Active Jobs</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="service-card fade-in" style="border-color:rgba(57,255,20,0.3); cursor:default;">
+            <div class="service-icon-wrap green">🛡️</div>
+            <h3>30-Day Warranty</h3>
+            <p>All repairs come with a 90-day warranty on parts and labour. If it breaks again, we fix it free.</p>
+            <a href="warranty.html" class="service-link">View Warranty Policy →</a>
+          </div>
+        </div>
+
+        <!-- Repair Form -->
+        <div class="contact-form-wrap fade-in">
+          <h3>🔧 Repair Request Form</h3>
+          <p style="color:var(--text-secondary); font-size:0.88rem; margin-bottom:1.5rem;">Your submission is saved instantly to our repair database — no account needed.</p>
+
+          <form id="repairForm" novalidate>
+            <div class="form-group">
+              <label>Select Device Type *</label>
+              <div class="device-selector">
+                <div class="device-option">
+                  <input type="radio" name="device" id="dev-pc" value="PC / Desktop" required>
+                  <label for="dev-pc"><span class="di">🖥️</span>PC / Desktop</label>
+                </div>
+                <div class="device-option">
+                  <input type="radio" name="device" id="dev-laptop" value="Laptop">
+                  <label for="dev-laptop"><span class="di">💻</span>Laptop</label>
+                </div>
+                <div class="device-option">
+                  <input type="radio" name="device" id="dev-ps" value="PlayStation">
+                  <label for="dev-ps"><span class="di">🟦</span>PlayStation</label>
+                </div>
+                <div class="device-option">
+                  <input type="radio" name="device" id="dev-xbox" value="Xbox">
+                  <label for="dev-xbox"><span class="di">🟩</span>Xbox</label>
+                </div>
+                <div class="device-option">
+                  <input type="radio" name="device" id="dev-nintendo" value="Nintendo Switch">
+                  <label for="dev-nintendo"><span class="di">🔴</span>Nintendo</label>
+                </div>
+                <div class="device-option">
+                  <input type="radio" name="device" id="dev-ctrl" value="Controller">
+                  <label for="dev-ctrl"><span class="di">🕹️</span>Controller</label>
+                </div>
+                <div class="device-option">
+                  <input type="radio" name="device" id="dev-other" value="Other">
+                  <label for="dev-other"><span class="di">❓</span>Other</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="brand">Brand / Manufacturer *</label>
+                <input type="text" id="brand" name="brand" placeholder="e.g. Sony, ASUS, HP…" required>
+              </div>
+              <div class="form-group">
+                <label for="model">Model / Version *</label>
+                <input type="text" id="model" name="model" placeholder="e.g. PS5, ROG Strix…" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="issue">Issue Category *</label>
+              <select id="issue" name="issue" required>
+                <option value="" disabled selected>Select primary issue…</option>
+                <option>Screen / Display Problem</option>
+                <option>Won't Turn On / No Power</option>
+                <option>Overheating / Fan Noise</option>
+                <option>Disc Drive Not Reading</option>
+                <option>HDMI / No Video Output</option>
+                <option>Joystick / Controller Drift</option>
+                <option>Water / Liquid Damage</option>
+                <option>Slow Performance / Lagging</option>
+                <option>Virus / Malware</option>
+                <option>Data Recovery</option>
+                <option>Battery / Charging Issue</option>
+                <option>Keyboard / Trackpad</option>
+                <option>Motherboard Repair</option>
+                <option>Custom PC Build</option>
+                <option>Other Issue</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="issueDetail">Additional Details</label>
+              <textarea id="issueDetail" name="issueDetail" placeholder="Describe what happened, any error messages, when it started…" rows="3"></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Ahmad" required>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name *</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Razif" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" placeholder="+673 XXX XXXX" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="you@email.com">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="preferred">Preferred Drop-off Date</label>
+              <input type="date" id="preferred" name="preferred">
+            </div>
+
+            <div class="form-group">
+              <label for="service-type">Service Type</label>
+              <select id="service-type" name="service-type">
+                <option value="Walk-In Drop Off">Walk-In Drop Off</option>
+                <option value="Request Pickup">Request Pickup (Gadong area)</option>
+                <option value="Mail-In Repair">Mail-In Repair</option>
+              </select>
+            </div>
+
+            <button type="submit" id="submitBtn" class="btn-primary" style="width:100%; justify-content:center; font-size:0.85rem; padding:1rem;">
+              🔧 Submit Repair Request → Save to Database
+            </button>
+
+            <p style="text-align:center; font-size:0.8rem; color:var(--text-secondary); margin-top:1rem;">
+              By submitting, you agree to our <a href="terms.html" style="color:var(--neon-cyan);">Terms of Service</a> and <a href="privacy.html" style="color:var(--neon-cyan);">Privacy Policy</a>.
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" style="padding-top:2rem;">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">FAQ</div>
+        <h2 class="section-title">Common <span class="highlight">Questions</span></h2>
+        <div class="glow-divider"></div>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item fade-in">
+          <div class="faq-question">How does the ticket system work? <span class="faq-arrow">▼</span></div>
+          <div class="faq-answer"><p>When you submit the repair form, your details are instantly saved to our repair database and assigned a unique ticket number (e.g. CGZ-58291). You can use this ticket on the Track Order page to see real-time status updates, and it appears in Repair History for a full record of all your repairs.</p></div>
+        </div>
+        <div class="faq-item fade-in">
+          <div class="faq-question">How long does a repair take? <span class="faq-arrow">▼</span></div>
+          <div class="faq-answer"><p>Most common repairs are done within 24 hours. Complex jobs like motherboard-level work may take 2–3 business days. An estimated ready date is shown on your tracking page once diagnosis is complete.</p></div>
+        </div>
+        <div class="faq-item fade-in">
+          <div class="faq-question">Do I need an appointment? <span class="faq-arrow">▼</span></div>
+          <div class="faq-answer"><p>Walk-ins are always welcome during opening hours. Booking online (this form) helps us prepare parts in advance and reduces your wait time. The submitted ticket is logged immediately to our system.</p></div>
+        </div>
+        <div class="faq-item fade-in">
+          <div class="faq-question">Can I export my repair records? <span class="faq-arrow">▼</span></div>
+          <div class="faq-answer"><p>Yes! Visit the Repair History page and click "Export CSV" to download a spreadsheet of all your repairs. This matches the layout of our CasualGamerz_RepairDB.xlsx database file.</p></div>
+        </div>
+        <div class="faq-item fade-in">
+          <div class="faq-question">Is there a warranty on repairs? <span class="faq-arrow">▼</span></div>
+          <div class="faq-answer"><p>All repairs come with a 90-day warranty on parts replaced and labour performed. If the same issue returns within 30 days, we fix it at no charge. See our <a href="warranty.html" style="color:var(--neon-cyan)">Warranty Policy</a> for full details.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="../index.html" class="logo" style="margin-bottom:0.75rem;display:inline-flex;">
+          <div class="logo-icon">🎮</div><div class="logo-text">CASUAL <span>GAMERZ</span></div>
+        </a>
+        <p>Brunei's trusted gaming & computer repair center.</p>
+        <div class="social-links">
+          <a href="#" class="social-link">📘</a><a href="#" class="social-link">📸</a>
+          <a href="#" class="social-link">🎵</a><a href="#" class="social-link">💬</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Services</h4><ul>
+        <li><a href="services.html#pc-repair">PC Repair</a></li>
+        <li><a href="services.html#laptop-repair">Laptop Repair</a></li>
+        <li><a href="services.html#console-repair">Console Repair</a></li>
+        <li><a href="services.html#custom-build">Custom Builds</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>My Records</h4><ul>
+        <li><a href="history.html">Repair History</a></li>
+        <li><a href="tracking.html">Track Order</a></li>
+        <li><a href="warranty.html">Warranty Claims</a></li>
+        <li><a href="contact.html">Support</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul>
+        <li><a href="tel:+6738698291" data-cid-href="global.phone_tel"><span data-cid="global.phone">📞 +6738698291</span></a></li>
+        <li><a href="mailto:c.gamerz@outlook.com" data-cid-href="global.email_mailto"><span data-cid="global.email">✉️ c.gamerz@outlook.com</span></a></li>
+        <li><a href="contact.html#map"><span data-cid="global.address_short">📍 No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam</span></a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Casual Gamerz. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="warranty.html">Warranty</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── Ticket Confirmation Modal ─────────────────────────────────────── -->
+  <div class="ticket-modal-overlay" id="ticketOverlay">
+    <div class="ticket-modal">
+      <div class="success-icon">🎉</div>
+      <h2 style="margin:1rem 0 0.5rem; font-size:1.3rem;">Repair Request Submitted!</h2>
+      <p style="color:var(--text-secondary); font-size:0.9rem;">Your ticket has been saved to the repair database.</p>
+      <div class="ticket-number" id="confirmTicket">CGZ-000</div>
+      <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.25rem;">Save this number — use it to track your repair status.</p>
+      <div style="margin:1.5rem 0; padding:1rem; background:rgba(0,245,255,0.05); border:1px solid rgba(0,245,255,0.15); border-radius:10px; font-size:0.85rem; color:var(--text-secondary); text-align:left;">
+        <strong style="color:var(--neon-cyan);">What happens next:</strong><br>
+        ① We'll confirm &amp; quote within 2 hours<br>
+        ② Drop off your device at our Gadong store<br>
+        ③ Track progress on the Tracking page
+      </div>
+      <div class="ticket-actions">
+        <a id="trackTicketBtn" href="tracking.html" class="btn-primary">🔍 Track This Ticket</a>
+        <a href="history.html" class="btn-secondary">📋 View Repair History</a>
+      </div>
+      <button onclick="document.getElementById('ticketOverlay').classList.remove('show')"
+        style="margin-top:1.25rem; background:none; border:none; color:var(--text-secondary); cursor:pointer; font-size:0.85rem; text-decoration:underline;">
+        Close
+      </button>
+    </div>
+  </div>
+
+  
+  
+  <script src="../js/sheets-config.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/main.js"></script>
+  <style>@media(max-width:900px){.repair-layout{grid-template-columns:1fr!important}}</style>
+
+  <script>
+  // ── Live stats ────────────────────────────────────────────────────────
+  async function loadStats() {
+    if (!CasualGamerzDB.isConfigured()) return;
+    try {
+      const s = await CasualGamerzDB.getStats();
+      const el = id => document.getElementById(id);
+      if (el('statTotal'))  el('statTotal').textContent  = s.total;
+      if (el('statActive')) el('statActive').textContent = s.active;
+    } catch(e) { console.warn('[CGZ] Stats load failed:', e.message); }
+  }
+  loadStats();
+
+  // ── Repair form submit ────────────────────────────────────────────────
+  document.getElementById('repairForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn  = document.getElementById('submitBtn');
+
+    // Validate device type
+    const deviceEl = form.querySelector('input[name="device"]:checked');
+    if (!deviceEl) { alert('Please select a device type.'); return; }
+
+    // Basic required field check
+    const required = ['brand','model','issue','firstName','lastName','phone'];
+    for (const id of required) {
+      if (!form[id] || !form[id].value.trim()) {
+        alert('Please fill in all required fields (*).');
+        form[id] && form[id].focus();
+        return;
+      }
+    }
+
+    if (!CasualGamerzDB.isConfigured()) {
+      alert('⚠️ Google Sheets is not connected yet.\n\nPlease deploy the Apps Script backend and add the URL to js/sheets-config.js first.\n\nSee google-apps-script/Code.gs for instructions.');
+      return;
+    }
+
+    btn.textContent = '⏳ Saving to database…';
+    btn.disabled = true;
+
+    try {
+      const data = {
+        deviceType:   deviceEl.value,
+        brand:        form.brand.value.trim(),
+        model:        form.model.value.trim(),
+        issue:        form.issue.value,
+        issueDetail:  form.issueDetail ? form.issueDetail.value.trim() : '',
+        firstName:    form.firstName.value.trim(),
+        lastName:     form.lastName.value.trim(),
+        phone:        form.phone.value.trim(),
+        email:        form.email ? form.email.value.trim() : '',
+        serviceType:  form['service-type'] ? form['service-type'].value : 'Walk-In Drop Off',
+        preferredDate: form.preferred ? form.preferred.value : '',
+      };
+
+      const ticketId = await CasualGamerzDB.addRepair(data);
+
+      // Show success modal
+      document.getElementById('confirmTicket').textContent = ticketId;
+      document.getElementById('trackTicketBtn').href = `tracking.html?ticket=${encodeURIComponent(ticketId)}`;
+      document.getElementById('ticketOverlay').classList.add('show');
+
+      form.reset();
+      loadStats();
+    } catch(err) {
+      alert('❌ Error saving repair: ' + err.message);
+    } finally {
+      btn.textContent = '🔧 Submit Repair Request → Save to Database';
+      btn.disabled = false;
+    }
+  });
+  </script>
+</body>
+</html>

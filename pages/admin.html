@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel — Casual Gamerz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- SheetJS — legacy quick exports (Repairs-only .xlsx / .csv) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- ExcelJS — powers the modern, fully-styled Full Database export/import -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+  <!-- html2canvas + jsPDF — power Receipt PNG/JPG/PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* ── Layout ── */
+    body { background:var(--dark-bg); }
+    .admin-wrap { display:grid; grid-template-columns:240px 1fr; min-height:100vh; padding-top:72px; }
+
+    /* ── Sidebar ── */
+    .admin-sidebar {
+      background:var(--dark-surface);
+      border-right:1px solid rgba(0,245,255,0.1);
+      padding:1.5rem 1rem;
+      position:sticky; top:72px; height:calc(100vh - 72px);
+      overflow-y:auto; display:flex; flex-direction:column; gap:0.25rem;
+    }
+    .sidebar-label {
+      font-family:var(--font-display); font-size:0.62rem; letter-spacing:0.18em;
+      text-transform:uppercase; color:var(--text-secondary); padding:0.75rem 0.75rem 0.4rem;
+      margin-top:0.5rem;
+    }
+    .sidebar-item {
+      display:flex; align-items:center; gap:0.75rem; padding:0.7rem 0.9rem;
+      border-radius:10px; cursor:pointer; font-size:0.88rem; color:var(--text-secondary);
+      transition:var(--transition); border:1px solid transparent;
+    }
+    .sidebar-item:hover { background:rgba(0,245,255,0.06); color:var(--text-primary); }
+    .sidebar-item.active {
+      background:rgba(0,245,255,0.1); color:var(--neon-cyan);
+      border-color:rgba(0,245,255,0.2);
+    }
+    .sidebar-item .s-icon { font-size:1.1rem; min-width:22px; }
+    .sidebar-badge {
+      margin-left:auto; background:var(--neon-pink); color:#fff;
+      font-family:var(--font-display); font-size:0.6rem; font-weight:700;
+      padding:0.15rem 0.5rem; border-radius:100px; min-width:20px; text-align:center;
+    }
+    .sidebar-badge.cyan { background:var(--neon-cyan); color:var(--dark-bg); }
+
+    /* ── Main content ── */
+    .admin-main { padding:2rem; overflow-y:auto; }
+
+    /* ── Section visibility ── */
+    .admin-section { display:none; }
+    .admin-section.active { display:block; }
+
+    /* ── KPI strip ── */
+    .kpi-strip {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      gap:1rem; margin-bottom:2rem;
+    }
+    .kpi-card {
+      background:var(--gradient-card); border:var(--border-glow); border-radius:14px;
+      padding:1.25rem 1.5rem; transition:var(--transition);
+    }
+    .kpi-card:hover { border-color:rgba(0,245,255,0.4); transform:translateY(-2px); }
+    .kpi-icon { font-size:1.6rem; margin-bottom:0.5rem; }
+    .kpi-val {
+      font-family:var(--font-display); font-size:1.8rem; font-weight:900;
+      background:var(--gradient-main); -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent; background-clip:text; line-height:1;
+    }
+    .kpi-label { font-size:0.72rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.07em; margin-top:0.25rem; }
+
+    /* ── Table ── */
+    .admin-table-wrap {
+      background:var(--gradient-card); border:var(--border-glow);
+      border-radius:16px; overflow:hidden;
+    }
+    .admin-table-header {
+      padding:1.25rem 1.5rem; border-bottom:1px solid rgba(0,245,255,0.1);
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:1rem;
+    }
+    .admin-table-header h3 { font-size:1rem; }
+    .table-controls { display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap; }
+    .tbl-search {
+      padding:0.55rem 0.9rem 0.55rem 2.2rem; background:rgba(255,255,255,0.04);
+      border:1px solid rgba(0,245,255,0.15); border-radius:8px; color:var(--text-primary);
+      font-family:var(--font-body); font-size:0.88rem; outline:none;
+      transition:var(--transition); width:220px; position:relative;
+    }
+    .tbl-search:focus { border-color:var(--neon-cyan); }
+    .search-wrap-tbl { position:relative; }
+    .search-wrap-tbl::before { content:'🔍'; position:absolute; left:0.65rem; top:50%; transform:translateY(-50%); font-size:0.85rem; pointer-events:none; }
+    .tbl-select {
+      padding:0.55rem 2rem 0.55rem 0.75rem; background:rgba(255,255,255,0.04);
+      border:1px solid rgba(0,245,255,0.15); border-radius:8px; color:var(--text-primary);
+      font-family:var(--font-body); font-size:0.85rem; outline:none; cursor:pointer;
+      appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2300f5ff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 0.6rem center; transition:var(--transition);
+    }
+    .tbl-select option { background:var(--dark-card); }
+    table { width:100%; border-collapse:collapse; }
+    thead th {
+      padding:0.75rem 1rem; text-align:left; font-family:var(--font-display);
+      font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase;
+      color:var(--neon-cyan); background:rgba(0,245,255,0.04);
+      border-bottom:1px solid rgba(0,245,255,0.1); white-space:nowrap;
+    }
+    thead th.sortable { cursor:pointer; user-select:none; }
+    thead th.sortable:hover { color:var(--text-primary); }
+    tbody tr {
+      border-bottom:1px solid rgba(255,255,255,0.04); transition:var(--transition);
+      cursor:pointer;
+    }
+    tbody tr:hover { background:rgba(0,245,255,0.04); }
+    tbody tr:last-child { border-bottom:none; }
+    td { padding:0.8rem 1rem; font-size:0.88rem; color:var(--text-secondary); vertical-align:middle; }
+    td.ticket { font-family:var(--font-display); font-size:0.82rem; color:var(--neon-cyan); font-weight:700; white-space:nowrap; }
+    td.customer { color:var(--text-primary); font-weight:600; }
+    td.device { white-space:nowrap; }
+    .tbl-actions { display:flex; gap:0.4rem; flex-wrap:nowrap; }
+    .tbl-btn {
+      padding:0.3rem 0.7rem; border-radius:6px; font-family:var(--font-display);
+      font-size:0.6rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+      border:none; cursor:pointer; transition:var(--transition); white-space:nowrap;
+    }
+    .tbl-btn-edit   { background:rgba(0,245,255,0.12); color:var(--neon-cyan); }
+    .tbl-btn-edit:hover { background:rgba(0,245,255,0.25); }
+    .tbl-btn-status { background:rgba(57,255,20,0.1); color:#39ff14; }
+    .tbl-btn-status:hover { background:rgba(57,255,20,0.2); }
+    .tbl-btn-del    { background:rgba(255,0,128,0.1); color:var(--neon-pink); }
+    .tbl-btn-del:hover { background:rgba(255,0,128,0.2); }
+    .tbl-btn-log    { background:rgba(255,234,0,0.1); color:var(--neon-yellow); }
+    .tbl-btn-log:hover { background:rgba(255,234,0,0.2); }
+    .tbl-btn-receipt { background:rgba(255,107,53,0.12); color:#ff6b35; }
+    .tbl-btn-receipt:hover { background:rgba(255,107,53,0.25); }
+
+    /* ── Status pill (reused from style.css) ── */
+    .sp { padding:0.18rem 0.65rem; border-radius:100px; font-family:var(--font-display); font-size:0.6rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; white-space:nowrap; }
+    .sp.completed   { background:rgba(57,255,20,0.12);   color:#39ff14;           border:1px solid rgba(57,255,20,0.3); }
+    .sp.in-progress { background:rgba(0,245,255,0.12);   color:var(--neon-cyan);  border:1px solid rgba(0,245,255,0.3); }
+    .sp.pending     { background:rgba(255,234,0,0.12);   color:var(--neon-yellow);border:1px solid rgba(255,234,0,0.3); }
+    .sp.cancelled   { background:rgba(255,0,128,0.1);    color:var(--neon-pink);  border:1px solid rgba(255,0,128,0.25); }
+    .sp.ready       { background:rgba(255,107,53,0.12);  color:#ff6b35;           border:1px solid rgba(255,107,53,0.3); }
+    .sp.diagnosed   { background:rgba(180,100,255,0.12); color:#b464ff;           border:1px solid rgba(180,100,255,0.3); }
+    .sp.testing     { background:rgba(255,200,0,0.12);   color:#ffc800;           border:1px solid rgba(255,200,0,0.3); }
+
+    /* ── Modal (edit / log) ── */
+    .m-overlay {
+      position:fixed; inset:0; background:rgba(5,10,20,0.9); backdrop-filter:blur(10px);
+      z-index:3000; display:flex; align-items:center; justify-content:center;
+      padding:1.5rem; opacity:0; pointer-events:none; transition:opacity 0.3s ease;
+    }
+    .m-overlay.open { opacity:1; pointer-events:all; }
+    .m-box {
+      background:var(--dark-card); border:var(--border-glow); border-radius:20px;
+      padding:2rem; max-width:680px; width:100%; max-height:90vh; overflow-y:auto;
+      box-shadow:var(--shadow-cyan),0 30px 60px rgba(0,0,0,0.6); position:relative;
+      transform:scale(0.94) translateY(10px); transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .m-overlay.open .m-box { transform:scale(1) translateY(0); }
+    .m-close {
+      position:absolute; top:1.1rem; right:1.1rem; width:34px; height:34px;
+      border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+      color:var(--text-secondary); font-size:1rem; cursor:pointer; display:flex;
+      align-items:center; justify-content:center; transition:var(--transition);
+    }
+    .m-close:hover { background:rgba(255,0,128,0.15); border-color:var(--neon-pink); color:var(--neon-pink); }
+    .m-title { font-size:1.2rem; margin-bottom:1.5rem; padding-right:2.5rem; }
+    .m-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .m-group { display:flex; flex-direction:column; gap:0.4rem; }
+    .m-group.full { grid-column:1/-1; }
+    .m-group label { font-family:var(--font-display); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--neon-cyan); }
+    .m-group input, .m-group select, .m-group textarea {
+      background:rgba(255,255,255,0.04); border:1px solid rgba(0,245,255,0.15);
+      border-radius:8px; padding:0.65rem 0.9rem; color:var(--text-primary);
+      font-family:var(--font-body); font-size:0.9rem; outline:none; transition:var(--transition);
+    }
+    .m-group input:focus, .m-group select:focus, .m-group textarea:focus {
+      border-color:var(--neon-cyan); box-shadow:0 0 0 3px rgba(0,245,255,0.1);
+    }
+    .m-group select option { background:var(--dark-card); }
+    .m-group textarea { resize:vertical; min-height:80px; }
+    .m-divider { grid-column:1/-1; height:1px; background:rgba(0,245,255,0.1); margin:0.5rem 0; }
+    .m-section-label { grid-column:1/-1; font-family:var(--font-display); font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--neon-cyan); padding-bottom:0.5rem; border-bottom:1px solid rgba(0,245,255,0.1); margin-bottom:0.25rem; }
+    .m-footer { display:flex; gap:0.75rem; flex-wrap:wrap; margin-top:1.5rem; }
+    .m-footer .btn-primary { flex:1; justify-content:center; }
+    .m-footer .btn-secondary { flex:1; justify-content:center; text-align:center; }
+
+    /* ── Quick status popover ── */
+    .qs-overlay {
+      position:fixed; inset:0; z-index:2500; display:flex; align-items:center;
+      justify-content:center; padding:1.5rem; background:rgba(5,10,20,0.7);
+      backdrop-filter:blur(6px); opacity:0; pointer-events:none; transition:opacity 0.2s;
+    }
+    .qs-overlay.open { opacity:1; pointer-events:all; }
+    .qs-box {
+      background:var(--dark-card); border:var(--border-glow); border-radius:16px;
+      padding:1.75rem; max-width:420px; width:100%; box-shadow:var(--shadow-cyan);
+      transform:scale(0.95); transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .qs-overlay.open .qs-box { transform:scale(1); }
+    .status-btn-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin:1rem 0; }
+    .status-pick-btn {
+      padding:0.7rem 1rem; border-radius:10px; border:1px solid;
+      font-family:var(--font-display); font-size:0.72rem; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:var(--transition);
+      display:flex; flex-direction:column; align-items:center; gap:0.25rem;
+    }
+    .status-pick-btn:hover { transform:translateY(-2px); }
+    .status-pick-btn .spb-icon { font-size:1.3rem; }
+    .spb-pending    { border-color:rgba(255,234,0,0.4);  color:var(--neon-yellow); background:rgba(255,234,0,0.06); }
+    .spb-inprogress { border-color:rgba(0,245,255,0.4);  color:var(--neon-cyan);   background:rgba(0,245,255,0.06); }
+    .spb-diagnosed  { border-color:rgba(180,100,255,0.4);color:#b464ff;            background:rgba(180,100,255,0.06); }
+    .spb-testing    { border-color:rgba(255,200,0,0.4);  color:#ffc800;            background:rgba(255,200,0,0.06); }
+    .spb-ready      { border-color:rgba(255,107,53,0.4); color:#ff6b35;            background:rgba(255,107,53,0.06); }
+    .spb-completed  { border-color:rgba(57,255,20,0.4);  color:#39ff14;            background:rgba(57,255,20,0.06); }
+    .spb-cancelled  { border-color:rgba(255,0,128,0.4);  color:var(--neon-pink);   background:rgba(255,0,128,0.06); }
+    .spb-pending:hover    { background:rgba(255,234,0,0.15); }
+    .spb-inprogress:hover { background:rgba(0,245,255,0.15); }
+    .spb-diagnosed:hover  { background:rgba(180,100,255,0.15); }
+    .spb-testing:hover    { background:rgba(255,200,0,0.15); }
+    .spb-ready:hover      { background:rgba(255,107,53,0.15); }
+    .spb-completed:hover  { background:rgba(57,255,20,0.15); }
+    .spb-cancelled:hover  { background:rgba(255,0,128,0.15); }
+
+    /* ── Log timeline ── */
+    .log-tl { display:flex; flex-direction:column; gap:0.9rem; }
+    .log-item {
+      display:flex; gap:1rem; padding:0.9rem 1rem; background:rgba(0,245,255,0.03);
+      border:1px solid rgba(0,245,255,0.08); border-radius:10px;
+    }
+    .log-dot { width:10px; height:10px; border-radius:50%; background:var(--neon-cyan); box-shadow:0 0 6px var(--neon-cyan); margin-top:4px; flex-shrink:0; }
+    .log-time { font-family:var(--font-display); font-size:0.68rem; color:var(--text-secondary); }
+    .log-desc { font-size:0.88rem; color:var(--text-primary); }
+
+    /* ── Confirm delete dialog ── */
+    .del-overlay {
+      position:fixed; inset:0; z-index:4000; display:flex; align-items:center;
+      justify-content:center; padding:1.5rem; background:rgba(5,10,20,0.92);
+      opacity:0; pointer-events:none; transition:opacity 0.2s;
+    }
+    .del-overlay.open { opacity:1; pointer-events:all; }
+    .del-box {
+      background:var(--dark-card); border:1px solid var(--neon-pink); border-radius:16px;
+      padding:2rem; max-width:380px; width:100%; text-align:center;
+      box-shadow:var(--shadow-pink);
+    }
+
+    /* ── Export bar ── */
+    .export-bar {
+      display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center;
+      padding:1rem 1.5rem; background:rgba(0,245,255,0.03);
+      border:1px solid rgba(0,245,255,0.1); border-radius:12px; margin-bottom:1.5rem;
+    }
+    .export-bar span { font-size:0.82rem; color:var(--text-secondary); flex:1; }
+    .xbtn {
+      display:inline-flex; align-items:center; gap:0.4rem; padding:0.6rem 1.2rem;
+      border-radius:8px; font-family:var(--font-display); font-size:0.72rem; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; border:none; transition:var(--transition);
+    }
+    .xbtn-xlsx { background:var(--gradient-main); color:var(--dark-bg); box-shadow:var(--shadow-cyan); }
+    .xbtn-xlsx:hover { box-shadow:0 0 25px rgba(0,245,255,0.5); transform:translateY(-2px); }
+    .xbtn-csv  { background:transparent; border:1px solid rgba(0,245,255,0.25); color:var(--text-secondary); }
+    .xbtn-csv:hover { border-color:var(--neon-cyan); color:var(--neon-cyan); }
+    .xbtn-reset { background:transparent; border:1px solid rgba(255,0,128,0.25); color:rgba(255,0,128,0.7); font-size:0.65rem; }
+    .xbtn-reset:hover { border-color:var(--neon-pink); color:var(--neon-pink); }
+
+    /* ── Live indicator ── */
+    .live-badge {
+      display:inline-flex; align-items:center; gap:0.4rem; font-family:var(--font-display);
+      font-size:0.65rem; letter-spacing:0.1em; color:#39ff14;
+      background:rgba(57,255,20,0.08); border:1px solid rgba(57,255,20,0.2);
+      border-radius:100px; padding:0.25rem 0.75rem;
+    }
+    .live-dot { width:6px; height:6px; background:#39ff14; border-radius:50%; box-shadow:0 0 6px #39ff14; animation:pulse 1.5s infinite; }
+
+    /* ── Empty row ── */
+    .empty-row td { text-align:center; padding:3rem; color:var(--text-secondary); font-style:italic; }
+
+    @media(max-width:900px) {
+      .admin-wrap { grid-template-columns:1fr; }
+      .admin-sidebar { position:static; height:auto; flex-direction:row; flex-wrap:wrap; gap:0; padding:0.75rem; border-right:none; border-bottom:1px solid rgba(0,245,255,0.1); }
+      .sidebar-label { display:none; }
+      .admin-main { padding:1.25rem; }
+      .m-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body class="grid-bg">
+
+  <!-- NAVBAR -->
+  <div id="cgz-announcement" style="display:none;padding:0.6rem 1.5rem;text-align:center;font-family:var(--font-display);font-size:0.78rem;letter-spacing:0.08em;position:relative;z-index:999;"></div>
+
+  <nav class="navbar">
+    <a href="../index.html" class="logo">
+      <div class="logo-icon">🎮</div>
+      <div class="logo-text">CASUAL <span>GAMERZ</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="repair.html">Book Repair</a></li>
+      <li><a href="tracking.html">Track Order</a></li>
+      <li><a href="history.html">Repair History</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+          <li><a href="site-admin.html" style="color:#ffea00;font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;">✏️ CONTENT</a></li>
+    </ul>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="admin-wrap">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-label">Main</div>
+      <div class="sidebar-item active" onclick="showSection('dashboard')">
+        <span class="s-icon">📊</span> Dashboard
+      </div>
+      <div class="sidebar-item" onclick="showSection('repairs')">
+        <span class="s-icon">🔧</span> All Repairs
+        <span class="sidebar-badge cyan" id="sbTotal">—</span>
+      </div>
+
+      <div class="sidebar-label">By Status</div>
+      <div class="sidebar-item" onclick="showSection('repairs'); setStatusFilter('Received')">
+        <span class="s-icon">🕐</span> Received
+        <span class="sidebar-badge" id="sbPending">—</span>
+      </div>
+      <div class="sidebar-item" onclick="showSection('repairs'); setStatusFilter('Repairing')">
+        <span class="s-icon">⚡</span> Repairing
+        <span class="sidebar-badge" id="sbInProgress">—</span>
+      </div>
+      <div class="sidebar-item" onclick="showSection('repairs'); setStatusFilter('Ready')">
+        <span class="s-icon">📦</span> Ready
+        <span class="sidebar-badge" id="sbReady">—</span>
+      </div>
+      <div class="sidebar-item" onclick="showSection('repairs'); setStatusFilter('Completed')">
+        <span class="s-icon">✅</span> Completed
+      </div>
+      <div class="sidebar-item" onclick="showSection('repairs'); setStatusFilter('Cancelled')">
+        <span class="s-icon">✕</span> Cancelled
+      </div>
+
+      <div class="sidebar-label">Data</div>
+      <div class="sidebar-item" onclick="showSection('logs')">
+        <span class="s-icon">📋</span> Status Log
+      </div>
+      <div class="sidebar-item" onclick="showSection('export')">
+        <span class="s-icon">🗄️</span> Database Manager
+      </div>
+
+      <div class="sidebar-label">Quick Links</div>
+      <div class="sidebar-item" onclick="window.open('repair.html','_blank')">
+        <span class="s-icon">➕</span> New Repair
+      </div>
+      <div class="sidebar-item" onclick="window.open('tracking.html','_blank')">
+        <span class="s-icon">🔍</span> Track Order
+      </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="admin-main">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div id="sec-dashboard" class="admin-section active">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <h1 style="font-size:1.8rem; margin-bottom:0.25rem;">Admin <span class="highlight">Dashboard</span></h1>
+            <p style="color:var(--text-secondary); font-size:0.88rem;">All data is live — changes made here reflect instantly on Tracking &amp; History pages.</p>
+          </div>
+          <div class="live-badge"><span class="live-dot"></span> Live Database</div>
+        </div>
+
+        <div class="kpi-strip" id="kpiStrip"></div>
+
+        <!-- Recent repairs quick table -->
+        <div class="admin-table-wrap" style="margin-bottom:1.5rem;">
+          <div class="admin-table-header">
+            <h3>⚡ Active &amp; Pending Repairs</h3>
+            <a href="#" onclick="showSection('repairs')" style="color:var(--neon-cyan); font-size:0.82rem; font-family:var(--font-display);">View All →</a>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Ticket</th><th>Customer</th><th>Device</th>
+                <th>Issue</th><th>Technician</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dashActiveTable"></tbody>
+          </table>
+        </div>
+
+        <!-- Revenue + device chart area -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+          <div class="admin-table-wrap">
+            <div class="admin-table-header"><h3>📱 Repairs by Device</h3></div>
+            <div id="deviceChart" style="padding:1.25rem;"></div>
+          </div>
+          <div class="admin-table-wrap">
+            <div class="admin-table-header"><h3>👷 Repairs by Technician</h3></div>
+            <div id="techChart" style="padding:1.25rem;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ALL REPAIRS TABLE ══ -->
+      <div id="sec-repairs" class="admin-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+          <h2 style="font-size:1.6rem;">All <span class="highlight">Repairs</span></h2>
+          <div class="live-badge"><span class="live-dot"></span> Live</div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <div style="display:flex; align-items:center; gap:1rem;">
+              <h3 id="repairTableTitle">All Repairs</h3>
+              <span id="repairTableCount" style="font-size:0.8rem; color:var(--text-secondary);"></span>
+            </div>
+            <div class="table-controls">
+              <div class="search-wrap-tbl">
+                <input type="text" id="tblSearch" class="tbl-search" placeholder="Search…" oninput="renderRepairTable()">
+              </div>
+              <select id="tblStatusFilter" class="tbl-select" onchange="renderRepairTable()">
+                <option value="">All Statuses</option>
+                <option value="Received">Received</option>
+                <option value="Diagnosing">Diagnosing</option>
+                <option value="Repairing">Repairing</option>
+                <option value="Testing">Testing</option>
+                <option value="Ready">Ready</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+              <select id="tblDeviceFilter" class="tbl-select" onchange="renderRepairTable()">
+                <option value="">All Devices</option>
+                <option>PlayStation</option><option>Xbox</option>
+                <option>Nintendo Switch</option><option>Laptop</option>
+                <option>PC / Desktop</option><option>Controller</option>
+              </select>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th class="sortable" onclick="sortTable('ticket')">Ticket ↕</th>
+                  <th class="sortable" onclick="sortTable('date')">Date ↕</th>
+                  <th>Customer</th>
+                  <th>Device</th>
+                  <th>Issue</th>
+                  <th class="sortable" onclick="sortTable('technician')">Technician</th>
+                  <th>Status</th>
+                  <th class="sortable" onclick="sortTable('total')">Total ↕</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="repairTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ STATUS LOG ══ -->
+      <div id="sec-logs" class="admin-section">
+        <h2 style="font-size:1.6rem; margin-bottom:1.5rem;">Status <span class="highlight">Log</span></h2>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <h3>📋 All Status Changes</h3>
+            <div class="search-wrap-tbl">
+              <input type="text" id="logSearch" class="tbl-search" placeholder="Search logs…" oninput="renderLogTable()">
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr><th>Ticket</th><th>Timestamp</th><th>From</th><th>To</th><th>Changed By</th><th>Notes</th><th>Source</th></tr>
+              </thead>
+              <tbody id="logTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ EXPORT ══ -->
+      <div id="sec-export" class="admin-section">
+        <h2 style="font-size:1.6rem; margin-bottom:0.5rem;">Database <span class="highlight">Manager</span></h2>
+        <p style="color:var(--text-secondary); margin-bottom:1.75rem; font-size:0.92rem;">
+          Export generates a fresh file from the <strong>current live database</strong> — every new ticket, status update, and cost change is included.
+        </p>
+
+        <!-- Full Database Manager (Excel round-trip) -->
+        <div style="background:linear-gradient(135deg,rgba(0,245,255,0.08),rgba(255,0,128,0.06)); border:1px solid rgba(0,245,255,0.25); border-radius:16px; padding:2rem; margin-bottom:1.75rem;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.25rem;">
+            <div>
+              <h3 style="font-size:1.15rem; margin-bottom:0.35rem;">🗄️ Full Database — Excel Round-Trip</h3>
+              <p style="color:var(--text-secondary); font-size:0.85rem; max-width:520px;">
+                Every repair, status log entry, and site text field — in one modern-styled workbook. Edit it in Excel, then import it back to update the live site in real time.
+              </p>
+            </div>
+            <div class="live-badge"><span class="live-dot"></span> Real Data</div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+            <div style="background:var(--dark-card); border:1px solid rgba(0,245,255,0.2); border-radius:12px; padding:1.5rem; text-align:center;">
+              <div style="font-size:2.2rem; margin-bottom:0.6rem;">⬇️</div>
+              <h4 style="font-size:0.95rem; margin-bottom:0.4rem;">Export Full Database</h4>
+              <p style="color:var(--text-secondary); font-size:0.82rem; margin-bottom:1.1rem;">Read Me, Repairs, Status Log, Site Content &amp; Dashboard — styled, filterable, dropdown-enabled.</p>
+              <button class="xbtn xbtn-xlsx" onclick="doExportFullXLSX()">📊 Export Full Database</button>
+            </div>
+            <div style="background:var(--dark-card); border:1px solid rgba(255,0,128,0.2); border-radius:12px; padding:1.5rem; text-align:center;">
+              <div style="font-size:2.2rem; margin-bottom:0.6rem;">⬆️</div>
+              <h4 style="font-size:0.95rem; margin-bottom:0.4rem;">Import from Excel</h4>
+              <p style="color:var(--text-secondary); font-size:0.82rem; margin-bottom:1.1rem;">Edit, add, or delete rows in the exported file, then import — you'll see a summary before anything is written.</p>
+              <input type="file" id="importFileInput" accept=".xlsx" style="display:none" onchange="handleImportFileSelect(event)">
+              <button class="xbtn xbtn-csv" onclick="document.getElementById('importFileInput').click()">📂 Choose File &amp; Import</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Google Sheets Sync — moved here for visibility -->
+        <div id="fbSyncPanel" style="background:linear-gradient(135deg,rgba(0,245,255,0.06),rgba(57,255,20,0.04)); border:1px solid rgba(0,245,255,0.2); border-radius:14px; padding:1.5rem; margin-bottom:1.75rem;">
+          <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem; flex-wrap:wrap;">
+            <h3 style="color:var(--neon-cyan); font-size:1rem; margin:0;">☁️ Google Sheets Sync</h3>
+            <span id="fbStatusBadge" style="font-family:var(--font-display); font-size:0.65rem; letter-spacing:0.1em; padding:0.2rem 0.65rem; border-radius:100px; background:rgba(255,0,128,0.2); color:var(--neon-pink);">CHECKING…</span>
+          </div>
+          <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:1rem;">
+            If data isn't appearing on another device, click this to force-push all local records directly to Google Sheets one by one — you'll see exactly what succeeds or fails.
+          </p>
+          <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap; margin-bottom:0.75rem;">
+            <button class="xbtn xbtn-xlsx" onclick="doForcePush()" id="fbPushBtn">☁️ Force Push All Data to Cloud</button>
+            <span id="fbPushCount" style="font-size:0.82rem; color:var(--text-secondary);"></span>
+          </div>
+          <div id="fbSyncLog" style="font-size:0.8rem; color:var(--text-secondary); font-family:monospace; max-height:120px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:8px; padding:0.75rem; display:none;"></div>
+        </div>
+
+        <!-- How it works explanation -->
+        <div style="background:var(--gradient-card); border:var(--border-glow); border-radius:14px; padding:1.75rem; margin-bottom:1.75rem;">
+          <h3 style="font-size:1rem; margin-bottom:1.25rem; color:var(--neon-cyan);">🔗 How Live Sync Works</h3>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem;">
+            <div style="padding:1rem; background:rgba(0,245,255,0.04); border:1px solid rgba(0,245,255,0.1); border-radius:10px;">
+              <div style="font-size:1.5rem; margin-bottom:0.5rem;">📋</div>
+              <div style="font-family:var(--font-display); font-size:0.75rem; color:var(--neon-cyan); margin-bottom:0.25rem;">repair.html</div>
+              <div style="font-size:0.82rem; color:var(--text-secondary);">Customer submits form → ticket saved to database instantly</div>
+            </div>
+            <div style="padding:1rem; background:rgba(0,245,255,0.04); border:1px solid rgba(0,245,255,0.1); border-radius:10px;">
+              <div style="font-size:1.5rem; margin-bottom:0.5rem;">⚡</div>
+              <div style="font-family:var(--font-display); font-size:0.75rem; color:var(--neon-cyan); margin-bottom:0.25rem;">admin.html</div>
+              <div style="font-size:0.82rem; color:var(--text-secondary);">Staff updates status, costs, technician → writes back to DB</div>
+            </div>
+            <div style="padding:1rem; background:rgba(0,245,255,0.04); border:1px solid rgba(0,245,255,0.1); border-radius:10px;">
+              <div style="font-size:1.5rem; margin-bottom:0.5rem;">🔍</div>
+              <div style="font-family:var(--font-display); font-size:0.75rem; color:var(--neon-cyan); margin-bottom:0.25rem;">tracking.html</div>
+              <div style="font-size:0.82rem; color:var(--text-secondary);">Customer searches ticket → reads live status from DB</div>
+            </div>
+            <div style="padding:1rem; background:rgba(0,245,255,0.04); border:1px solid rgba(0,245,255,0.1); border-radius:10px;">
+              <div style="font-size:1.5rem; margin-bottom:0.5rem;">📊</div>
+              <div style="font-family:var(--font-display); font-size:0.75rem; color:var(--neon-cyan); margin-bottom:0.25rem;">Export Excel</div>
+              <div style="font-size:0.82rem; color:var(--text-secondary);">Click Export → SheetJS builds a real .xlsx from current DB snapshot</div>
+            </div>
+          </div>
+          <div style="margin-top:1.25rem; padding:1rem; background:rgba(255,234,0,0.05); border:1px solid rgba(255,234,0,0.15); border-radius:10px; font-size:0.85rem; color:var(--text-secondary);">
+            ⚠️ <strong style="color:var(--neon-yellow);">Why a static .xlsx can't auto-update:</strong> Browsers are sandboxed for security — no website can write directly to a file on your disk without you clicking Export. The solution is this Export button, which generates a <em>fresh</em> .xlsx from the live database every time you click it.
+          </div>
+        </div>
+
+        <!-- Export buttons -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.75rem;">
+          <div style="background:var(--gradient-card); border:1px solid rgba(0,245,255,0.3); border-radius:14px; padding:2rem; text-align:center; box-shadow:var(--shadow-cyan);">
+            <div style="font-size:2.5rem; margin-bottom:0.75rem;">📊</div>
+            <h3 style="font-size:1rem; margin-bottom:0.5rem;">Export to Excel (.xlsx)</h3>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:1.25rem;">3 sheets: Repairs, Status Log, Dashboard. All current data.</p>
+            <button class="xbtn xbtn-xlsx" onclick="doExportXLSX()">📊 Download Excel Now</button>
+          </div>
+          <div style="background:var(--gradient-card); border:1px solid rgba(57,255,20,0.2); border-radius:14px; padding:2rem; text-align:center;">
+            <div style="font-size:2.5rem; margin-bottom:0.75rem;">📄</div>
+            <h3 style="font-size:1rem; margin-bottom:0.5rem;">Export to CSV</h3>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:1.25rem;">Plain text, works in Excel, Google Sheets, or any spreadsheet app.</p>
+            <button class="xbtn xbtn-csv" >📄 Download CSV</button>
+          </div>
+        </div>
+
+        <!-- Database snapshot -->
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><h3>🗄️ Current Database Snapshot</h3></div>
+          <div style="padding:1.25rem;" id="exportSnapshot"></div>
+        </div>
+
+        <!-- Danger zone -->
+        <div style="background:rgba(255,0,128,0.04); border:1px solid rgba(255,0,128,0.2); border-radius:14px; padding:1.5rem; margin-top:1.5rem;">
+          <h3 style="color:var(--neon-pink); margin-bottom:0.5rem;">⚠️ Danger Zone</h3>
+          <p style="color:var(--text-secondary); font-size:0.88rem; margin-bottom:1rem;">These actions cannot be undone. Export a backup first if unsure.</p>
+          <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <button class="xbtn xbtn-reset" onclick="confirmReset()">🗑️ Reset Repairs to Seed Data</button>
+            <button class="xbtn xbtn-reset" onclick="confirmFullReset()">💥 Reset Entire Database (Repairs + Site Content)</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ══ EDIT MODAL ══ -->
+  <div class="m-overlay" id="editOverlay" onclick="if(event.target===this)closeEdit()">
+    <div class="m-box">
+      <button class="m-close" onclick="closeEdit()">✕</button>
+      <div id="editBody"></div>
+    </div>
+  </div>
+
+  <!-- ══ QUICK STATUS MODAL ══ -->
+  <div class="qs-overlay" id="qsOverlay" onclick="if(event.target===this)closeQS()">
+    <div class="qs-box">
+      <button class="m-close" style="position:absolute;top:1rem;right:1rem;" onclick="closeQS()">✕</button>
+      <h3 style="font-size:1rem; margin-bottom:0.25rem; padding-right:2rem;" id="qsTitle">Update Status</h3>
+      <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:0.5rem;" id="qsSubtitle"></p>
+      <div class="status-btn-grid">
+        <button class="status-pick-btn spb-pending"    onclick="applyQS('Received')"><span class="spb-icon">🕐</span>Received</button>
+        <button class="status-pick-btn spb-diagnosed"  onclick="applyQS('Diagnosing')"><span class="spb-icon">🔬</span>Diagnosing</button>
+        <button class="status-pick-btn spb-inprogress" onclick="applyQS('Repairing')"><span class="spb-icon">⚡</span>Repairing</button>
+        <button class="status-pick-btn spb-testing"    onclick="applyQS('Testing')"><span class="spb-icon">🧪</span>Testing</button>
+        <button class="status-pick-btn spb-ready"      onclick="applyQS('Ready')"><span class="spb-icon">📦</span>Ready</button>
+        <button class="status-pick-btn spb-completed"  onclick="applyQS('Completed')"><span class="spb-icon">✅</span>Completed</button>
+        <button class="status-pick-btn spb-cancelled" style="grid-column:1/-1;" onclick="applyQS('Cancelled')"><span class="spb-icon">✕</span>Cancelled</button>
+      </div>
+      <div class="m-group" style="margin-top:0.75rem;">
+        <label>Technician Note (optional)</label>
+        <input type="text" id="qsNote" placeholder="e.g. Parts arrived, repair started…">
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ LOG MODAL ══ -->
+  <div class="m-overlay" id="logOverlay" onclick="if(event.target===this)closeLog()">
+    <div class="m-box">
+      <button class="m-close" onclick="closeLog()">✕</button>
+      <div id="logBody"></div>
+    </div>
+  </div>
+
+  <!-- ══ DELETE CONFIRM ══ -->
+  <div class="del-overlay" id="delOverlay">
+    <div class="del-box">
+      <div style="font-size:2.5rem; margin-bottom:0.75rem;">🗑️</div>
+      <h3 style="margin-bottom:0.5rem;">Delete Repair?</h3>
+      <p style="color:var(--text-secondary); font-size:0.88rem; margin-bottom:1.5rem;" id="delMsg">This cannot be undone.</p>
+      <div style="display:flex; gap:0.75rem; justify-content:center;">
+        <button onclick="execDelete()" class="btn-primary" style="background:var(--neon-pink); box-shadow:var(--shadow-pink);">Yes, Delete</button>
+        <button onclick="document.getElementById('delOverlay').classList.remove('open')" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ IMPORT CONFIRM MODAL ══ -->
+  <div class="m-overlay" id="importOverlay" onclick="if(event.target===this)cancelImport()">
+    <div class="m-box" style="max-width:480px;">
+      <button class="m-close" onclick="cancelImport()">✕</button>
+      <div id="importBody"></div>
+    </div>
+  </div>
+
+  
+  
+  <script src="../js/sheets-config.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+  /* ══════════════════════════════════════════════════════
+     CGZ Admin Panel — Google Sheets backend (CasualGamerzDB v8)
+     ══════════════════════════════════════════════════════ */
+
+  let allRepairs  = [];
+  let allLogs     = [];
+  let activeQSTicket = null;
+  let deleteTicket   = null;
+  let sortCol = 'date', sortDir = -1;
+
+  // ── Toast ─────────────────────────────────────────────────────────────
+  function showToast(msg, icon='✅') {
+    let t = document.getElementById('cgzToast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'cgzToast';
+      t.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:rgba(5,10,20,0.95);border:1px solid rgba(0,245,255,0.3);border-radius:12px;padding:0.9rem 1.5rem;font-family:var(--font-display);font-size:0.85rem;color:var(--text-primary);z-index:9999;box-shadow:var(--shadow-cyan);opacity:0;transition:opacity 0.3s;pointer-events:none;';
+      document.body.appendChild(t);
+    }
+    t.textContent = icon + ' ' + msg;
+    t.style.opacity = '1';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.style.opacity = '0', 3000);
+  }
+
+  // ── Status pill ───────────────────────────────────────────────────────
+  function pill(status) {
+    const c = CasualGamerzDB.statusColor(status);
+    return `<span style="padding:0.18rem 0.65rem;border-radius:100px;font-family:var(--font-display);font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:1px solid ${c}44;background:${c}18;color:${c};white-space:nowrap;">${status}</span>`;
+  }
+
+  // ── Section navigation ────────────────────────────────────────────────
+  function showSection(name) {
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    const sec = document.getElementById('sec-' + name);
+    if (sec) sec.classList.add('active');
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  }
+
+  function setStatusFilter(status) {
+    const sel = document.getElementById('tblStatusFilter');
+    if (sel) { sel.value = status; renderRepairTable(); }
+  }
+
+  // ── KPI strip ─────────────────────────────────────────────────────────
+  function renderKPIs() {
+    const active   = ['Received','Diagnosing','Repairing','Testing','Ready'];
+    const total    = allRepairs.length;
+    const actCnt   = allRepairs.filter(r => active.includes(r.status)).length;
+    const compCnt  = allRepairs.filter(r => r.status==='Completed').length;
+    const revenue  = allRepairs.filter(r => r.status==='Completed')
+                               .reduce((s,r) => s+(parseFloat(r.totalCost)||0), 0).toFixed(2);
+    const pending  = allRepairs.filter(r => r.status==='Received').length;
+    const repairing= allRepairs.filter(r => r.status==='Repairing').length;
+    const ready    = allRepairs.filter(r => r.status==='Ready').length;
+
+    // Sidebar badges
+    const sbSet = (id,v) => { const el=document.getElementById(id); if(el) el.textContent=v||''; };
+    sbSet('sbTotal',    total);
+    sbSet('sbPending',  pending);
+    sbSet('sbInProgress', repairing);
+    sbSet('sbReady',    ready);
+
+    const kpi = document.getElementById('kpiStrip');
+    if (!kpi) return;
+    kpi.innerHTML = [
+      {icon:'🗂️', val:total,           label:'Total Repairs',  col:'var(--neon-cyan)'},
+      {icon:'⚡',  val:actCnt,          label:'Active Jobs',    col:'#ff6b35'},
+      {icon:'✅',  val:compCnt,         label:'Completed',      col:'#39ff14'},
+      {icon:'💰',  val:'BND$ '+revenue, label:'Total Revenue',  col:'#ffc800'},
+      {icon:'🕐',  val:pending,         label:'Received',       col:'#00f5ff'},
+      {icon:'📦',  val:ready,           label:'Ready for Pickup',col:'#39ff14'},
+    ].map(k => `
+      <div class="kpi-card">
+        <div class="kpi-icon">${k.icon}</div>
+        <div class="kpi-val" style="background:none;-webkit-text-fill-color:${k.col};color:${k.col};">${k.val}</div>
+        <div class="kpi-label">${k.label}</div>
+      </div>`).join('');
+  }
+
+  // ── Dashboard active table ────────────────────────────────────────────
+  function renderDashActive() {
+    const tbody = document.getElementById('dashActiveTable');
+    if (!tbody) return;
+    const active = ['Received','Diagnosing','Repairing','Testing','Ready'];
+    const list = allRepairs.filter(r => active.includes(r.status)).slice(0, 10);
+    if (!list.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No active repairs 🎉</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(r => `
+      <tr onclick="openEdit('${r.ticketId}')">
+        <td class="ticket">${r.ticketId}</td>
+        <td class="customer">${r.firstName} ${r.lastName}</td>
+        <td class="device">${r.deviceType}</td>
+        <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.issue}</td>
+        <td>${r.techNotes?'🔧':'—'}</td>
+        <td>${pill(r.status)}</td>
+        <td class="tbl-actions" onclick="event.stopPropagation()">
+          <button class="tbl-btn tbl-btn-status" onclick="openQS('${r.ticketId}','${r.status}')">Status</button>
+          <button class="tbl-btn tbl-btn-edit"   onclick="openEdit('${r.ticketId}')">Edit</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  // ── Charts ────────────────────────────────────────────────────────────
+  function renderCharts() {
+    // Device breakdown
+    const devEl = document.getElementById('deviceChart');
+    if (devEl) {
+      const counts = {};
+      allRepairs.forEach(r => counts[r.deviceType] = (counts[r.deviceType]||0)+1);
+      const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+      devEl.innerHTML = sorted.map(([d,n]) => {
+        const pct = allRepairs.length ? Math.round(n/allRepairs.length*100) : 0;
+        return `<div style="margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.3rem;">
+            <span>${d}</span><span style="color:var(--neon-cyan);font-family:var(--font-display);">${n}</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border-radius:4px;height:6px;">
+            <div style="background:var(--gradient-main);height:6px;border-radius:4px;width:${pct}%;"></div>
+          </div>
+        </div>`;
+      }).join('') || '<p style="color:var(--text-secondary);font-size:0.85rem;">No data yet.</p>';
+    }
+
+    // Tech breakdown
+    const techEl = document.getElementById('techChart');
+    if (techEl) {
+      const counts = {};
+      allRepairs.forEach(r => { const t = r.techNotes?'Staff':'Unassigned'; counts[t]=(counts[t]||0)+1; });
+      const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+      techEl.innerHTML = sorted.map(([t,n]) => {
+        const pct = allRepairs.length ? Math.round(n/allRepairs.length*100) : 0;
+        return `<div style="margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.3rem;">
+            <span>${t}</span><span style="color:#ff6b35;font-family:var(--font-display);">${n}</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.06);border-radius:4px;height:6px;">
+            <div style="background:linear-gradient(90deg,#ff6b35,#ffc800);height:6px;border-radius:4px;width:${pct}%;"></div>
+          </div>
+        </div>`;
+      }).join('') || '<p style="color:var(--text-secondary);font-size:0.85rem;">No data yet.</p>';
+    }
+  }
+
+  // ── All Repairs table ─────────────────────────────────────────────────
+  function renderRepairTable() {
+    const q  = (document.getElementById('tblSearch')||{value:''}).value.toLowerCase();
+    const sf = (document.getElementById('tblStatusFilter')||{value:''}).value;
+    const df = (document.getElementById('tblDeviceFilter')||{value:''}).value;
+
+    let list = allRepairs.filter(r => {
+      if (sf && r.status !== sf) return false;
+      if (df && r.deviceType !== df) return false;
+      if (!q) return true;
+      return [r.ticketId,r.firstName,r.lastName,r.phone,r.deviceType,r.brand,r.model,r.issue,r.email]
+        .some(v => v && v.toLowerCase().includes(q));
+    });
+
+    // Sort
+    list = [...list].sort((a,b) => {
+      let va, vb;
+      if (sortCol==='ticket')     { va=a.ticketId;    vb=b.ticketId; }
+      else if (sortCol==='date')  { va=new Date(a.createdAt); vb=new Date(b.createdAt); }
+      else if (sortCol==='total') { va=parseFloat(a.totalCost)||0; vb=parseFloat(b.totalCost)||0; }
+      else                        { va=a[sortCol]||''; vb=b[sortCol]||''; }
+      return va < vb ? -sortDir : va > vb ? sortDir : 0;
+    });
+
+    const title = document.getElementById('repairTableTitle');
+    const count = document.getElementById('repairTableCount');
+    if (title) title.textContent = sf ? sf + ' Repairs' : 'All Repairs';
+    if (count) count.textContent = list.length + ' records';
+
+    const tbody = document.getElementById('repairTableBody');
+    if (!tbody) return;
+
+    if (!list.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No repairs match your filters.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = list.map(r => `
+      <tr onclick="openEdit('${r.ticketId}')">
+        <td class="ticket">${r.ticketId}</td>
+        <td>${CasualGamerzDB.fmtDate(r.createdAt)}</td>
+        <td class="customer">${r.firstName} ${r.lastName}<br><span style="font-size:0.78rem;color:var(--text-secondary);">${r.phone}</span></td>
+        <td class="device">${r.deviceType}<br><span style="font-size:0.78rem;color:var(--text-secondary);">${r.brand||''} ${r.model||''}</span></td>
+        <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.issue}</td>
+        <td>—</td>
+        <td>${pill(r.status)}</td>
+        <td style="font-family:var(--font-display);color:#39ff14;">${r.totalCost?'BND$ '+r.totalCost:'—'}</td>
+        <td class="tbl-actions" onclick="event.stopPropagation()">
+          <button class="tbl-btn tbl-btn-status" onclick="openQS('${r.ticketId}','${r.status}')">Status</button>
+          <button class="tbl-btn tbl-btn-edit"   onclick="openEdit('${r.ticketId}')">Edit</button>
+          <button class="tbl-btn tbl-btn-log"    onclick="openLog('${r.ticketId}')">Log</button>
+          <button class="tbl-btn tbl-btn-del"    onclick="startDelete('${r.ticketId}')">Del</button>
+        </td>
+      </tr>`).join('');
+  }
+
+  function sortTable(col) {
+    if (sortCol === col) sortDir *= -1;
+    else { sortCol = col; sortDir = 1; }
+    renderRepairTable();
+  }
+
+  // ── Log table ─────────────────────────────────────────────────────────
+  function renderLogTable() {
+    const q = (document.getElementById('logSearch')||{value:''}).value.toLowerCase();
+    const tbody = document.getElementById('logTableBody');
+    if (!tbody) return;
+
+    const list = allLogs.filter(l => !q ||
+      [l.ticketId,l.status,l.note,l.tech].some(v => v && v.toLowerCase().includes(q))
+    );
+
+    if (!list.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No log entries yet.</td></tr>';
+      return;
+    }
+
+    // We show flat log — allLogs is built from repair-level logs if available
+    tbody.innerHTML = list.map(l => {
+      const c = CasualGamerzDB.statusColor(l.status||'');
+      return `<tr>
+        <td class="ticket">${l.ticketId||'—'}</td>
+        <td style="font-size:0.8rem;">${CasualGamerzDB.fmt(l.timestamp)}</td>
+        <td>—</td>
+        <td>${pill(l.status||'—')}</td>
+        <td>${l.tech||'—'}</td>
+        <td style="font-size:0.82rem;">${l.note||'—'}</td>
+        <td style="font-size:0.75rem;color:var(--text-secondary);">Sheets</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Load all data ─────────────────────────────────────────────────────
+  async function loadAdmin() {
+    if (!CasualGamerzDB.isConfigured()) {
+      showToast('⚠️ Google Sheets URL not configured! Edit js/sheets-config.js', '⚠️');
+      renderKPIs();
+      renderRepairTable();
+      renderDashActive();
+      return;
+    }
+    try {
+      allRepairs = await CasualGamerzDB.getAll();
+      allRepairs.sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt));
+      renderKPIs();
+      renderDashActive();
+      renderCharts();
+      renderRepairTable();
+      renderLogTable();
+      renderExportSnapshot();
+      checkSheetsStatus();
+    } catch(e) {
+      console.error('[CGZ Admin]', e);
+      showToast('Failed to load from Google Sheets: ' + e.message, '❌');
+    }
+  }
+
+  // ── Quick Status modal ────────────────────────────────────────────────
+  function openQS(ticketId, currentStatus) {
+    activeQSTicket = ticketId;
+    const overlay = document.getElementById('qsOverlay');
+    if (!overlay) return;
+    document.getElementById('qsTitle').textContent   = 'Update: ' + ticketId;
+    document.getElementById('qsSubtitle').textContent = 'Current: ' + currentStatus;
+    document.getElementById('qsNote').value = '';
+    overlay.classList.add('open');
+  }
+
+  function closeQS() {
+    document.getElementById('qsOverlay').classList.remove('open');
+    activeQSTicket = null;
+  }
+
+  async function applyQS(newStatus) {
+    if (!activeQSTicket) return;
+    const note = (document.getElementById('qsNote')||{value:''}).value;
+    closeQS();
+    try {
+      await CasualGamerzDB.updateStatus(activeQSTicket, newStatus, note, 'Admin');
+      await loadAdmin();
+      showToast('Status updated to ' + newStatus);
+    } catch(e) { showToast('Error: ' + e.message, '❌'); }
+  }
+
+  // ── Edit modal ────────────────────────────────────────────────────────
+  async function openEdit(ticketId) {
+    const overlay = document.getElementById('editOverlay');
+    const body    = document.getElementById('editBody');
+    if (!overlay || !body) return;
+
+    body.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-secondary);">⏳ Loading…</p>';
+    overlay.classList.add('open');
+
+    try {
+      const { repair, logs } = await CasualGamerzDB.getByTicket(ticketId);
+      if (!repair) { body.innerHTML = '<p>Repair not found.</p>'; return; }
+
+      body.innerHTML = `
+        <h3 class="m-title">✏️ Edit Repair — <span style="color:var(--neon-cyan);">${repair.ticketId}</span></h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem;">
+          <div style="padding:0.75rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:8px;font-size:0.85rem;">
+            <strong>${repair.firstName} ${repair.lastName}</strong><br>
+            <span style="color:var(--text-secondary);">${repair.phone}</span>
+          </div>
+          <div style="padding:0.75rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:8px;font-size:0.85rem;">
+            <strong>${repair.deviceType}</strong><br>
+            <span style="color:var(--text-secondary);">${repair.brand||''} ${repair.model||''}</span>
+          </div>
+        </div>
+        <div style="padding:0.75rem;background:rgba(255,107,53,0.04);border:1px solid rgba(255,107,53,0.15);border-radius:8px;font-size:0.85rem;margin-bottom:1.25rem;">
+          <strong>Issue:</strong> ${repair.issue}<br>
+          ${repair.issueDetail?`<span style="color:var(--text-secondary);">${repair.issueDetail}</span>`:''}
+        </div>
+
+        <div class="m-grid">
+          <div class="m-group m-section-label">Status &amp; Assignment</div>
+          <div class="m-group">
+            <label>Status</label>
+            <select id="me_status">
+              ${CasualGamerzDB.STATUS_ORDER.map(s=>`<option value="${s}"${s===repair.status?' selected':''}>${s}</option>`).join('')}
+            </select>
+          </div>
+          <div class="m-group">
+            <label>Status Note</label>
+            <input type="text" id="me_statusNote" placeholder="Note for this status change…">
+          </div>
+
+          <div class="m-group m-section-label" style="margin-top:0.75rem;">Technical Details</div>
+          <div class="m-group full">
+            <label>Tech Notes</label>
+            <textarea id="me_techNotes" rows="3">${repair.techNotes||''}</textarea>
+          </div>
+          <div class="m-group full">
+            <label>Parts Used</label>
+            <input type="text" id="me_partsUsed" value="${repair.partsUsed||''}">
+          </div>
+
+          <div class="m-group m-section-label" style="margin-top:0.75rem;">Pricing</div>
+          <div class="m-group">
+            <label>Labour Cost (BND$)</label>
+            <input type="number" step="0.01" id="me_laborCost" value="${repair.laborCost||''}">
+          </div>
+          <div class="m-group">
+            <label>Parts Cost (BND$)</label>
+            <input type="number" step="0.01" id="me_partsCost" value="${repair.partsCost||''}">
+          </div>
+          <div class="m-group">
+            <label>Total Cost (BND$)</label>
+            <input type="number" step="0.01" id="me_totalCost" value="${repair.totalCost||''}">
+          </div>
+          <div class="m-group">
+            <label>Estimated Ready Date</label>
+            <input type="date" id="me_estimatedReady" value="${repair.estimatedReady||''}">
+          </div>
+        </div>
+
+        ${(logs&&logs.length)?`
+        <div style="margin-top:1.5rem;">
+          <div style="font-family:var(--font-display);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--neon-cyan);border-bottom:1px solid rgba(0,245,255,0.1);padding-bottom:0.5rem;margin-bottom:0.75rem;">Status History</div>
+          <div class="log-tl">
+            ${logs.slice().reverse().map(l=>`
+              <div class="log-item">
+                <div class="log-dot" style="background:${CasualGamerzDB.statusColor(l.status)};box-shadow:0 0 6px ${CasualGamerzDB.statusColor(l.status)};"></div>
+                <div>
+                  <div class="log-time">${CasualGamerzDB.fmt(l.timestamp)}</div>
+                  <div class="log-desc">${pill(l.status)} ${l.note?`— <em style="color:var(--text-secondary);">${l.note}</em>`:''}</div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>`:''}
+
+        <div class="m-footer">
+          <button class="btn-primary" id="meSaveBtn" onclick="saveEdit('${repair.ticketId}')">💾 Save Changes</button>
+          <button class="btn-secondary" onclick="closeEdit()">Cancel</button>
+        </div>`;
+    } catch(e) {
+      body.innerHTML = `<p style="color:var(--neon-pink);">Error loading repair: ${e.message}</p>`;
+    }
+  }
+
+  function closeEdit() {
+    document.getElementById('editOverlay').classList.remove('open');
+  }
+
+  async function saveEdit(ticketId) {
+    const btn = document.getElementById('meSaveBtn');
+    if (btn) { btn.textContent = '⏳ Saving…'; btn.disabled = true; }
+    try {
+      const newStatus  = document.getElementById('me_status').value;
+      const statusNote = (document.getElementById('me_statusNote')||{value:''}).value;
+      const data = {};
+      ['techNotes','partsUsed','laborCost','partsCost','totalCost','estimatedReady'].forEach(f => {
+        const el = document.getElementById('me_'+f);
+        if (el) data[f] = el.value;
+      });
+
+      const current = allRepairs.find(r => r.ticketId===ticketId);
+      if (current && current.status !== newStatus) {
+        await CasualGamerzDB.updateStatus(ticketId, newStatus, statusNote, 'Admin');
+      }
+      await CasualGamerzDB.updateRepair(ticketId, data);
+      closeEdit();
+      await loadAdmin();
+      showToast('Repair saved!');
+    } catch(e) {
+      showToast('Save failed: ' + e.message, '❌');
+      if (btn) { btn.textContent = '💾 Save Changes'; btn.disabled = false; }
+    }
+  }
+
+  // ── Log modal ─────────────────────────────────────────────────────────
+  async function openLog(ticketId) {
+    const overlay = document.getElementById('logOverlay');
+    const body    = document.getElementById('logBody');
+    if (!overlay || !body) return;
+
+    body.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-secondary);">⏳ Loading…</p>';
+    overlay.classList.add('open');
+
+    try {
+      const { repair, logs } = await CasualGamerzDB.getByTicket(ticketId);
+      if (!repair) { body.innerHTML = '<p>Repair not found.</p>'; return; }
+      body.innerHTML = `
+        <h3 class="m-title">📋 Status Log — <span style="color:var(--neon-cyan);">${ticketId}</span></h3>
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:1.25rem;">${repair.firstName} ${repair.lastName} — ${repair.deviceType}</p>
+        <div class="log-tl">
+          ${(logs&&logs.length)
+            ? logs.slice().reverse().map(l => `
+              <div class="log-item">
+                <div class="log-dot" style="background:${CasualGamerzDB.statusColor(l.status)};box-shadow:0 0 6px ${CasualGamerzDB.statusColor(l.status)};"></div>
+                <div>
+                  <div class="log-time">${CasualGamerzDB.fmt(l.timestamp)}</div>
+                  <div class="log-desc">${pill(l.status)} ${l.note?`— <em style="color:var(--text-secondary);">${l.note}</em>`:''} ${l.tech?`<small style="color:var(--text-secondary);">by ${l.tech}</small>`:''}</div>
+                </div>
+              </div>`).join('')
+            : '<p style="color:var(--text-secondary);">No log entries yet.</p>'}
+        </div>`;
+    } catch(e) {
+      body.innerHTML = `<p style="color:var(--neon-pink);">Error: ${e.message}</p>`;
+    }
+  }
+
+  function closeLog() {
+    document.getElementById('logOverlay').classList.remove('open');
+  }
+
+  // ── Delete ────────────────────────────────────────────────────────────
+  function startDelete(ticketId) {
+    deleteTicket = ticketId;
+    const msg = document.getElementById('delMsg');
+    if (msg) msg.textContent = `Ticket ${ticketId} and all its log entries will be permanently deleted.`;
+    document.getElementById('delOverlay').classList.add('open');
+  }
+
+  async function execDelete() {
+    if (!deleteTicket) return;
+    document.getElementById('delOverlay').classList.remove('open');
+    try {
+      await CasualGamerzDB.deleteRepair(deleteTicket);
+      deleteTicket = null;
+      await loadAdmin();
+      showToast('Repair deleted.');
+    } catch(e) { showToast('Delete failed: ' + e.message, '❌'); }
+  }
+
+  // ── Export ────────────────────────────────────────────────────────────
+  function renderExportSnapshot() {
+    const el = document.getElementById('exportSnapshot');
+    if (!el) return;
+    const stats = {
+      total: allRepairs.length,
+      active: allRepairs.filter(r=>!['Completed','Cancelled'].includes(r.status)).length,
+      completed: allRepairs.filter(r=>r.status==='Completed').length,
+    };
+    el.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;">
+        ${[['🗂️','Total Records',stats.total,'var(--neon-cyan)'],
+           ['⚡','Active Jobs',stats.active,'#ff6b35'],
+           ['✅','Completed',stats.completed,'#39ff14']].map(([i,l,v,c])=>`
+          <div style="padding:1rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:10px;text-align:center;">
+            <div style="font-size:1.5rem;">${i}</div>
+            <div style="font-family:var(--font-display);font-size:1.6rem;color:${c};">${v}</div>
+            <div style="font-size:0.75rem;color:var(--text-secondary);">${l}</div>
+          </div>`).join('')}
+      </div>
+      <p style="margin-top:1rem;font-size:0.82rem;color:var(--text-secondary);">Last loaded: ${new Date().toLocaleString()}</p>`;
+  }
+
+  async function doExportXLSX() {
+    if (typeof XLSX === 'undefined') { showToast('SheetJS not loaded', '❌'); return; }
+    try {
+      const ws = XLSX.utils.json_to_sheet(allRepairs);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Repairs');
+      XLSX.writeFile(wb, `CGZ_Repairs_${new Date().toISOString().split('T')[0]}.xlsx`);
+      showToast('Excel exported!');
+    } catch(e) { showToast('Export error: '+e.message,'❌'); }
+  }
+
+  async function doExportFullXLSX() {
+    if (typeof XLSX === 'undefined') { showToast('SheetJS not loaded', '❌'); return; }
+    try {
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(allRepairs), 'Repairs');
+      const info = [{ info:'CGZ Service Center Full Export', date: new Date().toLocaleString(), total: allRepairs.length }];
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(info), 'Dashboard');
+      XLSX.writeFile(wb, `CGZ_Full_${new Date().toISOString().split('T')[0]}.xlsx`);
+      showToast('Full database exported!');
+    } catch(e) { showToast('Export error: '+e.message,'❌'); }
+  }
+
+  // CSV export buttons (plain CSV via db.js)
+  document.querySelectorAll('.xbtn-csv').forEach(btn => {
+    if (!btn.getAttribute('onclick')) {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        try { await CasualGamerzDB.exportCSV(); showToast('CSV exported!'); }
+        catch(e) { showToast('Export error: '+e.message,'❌'); }
+        finally { btn.disabled = false; }
+      });
+    }
+  });
+
+  // ── Google Sheets sync status ─────────────────────────────────────────
+  function checkSheetsStatus() {
+    const badge = document.getElementById('fbStatusBadge');
+    if (!badge) return;
+    if (CasualGamerzDB.isConfigured()) {
+      badge.textContent = 'CONNECTED';
+      badge.style.background = 'rgba(57,255,20,0.2)';
+      badge.style.color = '#39ff14';
+    } else {
+      badge.textContent = 'NOT CONFIGURED';
+      badge.style.background = 'rgba(255,0,128,0.2)';
+      badge.style.color = 'var(--neon-pink)';
+    }
+  }
+
+  async function doForcePush() {
+    const btn = document.getElementById('fbPushBtn');
+    const log = document.getElementById('fbSyncLog');
+    const cnt = document.getElementById('fbPushCount');
+    if (!CasualGamerzDB.isConfigured()) {
+      showToast('Google Sheets URL not configured!', '⚠️');
+      return;
+    }
+    if (!allRepairs.length) { showToast('No repairs to push.', '⚠️'); return; }
+    if (btn) { btn.textContent = '⏳ Pushing…'; btn.disabled = true; }
+    if (log) { log.style.display='block'; log.textContent='Starting force push…\n'; }
+    let ok=0, fail=0;
+    for (const r of allRepairs) {
+      try {
+        await CasualGamerzDB.updateRepair(r.ticketId, r);
+        ok++;
+        if (log) log.textContent += `✅ ${r.ticketId}\n`;
+        if (cnt) cnt.textContent = `${ok}/${allRepairs.length} pushed`;
+      } catch(e) {
+        fail++;
+        if (log) log.textContent += `❌ ${r.ticketId}: ${e.message}\n`;
+      }
+    }
+    if (btn) { btn.textContent = '☁️ Force Push All Data to Cloud'; btn.disabled = false; }
+    showToast(`Push complete: ${ok} OK, ${fail} failed`, fail?'⚠️':'✅');
+  }
+
+  // ── Import (placeholder — full import requires parsing XLSX) ──────────
+  function handleImportFileSelect(event) {
+    const overlay = document.getElementById('importOverlay');
+    const body    = document.getElementById('importBody');
+    if (!overlay||!body) return;
+    body.innerHTML = '<p style="text-align:center;padding:1rem;">⏳ Reading file…</p>';
+    overlay.classList.add('open');
+
+    const file = event.target.files[0];
+    if (!file) { cancelImport(); return; }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = new Uint8Array(e.target.result);
+        const wb   = XLSX.read(data, {type:'array'});
+        const ws   = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws);
+        body.innerHTML = `
+          <h3 class="m-title">📂 Import Preview</h3>
+          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:1.25rem;">Found <strong>${rows.length}</strong> rows in <strong>${wb.SheetNames[0]}</strong>. Review below before importing.</p>
+          <div style="max-height:300px;overflow-y:auto;border:1px solid rgba(0,245,255,0.1);border-radius:10px;padding:0.75rem;font-size:0.8rem;font-family:monospace;background:rgba(0,0,0,0.3);">
+            ${rows.slice(0,20).map(r=>`<div style="margin-bottom:0.3rem;border-bottom:1px solid rgba(255,255,255,0.05);">${JSON.stringify(r)}</div>`).join('')}
+            ${rows.length>20?`<div style="color:var(--text-secondary);">…and ${rows.length-20} more</div>`:''}
+          </div>
+          <p style="margin-top:1rem;font-size:0.85rem;color:var(--neon-yellow);">⚠️ Full import coming soon. For now, please edit records directly via the Admin panel.</p>
+          <div class="m-footer"><button class="btn-secondary" onclick="cancelImport()">Close</button></div>`;
+      } catch(err) {
+        body.innerHTML = `<p style="color:var(--neon-pink);">Error reading file: ${err.message}</p><div class="m-footer"><button class="btn-secondary" onclick="cancelImport()">Close</button></div>`;
+      }
+    };
+    reader.readAsArrayBuffer(file);
+    event.target.value=''; // reset input
+  }
+
+  function cancelImport() {
+    document.getElementById('importOverlay').classList.remove('open');
+  }
+
+  // ── Danger zone ───────────────────────────────────────────────────────
+  function confirmReset() {
+    if (confirm('Reset Repairs to seed data?\n\nThis will DELETE all repairs in Google Sheets and add sample data. This cannot be undone.')) {
+      showToast('Reset not implemented — manage data directly in Google Sheets.', '⚠️');
+    }
+  }
+
+  function confirmFullReset() {
+    if (confirm('FULL RESET — delete everything?\n\nThis will DELETE ALL repairs and log entries in Google Sheets. Type "RESET" to confirm.')) {
+      const r = prompt('Type RESET to confirm:');
+      if (r==='RESET') showToast('Full reset not implemented — manage data directly in Google Sheets.', '⚠️');
+    }
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    checkSheetsStatus();
+    loadAdmin();
+  });
+  </script>
+</body>
+</html>

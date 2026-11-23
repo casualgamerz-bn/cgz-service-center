@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casual Gamerz — Computer & Gaming Console Service Center</title>
+  <meta name="description" content="Brunei's premier gaming & computer repair experts. Fast, reliable, professional service for all brands and consoles." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="grid-bg">
+
+  <!-- NAVBAR -->
+  <div id="cgz-announcement" style="display:none;padding:0.6rem 1.5rem;text-align:center;font-family:var(--font-display);font-size:0.78rem;letter-spacing:0.08em;position:relative;z-index:999;"></div>
+
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🎮</div>
+      <div class="logo-text">CASUAL <span>GAMERZ</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="pages/services.html">Services</a></li>
+      <li><a href="pages/repair.html">Book Repair</a></li>
+      <li><a href="pages/tracking.html">Track Order</a></li>
+          <li><a href="pages/history.html">Repair History</a></li>
+      <li><a href="pages/about.html">About</a></li>
+      <li><a href="pages/contact.html" class="nav-cta">Contact Us</a></li>
+      <li><a href="pages/admin.html" style="color:var(--neon-pink);font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;">⚙ ADMIN</a></li>
+      <li><a href="pages/site-admin.html" style="color:#ffea00;font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;">✏️ CONTENT</a></li>
+    </ul>
+    <div class="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-particles"></div>
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span data-cid='global.tagline'>Computer & Gaming Service Center</span>
+        </div>
+        <h1 class="hero-title">
+          <span class="line-1" data-cid="home.hero_title_line1">Revive Your</span><br>
+          <span class="line-2" data-cid="home.hero_title_line2">Gaming Setup</span>
+        </h1>
+        <p class="hero-desc">
+          <span data-cid="home.hero_description">Expert repair and maintenance for computers, laptops, and all gaming consoles. Fast turnaround, genuine parts, and warranty on every fix.</span>
+        </p>
+        <div class="hero-buttons">
+          <a href="pages/repair.html" class="btn-primary">
+            🔧 Book a Repair
+          </a>
+          <a href="pages/services.html" class="btn-secondary">
+            📋 Our Services
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-number" data-cid="home.stat1_number">1000+</div>
+            <div class="stat-label" data-cid="home.stat1_label">Devices Fixed</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number" data-cid="home.stat2_number">98%</div>
+            <div class="stat-label" data-cid="home.stat2_label">Satisfaction</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number" data-cid="home.stat3_number">24H</div>
+            <div class="stat-label" data-cid="home.stat3_label">Avg Turnaround</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-device">
+          <div class="device-ring ring-1"></div>
+          <div class="device-ring ring-2"></div>
+          <div class="device-ring ring-3"></div>
+          <div class="device-center">🎮</div>
+          <div class="floating-icons">
+            <div class="float-icon">💻</div>
+            <div class="float-icon">🕹️</div>
+            <div class="float-icon">🖥️</div>
+            <div class="float-icon">⌨️</div>
+            <div class="float-icon">🔧</div>
+            <div class="float-icon">🎯</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE BRANDS -->
+  <div style="overflow:hidden; border-top:1px solid rgba(0,245,255,0.1); border-bottom:1px solid rgba(0,245,255,0.1); background:rgba(0,245,255,0.03); padding:1rem 0;">
+    <div style="display:flex; gap:3rem; align-items:center; white-space:nowrap; animation:marqueeScroll 18s linear infinite;">
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">🎮 PlayStation</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">🟩 Xbox</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">🔴 Nintendo Switch</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">💻 Windows PC</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">🍎 MacBook</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">🖥️ iMac</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">🎮 Steam Deck</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">📱 ROG Ally</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">🎮 PlayStation</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">🟩 Xbox</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">🔴 Nintendo Switch</span>
+      <span style="font-family:var(--font-display);font-size:0.75rem;letter-spacing:0.2em;color:var(--text-secondary);">💻 Windows PC</span>
+    </div>
+  </div>
+  <style>
+    @keyframes marqueeScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  </style>
+
+  <!-- SERVICES OVERVIEW -->
+  <section class="section" id="services">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">What We Do</div>
+        <h2 class="section-title">Expert <span class="highlight">Repair Services</span></h2>
+        <p class="section-desc">From cracked screens to corrupted systems — we fix it all with speed and precision.</p>
+        <div class="glow-divider"></div>
+      </div>
+
+      <div class="services-grid">
+        <a href="pages/services.html#pc-repair" class="service-card fade-in">
+          <div class="service-icon-wrap cyan">🖥️</div>
+          <h3 data-cid="home.service1_title">PC & Desktop Repair</h3>
+          <p>Hardware diagnostics, GPU upgrades, RAM installation, power supply replacement, overheating fixes, and full system builds.</p>
+          <div class="service-tags">
+            <span class="tag">Hardware</span>
+            <span class="tag">Diagnostics</span>
+            <span class="tag">Upgrades</span>
+          </div>
+          <span class="service-link">Learn More →</span>
+        </a>
+
+        <a href="pages/services.html#laptop-repair" class="service-card fade-in">
+          <div class="service-icon-wrap pink">💻</div>
+          <h3 data-cid="home.service2_title">Laptop Repair</h3>
+          <p>Screen replacements, keyboard fixes, battery swaps, motherboard repairs, and water damage recovery for all brands.</p>
+          <div class="service-tags">
+            <span class="tag">Screen</span>
+            <span class="tag">Battery</span>
+            <span class="tag">Motherboard</span>
+          </div>
+          <span class="service-link">Learn More →</span>
+        </a>
+
+        <a href="pages/services.html#console-repair" class="service-card fade-in">
+          <div class="service-icon-wrap green">🎮</div>
+          <h3 data-cid="home.service3_title">Console Repair</h3>
+          <p>PS4/PS5, Xbox, Nintendo Switch, Steam Deck — disc drive issues, HDMI ports, overheating, and controller fixes.</p>
+          <div class="service-tags">
+            <span class="tag">PlayStation</span>
+            <span class="tag">Xbox</span>
+            <span class="tag">Nintendo</span>
+          </div>
+          <span class="service-link">Learn More →</span>
+        </a>
+
+        <a href="pages/services.html#software" class="service-card fade-in">
+          <div class="service-icon-wrap orange">⚙️</div>
+          <h3 data-cid="home.service4_title">Software & OS Services</h3>
+          <p>Windows/macOS reinstallation, virus/malware removal, driver updates, data recovery, and performance optimization.</p>
+          <div class="service-tags">
+            <span class="tag">Windows</span>
+            <span class="tag">macOS</span>
+            <span class="tag">Data Recovery</span>
+          </div>
+          <span class="service-link">Learn More →</span>
+        </a>
+
+        <a href="pages/services.html#custom-build" class="service-card fade-in">
+          <div class="service-icon-wrap yellow">🔨</div>
+          <h3 data-cid="home.service5_title">Custom PC Builds</h3>
+          <p>We build your dream gaming rig — from budget-friendly entry setups to full RGB high-performance beasts. You pick, we build.</p>
+          <div class="service-tags">
+            <span class="tag">Gaming Rig</span>
+            <span class="tag">Workstation</span>
+            <span class="tag">RGB</span>
+          </div>
+          <span class="service-link">Learn More →</span>
+        </a>
+
+        <a href="pages/services.html#accessories" class="service-card fade-in">
+          <div class="service-icon-wrap purple">🕹️</div>
+          <h3 data-cid="home.service6_title">Controller & Peripheral Repair</h3>
+          <p>Joystick drift repair, trigger fixes, button replacements, and cleaning for controllers, keyboards, and mice.</p>
+          <div class="service-tags">
+            <span class="tag">Controller</span>
+            <span class="tag">Joystick Drift</span>
+            <span class="tag">Peripherals</span>
+          </div>
+          <span class="service-link">Learn More →</span>
+        </a>
+
+        <a href="pages/services.html#accessories" class="service-card fade-in">
+          <div class="service-icon-wrap purple">🕹️</div>
+          <h3 data-cid="home.service6_title">Controller & Peripheral Repair</h3>
+          <p>Joystick drift repair, trigger fixes, button replacements, and cleaning for controllers, keyboards, and mice.</p>
+          <div class="service-tags">
+            <span class="tag">Controller</span>
+            <span class="tag">Joystick Drift</span>
+            <span class="tag">Peripherals</span>
+          </div>
+          <span class="service-link">Learn More →</span>
+        </a>
+
+
+        
+      </div>
+
+      <div style="text-align:center; margin-top:3rem;" class="fade-in">
+        <a href="pages/services.html" class="btn-primary">View All Services 🎮</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="section" style="background: rgba(0,245,255,0.02);">
+    <div class="container">
+      <div class="why-grid">
+        <div class="why-visual fade-in">
+          <div class="why-image-wrap">
+            <div class="why-icon-grid">
+              <div class="why-icon-item">🔧</div>
+              <div class="why-icon-item">💾</div>
+              <div class="why-icon-item">🎮</div>
+              <div class="why-icon-item">🖥️</div>
+              <div class="why-icon-item">⚡</div>
+              <div class="why-icon-item">🛡️</div>
+              <div class="why-icon-item">💻</div>
+              <div class="why-icon-item">🔌</div>
+              <div class="why-icon-item">🏆</div>
+            </div>
+          </div>
+
+          <!-- Mini stats card -->
+          <div style="position:absolute; bottom:-20px; right:-20px; background:var(--dark-card); border:var(--border-glow); border-radius:12px; padding:1.25rem 1.5rem; box-shadow:var(--shadow-cyan);">
+            <div style="font-family:var(--font-display); font-size:2rem; font-weight:900; background:var(--gradient-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">4.9★</div>
+            <div style="font-size:0.75rem; color:var(--text-secondary);">Customer Rating</div>
+          </div>
+        </div>
+
+        <div class="features-list fade-in">
+          <div class="section-tag" style="display:inline-block; margin-bottom:1rem;">Why Choose Us</div>
+          <h2 class="section-title" style="text-align:left; margin-bottom:0.5rem;">Technicians Who <span class="highlight">Actually Game</span></h2>
+          <p style="color:var(--text-secondary); margin-bottom:2rem;">We're gamers first, technicians second. We understand what your setup means to you.</p>
+
+          <div class="feature-item">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-text">
+              <h4>24–48 Hour Turnaround</h4>
+              <p>Most repairs are done within 24 hours. Same-day service available for common fixes.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🛡️</div>
+            <div class="feature-text">
+              <h4>30-Day Repair Warranty</h4>
+              <p>Every repair comes with a 90-day warranty. If it breaks again, we'll fix it free.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🔩</div>
+            <div class="feature-text">
+              <h4>Genuine & OEM Parts</h4>
+              <p>We only use certified genuine or OEM-equivalent parts for every repair.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">💬</div>
+            <div class="feature-text">
+              <h4>Real-Time Status Updates</h4>
+              <p>Track your device status online. No need to call — we'll keep you informed.</p>
+            </div>
+          </div>
+
+          <div style="margin-top:1.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
+            <a href="pages/about.html" class="btn-primary">About Our Team</a>
+            <a href="pages/repair.html" class="btn-secondary">Book Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Reviews</div>
+        <h2 class="section-title">What <span class="highlight">Gamers Say</span></h2>
+        <p class="section-desc">Real reviews from our community of satisfied customers.</p>
+        <div class="glow-divider"></div>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card fade-in">
+          <div class="stars">★★★★★</div>
+          <blockquote>"<span data-cid="home.review1_text">My PS5 had the infamous disc drive error. Brought it in and they had it sorted within the same day. Incredibly fast and the staff actually knew what they were talking about!</span>"</blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar">AR</div>
+            <div>
+              <div class="author-name" data-cid="home.review1_name">Ahmad Razif</div>
+              <div class="author-role" data-cid="home.review1_role">PS5 Repair · Brunei</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-in">
+          <div class="stars">★★★★★</div>
+          <blockquote>"<span data-cid="home.review2_text">Got my gaming laptop screen replaced here after a nasty drop. The screen looks perfect — you'd never know it was replaced. Pricing was fair and they finished ahead of schedule.</span>"</blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar">SL</div>
+            <div>
+              <div class="author-name" data-cid="home.review2_name">Sarah Lim</div>
+              <div class="author-role" data-cid="home.review2_role">Laptop Repair · Bandar</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-in">
+          <div class="stars">★★★★★</div>
+          <blockquote>"<span data-cid="home.review3_text">They built my entire gaming PC from scratch. The cable management is immaculate and they walked me through every part choice.</span> Best 1.2k BND I've ever spent on gaming gear."</blockquote>
+          <div class="testimonial-author">
+            <div class="author-avatar">DJ</div>
+            <div>
+              <div class="author-name" data-cid="home.review3_name">Daniel Jayden</div>
+              <div class="author-role" data-cid="home.review3_role">Custom PC Build · Seria</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:3rem;" class="fade-in">
+        <a href="pages/about.html#reviews" class="btn-secondary">Read More Reviews</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="section" style="padding:4rem 2rem;">
+    <div class="container fade-in">
+      <div style="background:var(--gradient-card); border:var(--border-glow); border-radius:24px; padding:4rem 3rem; text-align:center; position:relative; overflow:hidden; box-shadow:var(--shadow-cyan);">
+        <div style="position:absolute; top:-40px; right:-40px; width:200px; height:200px; border-radius:50%; background:radial-gradient(circle, rgba(0,245,255,0.1) 0%, transparent 70%);"></div>
+        <div style="position:absolute; bottom:-40px; left:-40px; width:200px; height:200px; border-radius:50%; background:radial-gradient(circle, rgba(255,0,128,0.1) 0%, transparent 70%);"></div>
+        <div style="position:relative; z-index:1;">
+          <div class="section-tag" style="margin-bottom:1rem;">Limited Time</div>
+          <h2 style="font-size:clamp(1.8rem,4vw,3rem); margin-bottom:1rem;"><span data-cid="home.cta_title">Free Diagnostic Check</span></h2>
+          <p style="color:var(--text-secondary); max-width:500px; margin:0 auto 2rem; font-size:1.05rem;">Walk in or book online. Get a full hardware and software diagnostic at zero cost — no strings attached.</p>
+          <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+            <a href="pages/repair.html" class="btn-primary">🔧 Book Free Diagnostic</a>
+            <a href="pages/contact.html" class="btn-secondary">📞 WhatsApp Us Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="margin-bottom:0.75rem; display:inline-flex;">
+          <div class="logo-icon">🎮</div>
+          <div class="logo-text">CASUAL <span>GAMERZ</span></div>
+        </a>
+        <p>Brunei's trusted gaming & computer repair center. We fix what others can't — fast, affordable, and guaranteed.</p>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Facebook">📘</a>
+          <a href="#" class="social-link" aria-label="Instagram">📸</a>
+          <a href="#" class="social-link" aria-label="TikTok">🎵</a>
+          <a href="#" class="social-link" aria-label="WhatsApp">💬</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="pages/services.html#pc-repair">PC Repair</a></li>
+          <li><a href="pages/services.html#laptop-repair">Laptop Repair</a></li>
+          <li><a href="pages/services.html#console-repair">Console Repair</a></li>
+          <li><a href="pages/services.html#software">Software Services</a></li>
+          <li><a href="pages/services.html#custom-build">Custom PC Build</a></li>
+          <li><a href="pages/services.html#accessories">Peripherals</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="pages/about.html">About Us</a></li>
+          <li><a href="pages/about.html#team">Our Team</a></li>
+          <li><a href="pages/about.html#reviews">Reviews</a></li>
+          <li><a href="pages/repair.html">Book Repair</a></li>
+          <li><a href="pages/tracking.html">Track Order</a></li>
+          <li><a href="pages/history.html">Repair History</a></li>
+          <li><a href="pages/contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+6738698291" data-cid-href="global.phone_tel"><span data-cid="global.phone">📞 +6738698291</span></a></li>
+          <li><a href="mailto:c.gamerz@outlook.com" data-cid-href="global.email_mailto"><span data-cid="global.email">✉️ c.gamerz@outlook.com</span></a></li>
+          <li><a href="pages/contact.html#map"><span data-cid="global.address_short">📍 No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam</span></a></li>
+          <li><a href="pages/contact.html"><span data-cid="global.hours_short">🕐 Mon–Sat: 6am–10pm</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Casual Gamerz. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="pages/privacy.html">Privacy Policy</a>
+        <a href="pages/terms.html">Terms of Service</a>
+        <a href="pages/warranty.html">Warranty</a>
+      </div>
+    </div>
+  </footer>
+
+  
+  
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Your Repair — Casual Gamerz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <!-- html2canvas + jsPDF — power Receipt PNG/JPG/PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    .track-result { display:none; margin-top:2rem; animation:fadeInUp 0.5s ease; }
+    .track-result.show { display:block; }
+    .meta-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:0.75rem; margin:1.25rem 0; }
+    .meta-item { background:rgba(0,245,255,0.04); border:1px solid rgba(0,245,255,0.1); border-radius:10px; padding:0.9rem 1rem; }
+    .meta-item .mlabel { font-family:var(--font-display); font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--neon-cyan); margin-bottom:0.25rem; }
+    .meta-item .mval   { font-size:0.92rem; color:var(--text-primary); }
+    .tl { position:relative; padding-left:1.5rem; }
+    .tl::before { content:''; position:absolute; left:0.45rem; top:0.5rem; bottom:0.5rem; width:2px; background:rgba(0,245,255,0.1); }
+    .tl-item { position:relative; margin-bottom:1.25rem; padding-left:0.75rem; }
+    .tl-dot  { position:absolute; left:-1.1rem; top:0.3rem; width:14px; height:14px; border-radius:50%;
+               border:2px solid rgba(0,245,255,0.2); background:var(--dark-card); }
+    .tl-item.done   .tl-dot { background:var(--gradient-main); border:none; box-shadow:0 0 8px rgba(0,245,255,0.5); }
+    .tl-item.active .tl-dot { background:var(--neon-cyan); border:none; box-shadow:0 0 12px rgba(0,245,255,0.7); animation:pulse 2s infinite; }
+    .tl-time  { font-family:var(--font-display); font-size:0.67rem; letter-spacing:0.08em; color:var(--text-secondary); }
+    .tl-label { font-size:0.9rem; color:var(--text-primary); }
+    .tl-note  { font-size:0.82rem; color:var(--text-secondary); font-style:italic; }
+    .status-pill.diagnosed { background:rgba(180,100,255,0.12); color:#b464ff; border:1px solid rgba(180,100,255,0.3); }
+    .status-pill.testing   { background:rgba(255,200,0,0.12);   color:#ffc800; border:1px solid rgba(255,200,0,0.3); }
+    .error-box { padding:1.25rem 1.5rem; background:rgba(255,0,128,0.07); border:1px solid rgba(255,0,128,0.25); border-radius:10px; color:var(--neon-pink); font-size:0.9rem; margin-top:1.25rem; display:none; }
+    .error-box.show { display:block; }
+    .cost-row { display:flex; justify-content:space-between; padding:0.55rem 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.88rem; color:var(--text-secondary); }
+    .cost-row.total { border:none; font-family:var(--font-display); font-weight:700; color:var(--text-primary); padding-top:0.75rem; }
+    .cost-row.total span:last-child { color:var(--neon-cyan); }
+  </style>
+</head>
+<body class="grid-bg">
+
+  <div id="cgz-announcement" style="display:none;padding:0.6rem 1.5rem;text-align:center;font-family:var(--font-display);font-size:0.78rem;letter-spacing:0.08em;position:relative;z-index:999;"></div>
+
+  <nav class="navbar">
+    <a href="../index.html" class="logo">
+      <div class="logo-icon">🎮</div>
+      <div class="logo-text">CASUAL <span>GAMERZ</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="repair.html">Book Repair</a></li>
+      <li><a href="tracking.html" class="active">Track Order</a></li>
+      <li><a href="history.html">Repair History</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+      <li><a href="admin.html" style="color:var(--neon-pink);font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;">⚙ ADMIN</a></li>
+      <li><a href="site-admin.html" style="color:#ffea00;font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.1em;">✏️ CONTENT</a></li>
+    </ul>
+    <div class="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="breadcrumb">
+      <a href="../index.html">Home</a> › <span style="color:var(--neon-cyan)">Track Order</span>
+    </div>
+    <h1>Track Your <span class="highlight">Repair</span></h1>
+    <p>Enter your ticket number or phone number — results pull live from the repair database.</p>
+  </div>
+
+  <section class="section" style="padding-top:2rem;">
+    <div class="container" style="max-width:720px;">
+
+      <!-- Search box -->
+      <div class="tracking-box fade-in">
+        <h3 style="font-size:1.1rem; margin-bottom:0.4rem; color:var(--neon-cyan);">🔍 Enter Tracking Details</h3>
+        <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+          Enter your ticket number (e.g. <strong style="color:var(--neon-cyan)">CGZ-58291</strong>) or the phone number used at booking.
+        </p>
+        <div class="tracking-input-wrap">
+          <input type="text" id="trackingInput" placeholder="e.g. CGZ-58291 or +673 XXX XXXX" />
+          <button class="btn-primary" id="trackBtn">Track</button>
+        </div>
+
+        <!-- Error state -->
+        <div class="error-box" id="errorBox">
+          ❌ No repair found matching "<span id="errorQuery"></span>". Please check your ticket number or phone number.
+          <br><br>
+          <a href="repair.html" style="color:var(--neon-cyan);">Book a new repair →</a> &nbsp;|&nbsp;
+          <a href="contact.html" style="color:var(--neon-cyan);">Contact support →</a>
+        </div>
+
+        <!-- Results -->
+        <div class="track-result" id="trackResult">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <!-- Phone search results list (when multiple found) -->
+      <div id="multiResults" style="display:none; margin-top:1.5rem;"></div>
+
+      <!-- How to find ticket -->
+      <div class="contact-form-wrap fade-in" style="margin-top:2rem;">
+        <h3>❓ Where's my ticket number?</h3>
+        <p style="color:var(--text-secondary); font-size:0.9rem; margin:1rem 0;">Your ticket number was assigned when you booked:</p>
+        <div class="contact-details">
+          <div class="contact-item">
+            <span class="contact-item-icon">🌐</span>
+            <div class="contact-item-text">
+              <span>Online Booking</span>
+              <p>Shown in the confirmation popup immediately after submitting</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-item-icon">🧾</span>
+            <div class="contact-item-text">
+              <span>Walk-In Receipt</span>
+              <p>Printed on your paper receipt at the counter</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="contact-item-icon">📋</span>
+            <div class="contact-item-text">
+              <span>Repair History</span>
+              <p>All your tickets are listed on the <a href="history.html" style="color:var(--neon-cyan)">Repair History</a> page</p>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:1.25rem; padding:1rem; background:rgba(0,245,255,0.04); border:1px solid rgba(0,245,255,0.12); border-radius:10px; font-size:0.88rem; color:var(--text-secondary);">
+          Still can't find it? <a href="contact.html" style="color:var(--neon-cyan);">Contact us</a> with your name and phone number and we'll look it up.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="../index.html" class="logo" style="margin-bottom:0.75rem;display:inline-flex;">
+          <div class="logo-icon">🎮</div><div class="logo-text">CASUAL <span>GAMERZ</span></div>
+        </a>
+        <p>Brunei's trusted gaming & computer repair center.</p>
+        <div class="social-links"><a href="#" class="social-link">📘</a><a href="#" class="social-link">📸</a><a href="#" class="social-link">🎵</a><a href="#" class="social-link">💬</a></div>
+      </div>
+      <div class="footer-col"><h4>My Records</h4><ul>
+        <li><a href="history.html">Repair History</a></li>
+        <li><a href="repair.html">Book Repair</a></li>
+        <li><a href="warranty.html">Warranty Claims</a></li>
+        <li><a href="contact.html">Support</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Quick Links</h4><ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul>
+        <li><a href="tel:+6738698291" data-cid-href="global.phone_tel"><span data-cid="global.phone">📞 +6738698291</span></a></li>
+        <li><a href="mailto:c.gamerz@outlook.com" data-cid-href="global.email_mailto"><span data-cid="global.email">✉️ c.gamerz@outlook.com</span></a></li>
+        <li><a href="contact.html#map"><span data-cid="global.address_short">📍 No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam</span></a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Casual Gamerz. All rights reserved.</p>
+      <div class="footer-bottom-links"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a><a href="warranty.html">Warranty</a></div>
+    </div>
+  </footer>
+
+  
+  
+  <script src="../js/sheets-config.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+  const STEPS = ['Received','Diagnosing','Repairing','Testing','Ready','Completed'];
+  const STEP_ICONS = { Received:'📥', Diagnosing:'🔍', Repairing:'🔧', Testing:'🧪', Ready:'✅', Completed:'🏆', Cancelled:'❌' };
+
+  function statusPillHTML(status) {
+    const c = CasualGamerzDB.statusColor(status);
+    return `<span style="display:inline-block;padding:0.3rem 0.9rem;border-radius:100px;font-family:var(--font-display);font-size:0.72rem;letter-spacing:0.1em;border:1px solid ${c}44;background:${c}18;color:${c}">${status}</span>`;
+  }
+
+  function renderRepair(repair, logs) {
+    const result = document.getElementById('trackResult');
+    const isCancelled = repair.status === 'Cancelled';
+    const currentIdx = STEPS.indexOf(repair.status);
+
+    const stepsHTML = STEPS.map((s, i) => {
+      const done = i < currentIdx, active = i === currentIdx;
+      const color = (done || active) ? CasualGamerzDB.statusColor(repair.status) : 'rgba(255,255,255,0.1)';
+      return `<div style="flex:1;text-align:center;">
+        <div style="background:${color};border:2px solid ${color};margin:0 auto 0.5rem;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.95rem;">${STEP_ICONS[s]||'•'}</div>
+        <div style="font-size:0.62rem;color:${active?'var(--neon-cyan)':done?'rgba(255,255,255,0.5)':'rgba(255,255,255,0.2)'};">${s}</div>
+      </div>`;
+    }).join('');
+
+    const logsHTML = (logs||[]).slice().reverse().map(l =>
+      `<div style="display:flex;gap:1rem;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <div style="min-width:140px;font-size:0.78rem;color:var(--text-secondary);">${CasualGamerzDB.fmt(l.timestamp)}</div>
+        <div>${statusPillHTML(l.status)}${l.note?`<p style="font-size:0.85rem;color:var(--text-secondary);margin:0.35rem 0 0;">${l.note}</p>`:''}${l.tech&&l.tech!=='System'?`<p style="font-size:0.75rem;color:var(--neon-cyan);margin:0.2rem 0 0;">— ${l.tech}</p>`:''}</div>
+      </div>`
+    ).join('') || '<p style="color:var(--text-secondary);font-size:0.85rem;">No log entries yet.</p>';
+
+    result.innerHTML = `
+      <div class="contact-form-wrap" style="margin-bottom:1.5rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+          <div>
+            <div style="font-family:var(--font-display);font-size:0.72rem;color:var(--text-secondary);letter-spacing:0.1em;text-transform:uppercase;">Ticket</div>
+            <div style="font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:var(--neon-cyan);">${repair.ticketId}</div>
+          </div>
+          <div style="text-align:right;">${statusPillHTML(repair.status)}<div style="font-size:0.78rem;color:var(--text-secondary);margin-top:0.3rem;">Updated: ${CasualGamerzDB.fmt(repair.updatedAt||repair.createdAt)}</div></div>
+        </div>
+        ${!isCancelled?`<div style="display:flex;gap:0.25rem;margin-bottom:2rem;">${stepsHTML}</div>`:''}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div style="padding:1rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:10px;">
+            <div style="font-family:var(--font-display);font-size:0.68rem;letter-spacing:0.1em;color:var(--neon-cyan);text-transform:uppercase;margin-bottom:0.5rem;">Device</div>
+            <div style="font-weight:600;">${repair.deviceType}</div>
+            <div style="color:var(--text-secondary);font-size:0.9rem;">${repair.brand} ${repair.model}</div>
+            <div style="color:var(--text-secondary);font-size:0.82rem;margin-top:0.25rem;">${repair.issue}</div>
+          </div>
+          <div style="padding:1rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:10px;">
+            <div style="font-family:var(--font-display);font-size:0.68rem;letter-spacing:0.1em;color:var(--neon-cyan);text-transform:uppercase;margin-bottom:0.5rem;">Customer</div>
+            <div style="font-weight:600;">${repair.firstName} ${repair.lastName}</div>
+            <div style="color:var(--text-secondary);font-size:0.9rem;">${repair.phone}</div>
+            <div style="color:var(--text-secondary);font-size:0.82rem;margin-top:0.25rem;">${repair.serviceType||''}</div>
+          </div>
+        </div>
+        ${repair.totalCost?`<div style="padding:1rem;background:rgba(57,255,20,0.04);border:1px solid rgba(57,255,20,0.15);border-radius:10px;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;"><div style="color:var(--text-secondary);font-size:0.9rem;">Labour: BND$ ${repair.laborCost||'0.00'} &nbsp;|&nbsp; Parts: BND$ ${repair.partsCost||'0.00'}</div><div style="font-family:var(--font-display);font-weight:900;font-size:1.1rem;color:#39ff14;">Total: BND$ ${repair.totalCost}</div></div>`:''}
+        ${repair.techNotes?`<div style="padding:1rem;background:rgba(255,107,53,0.04);border:1px solid rgba(255,107,53,0.15);border-radius:10px;margin-bottom:1.5rem;"><div style="font-family:var(--font-display);font-size:0.68rem;letter-spacing:0.1em;color:#ff6b35;text-transform:uppercase;margin-bottom:0.5rem;">Technician Notes</div><div style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6;">${repair.techNotes}</div></div>`:''}
+        ${(repair.estimatedReady||repair.warrantyExpiry)?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">${repair.estimatedReady?`<div style="padding:0.75rem 1rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:10px;"><div style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;">Est. Ready</div><div style="font-weight:600;">${CasualGamerzDB.fmtDate(repair.estimatedReady)}</div></div>`:''} ${repair.warrantyExpiry?`<div style="padding:0.75rem 1rem;background:rgba(57,255,20,0.04);border:1px solid rgba(57,255,20,0.1);border-radius:10px;"><div style="font-size:0.7rem;color:var(--text-secondary);text-transform:uppercase;">Warranty Until</div><div style="font-weight:600;color:#39ff14;">${CasualGamerzDB.fmtDate(repair.warrantyExpiry)}</div></div>`:''}</div>`:''}
+      </div>
+      <div class="contact-form-wrap"><h3 style="color:var(--neon-cyan);margin-bottom:1rem;">📋 Status History</h3>${logsHTML}</div>`;
+    result.classList.add('show');
+  }
+
+  document.getElementById('trackBtn').addEventListener('click', async function() {
+    const input = document.getElementById('trackingInput').value.trim();
+    if (!input) return;
+    const errorEl = document.getElementById('trackError');
+    const resultEl = document.getElementById('trackResult');
+    errorEl && errorEl.classList.remove('show');
+    resultEl && resultEl.classList.remove('show');
+    resultEl && (resultEl.innerHTML = '');
+
+    if (!CasualGamerzDB.isConfigured()) { alert('⚠️ Google Sheets not connected yet.'); return; }
+
+    this.textContent = '⏳ Searching…'; this.disabled = true;
+    try {
+      if (/^CGZ-/i.test(input)) {
+        const { repair, logs } = await CasualGamerzDB.getByTicket(input.toUpperCase());
+        repair ? renderRepair(repair, logs) : showError(input);
+      } else {
+        const repairs = await CasualGamerzDB.getByPhone(input);
+        if (!repairs||!repairs.length) { showError(input); return; }
+        if (repairs.length === 1) {
+          const { repair, logs } = await CasualGamerzDB.getByTicket(repairs[0].ticketId);
+          renderRepair(repair, logs);
+        } else {
+          resultEl.innerHTML = `<div class="contact-form-wrap"><h3>Found ${repairs.length} repairs for this phone:</h3>`
+            + repairs.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.05);"><div><strong>${r.ticketId}</strong><br><span style="color:var(--text-secondary);font-size:0.85rem;">${r.deviceType} · ${r.brand} ${r.model}</span></div><div><div style="color:${CasualGamerzDB.statusColor(r.status)};font-size:0.8rem;">${r.status}</div><button onclick="loadTicket('${r.ticketId}')" class="btn-secondary" style="margin-top:0.4rem;padding:0.3rem 0.7rem;font-size:0.7rem;">View →</button></div></div>`).join('')
+            + '</div>';
+          resultEl.classList.add('show');
+        }
+      }
+    } catch(err) { showError(input); console.error('[CGZ]',err); }
+    finally { this.textContent = 'Track'; this.disabled = false; }
+  });
+
+  function showError(q) {
+    const el = document.getElementById('trackError');
+    const qEl = document.getElementById('errorQuery');
+    if (el) el.classList.add('show');
+    if (qEl) qEl.textContent = q;
+  }
+
+  async function loadTicket(ticketId) {
+    document.getElementById('trackingInput').value = ticketId;
+    document.getElementById('trackBtn').click();
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const t = new URLSearchParams(location.search).get('ticket');
+    if (t) { document.getElementById('trackingInput').value = t; document.getElementById('trackBtn').click(); }
+  });
+  </script>
+</body>
+</html>

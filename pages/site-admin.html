@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Content Manager — Casual Gamerz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    :root{--panel-w:250px}
+    body{background:var(--dark-bg);padding:0;margin:0}
+    .topbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:58px;background:rgba(5,10,20,.97);border-bottom:1px solid rgba(0,245,255,.15);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:1rem}
+    .topbar-logo{display:flex;align-items:center;gap:.6rem;font-family:var(--font-display);font-size:.95rem;font-weight:900;letter-spacing:.08em;white-space:nowrap}
+    .topbar-logo .li{width:34px;height:34px;background:var(--gradient-main);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .topbar-right{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+    .live-pill{display:flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-size:.63rem;letter-spacing:.12em;color:#39ff14;background:rgba(57,255,20,.08);border:1px solid rgba(57,255,20,.2);border-radius:100px;padding:.28rem .7rem;white-space:nowrap}
+    .live-dot{width:6px;height:6px;background:#39ff14;border-radius:50%;box-shadow:0 0 6px #39ff14;animation:pulse 1.5s infinite}
+    .topbar-link{font-family:var(--font-display);font-size:.65rem;letter-spacing:.1em;color:var(--text-secondary);text-decoration:none;text-transform:uppercase;padding:.35rem .7rem;border-radius:6px;border:1px solid transparent;transition:var(--transition);white-space:nowrap}
+    .topbar-link:hover{color:var(--neon-cyan);border-color:rgba(0,245,255,.2)}
+    .topbar-link.pink{color:var(--neon-pink);border-color:rgba(255,0,128,.2)}
+    .cm-wrap{display:flex;padding-top:58px;min-height:100vh}
+    .sidebar{width:var(--panel-w);flex-shrink:0;background:var(--dark-surface);border-right:1px solid rgba(0,245,255,.08);padding:1rem .6rem;position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;display:flex;flex-direction:column;gap:.1rem}
+    .sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:rgba(0,245,255,.2);border-radius:2px}
+    .slbl{font-family:var(--font-display);font-size:.57rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-secondary);padding:.8rem .7rem .3rem}
+    .sitem{display:flex;align-items:center;gap:.6rem;padding:.55rem .75rem;border-radius:9px;cursor:pointer;font-size:.84rem;color:var(--text-secondary);transition:var(--transition);border:1px solid transparent;user-select:none}
+    .sitem:hover{background:rgba(0,245,255,.05);color:var(--text-primary)}
+    .sitem.active{background:rgba(0,245,255,.1);color:var(--neon-cyan);border-color:rgba(0,245,255,.18)}
+    .sitem .si{font-size:1rem;min-width:20px}
+    .cm-main{flex:1;padding:1.75rem;overflow-y:auto;max-width:1100px}
+    .pg{display:none}.pg.active{display:block}
+    .pg-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid rgba(0,245,255,.1)}
+    .pg-header h2{font-size:1.4rem}.pg-header p{color:var(--text-secondary);font-size:.87rem;margin-top:.2rem}
+    .pg-header-right{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;flex-shrink:0}
+    .btn-save{display:inline-flex;align-items:center;gap:.45rem;padding:.6rem 1.4rem;background:var(--gradient-main);color:var(--dark-bg);border:none;border-radius:8px;font-family:var(--font-display);font-size:.75rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:var(--transition);box-shadow:var(--shadow-cyan);white-space:nowrap}
+    .btn-save:hover{transform:translateY(-2px);box-shadow:0 0 25px rgba(0,245,255,.45)}
+    .preview-a{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-size:.63rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);text-decoration:none;border:1px solid rgba(255,255,255,.1);padding:.32rem .7rem;border-radius:6px;transition:var(--transition)}
+    .preview-a:hover{color:var(--neon-cyan);border-color:rgba(0,245,255,.3)}
+    .card{background:var(--gradient-card);border:var(--border-glow);border-radius:13px;margin-bottom:1.1rem;overflow:hidden}
+    .card.dirty{border-color:rgba(255,234,0,.4)}
+    .card-hdr{padding:.9rem 1.2rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;border-bottom:1px solid rgba(0,245,255,.06)}
+    .card-hdr h3{font-size:.88rem;display:flex;align-items:center;gap:.55rem}
+    .card-tog{font-size:.68rem;color:var(--text-secondary);transition:transform .3s}
+    .card-tog.open{transform:rotate(180deg)}
+    .card-body{padding:1.1rem;display:none}.card-body.open{display:block}
+    .fg{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+    .fg.c1{grid-template-columns:1fr}.fg.c3{grid-template-columns:1fr 1fr 1fr}
+    .f{display:flex;flex-direction:column;gap:.35rem}
+    .f.full{grid-column:1/-1}
+    .fl{font-family:var(--font-display);font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--neon-cyan);display:flex;align-items:center;gap:.35rem}
+    .fl .fp{font-size:.57rem;color:var(--text-secondary);background:rgba(0,245,255,.07);padding:.08rem .38rem;border-radius:4px}
+    .fi,.ft,.fs{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(0,245,255,.15);border-radius:8px;padding:.6rem .85rem;color:var(--text-primary);font-family:var(--font-body);font-size:.88rem;outline:none;transition:var(--transition)}
+    .fi:focus,.ft:focus,.fs:focus{border-color:var(--neon-cyan);box-shadow:0 0 0 3px rgba(0,245,255,.09)}
+    .fi.ch,.ft.ch,.fs.ch{border-color:rgba(255,234,0,.5);background:rgba(255,234,0,.03)}
+    .ft{resize:vertical;min-height:72px}
+    .fs option{background:var(--dark-card)}
+    .fhint{font-size:.73rem;color:var(--text-secondary);font-style:italic}
+    .divider{height:1px;background:rgba(0,245,255,.07);margin:.9rem 0;grid-column:1/-1}
+    .slbl2{grid-column:1/-1;font-family:var(--font-display);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--neon-cyan);padding-bottom:.45rem;border-bottom:1px solid rgba(0,245,255,.1);margin-bottom:.1rem}
+    .tip{padding:.8rem 1rem;background:rgba(0,245,255,.04);border:1px solid rgba(0,245,255,.1);border-radius:9px;font-size:.8rem;color:var(--text-secondary);margin-top:.75rem}
+    .tip strong{color:var(--neon-cyan)}
+    .warn{padding:.8rem 1rem;background:rgba(255,234,0,.05);border:1px solid rgba(255,234,0,.15);border-radius:9px;font-size:.8rem;color:var(--text-secondary);margin-top:.75rem}
+    .warn strong{color:var(--neon-yellow)}
+    /* toggle */
+    .tw{display:flex;align-items:center;gap:.7rem}
+    .tbtn{width:44px;height:24px;border-radius:12px;border:none;cursor:pointer;position:relative;transition:background .3s;flex-shrink:0}
+    .tbtn::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .3s}
+    .tbtn.off{background:rgba(255,255,255,.15)}.tbtn.on{background:var(--neon-cyan)}
+    .tbtn.on::after{left:22px}
+    .tlbl{font-size:.87rem;color:var(--text-secondary)}
+    /* color */
+    .cfield{display:flex;align-items:center;gap:.7rem}
+    .cfield input[type=color]{width:44px;height:36px;border:1px solid rgba(0,245,255,.2);border-radius:8px;cursor:pointer;padding:2px;background:transparent}
+    /* announce preview */
+    .ann-prev{margin-top:.75rem;padding:.65rem 1.2rem;border-radius:8px;font-size:.87rem;text-align:center;transition:all .3s}
+    /* pricing preview */
+    .ppc-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:.9rem}
+    .ppc{background:rgba(0,245,255,.03);border:1px solid rgba(0,245,255,.12);border-radius:11px;padding:1.1rem;text-align:center}
+    .ppc-price{font-family:var(--font-display);font-size:1.7rem;font-weight:900;background:var(--gradient-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .ppc-name{font-size:.84rem;color:var(--text-primary);margin:.3rem 0 .2rem;font-weight:600}
+    .ppc-desc{font-size:.76rem;color:var(--text-secondary)}
+    /* toast */
+    .toast{position:fixed;bottom:1.75rem;right:1.75rem;background:var(--dark-card);border:1px solid var(--neon-cyan);border-radius:12px;padding:.9rem 1.4rem;display:flex;align-items:center;gap:.7rem;box-shadow:var(--shadow-cyan);transform:translateX(220%);transition:transform .4s cubic-bezier(.4,0,.2,1);z-index:9999;max-width:340px}
+    .toast.show{transform:translateX(0)}
+    /* preview grid */
+    .prev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+    /* danger */
+    .danger-zone{background:rgba(255,0,128,.04);border:1px solid rgba(255,0,128,.2);border-radius:13px;padding:1.4rem;margin-top:1.4rem}
+    .btn-danger{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;background:transparent;color:rgba(255,0,128,.75);border:1px solid rgba(255,0,128,.25);border-radius:8px;font-family:var(--font-display);font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:var(--transition)}
+    .btn-danger:hover{color:var(--neon-pink);border-color:var(--neon-pink)}
+    .xbtn{display:inline-flex;align-items:center;gap:.4rem;padding:.58rem 1.1rem;border-radius:8px;font-family:var(--font-display);font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border:none;transition:var(--transition)}
+    .xbtn-xl{background:var(--gradient-main);color:var(--dark-bg);box-shadow:var(--shadow-cyan)}
+    .xbtn-xl:hover{box-shadow:0 0 25px rgba(0,245,255,.5);transform:translateY(-2px)}
+    .xbtn-csv{background:transparent;border:1px solid rgba(0,245,255,.25);color:var(--text-secondary)}
+    .xbtn-csv:hover{border-color:var(--neon-cyan);color:var(--neon-cyan)}
+    @media(max-width:860px){.sidebar{display:none}.cm-main{padding:1.1rem}.fg{grid-template-columns:1fr}.fg.c3{grid-template-columns:1fr}.ppc-wrap{grid-template-columns:1fr}}
+    /* ── Team management ── */
+    .team-mgr{display:flex;flex-direction:column;gap:1rem}
+    .team-member-row{background:rgba(0,245,255,.03);border:1px solid rgba(0,245,255,.1);border-radius:12px;padding:1.1rem 1.25rem;display:flex;align-items:center;gap:1rem;transition:var(--transition)}
+    .team-member-row:hover{border-color:rgba(0,245,255,.3)}
+    .tm-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1rem;font-weight:900;color:var(--dark-bg);flex-shrink:0}
+    .tm-info{flex:1;min-width:0}
+    .tm-name{font-family:var(--font-display);font-size:.88rem;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tm-role{font-size:.78rem;color:var(--neon-cyan);margin-top:.1rem}
+    .tm-bio{font-size:.78rem;color:var(--text-secondary);margin-top:.2rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:320px}
+    .tm-actions{display:flex;gap:.4rem;flex-shrink:0}
+    .tm-btn{padding:.35rem .75rem;border-radius:6px;font-family:var(--font-display);font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;transition:var(--transition);white-space:nowrap}
+    .tm-btn-edit{background:rgba(0,245,255,.1);color:var(--neon-cyan);border:1px solid rgba(0,245,255,.2)}
+    .tm-btn-edit:hover{background:rgba(0,245,255,.2)}
+    .tm-btn-del{background:rgba(255,0,128,.08);color:var(--neon-pink);border:1px solid rgba(255,0,128,.2)}
+    .tm-btn-del:hover{background:rgba(255,0,128,.2)}
+    .add-member-btn{width:100%;padding:1rem;background:transparent;border:1px dashed rgba(0,245,255,.3);border-radius:12px;color:var(--neon-cyan);font-family:var(--font-display);font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:var(--transition)}
+    .add-member-btn:hover{background:rgba(0,245,255,.06);border-color:var(--neon-cyan)}
+    /* Team modal */
+    .tm-overlay{position:fixed;inset:0;background:rgba(5,10,20,.9);backdrop-filter:blur(10px);z-index:5000;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s}
+    .tm-overlay.open{opacity:1;pointer-events:all}
+    .tm-modal{background:var(--dark-card);border:var(--border-glow);border-radius:18px;padding:2rem;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-cyan);transform:scale(.94) translateY(12px);transition:transform .3s cubic-bezier(.4,0,.2,1);position:relative}
+    .tm-overlay.open .tm-modal{transform:scale(1) translateY(0)}
+    .tm-modal-close{position:absolute;top:1rem;right:1rem;width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text-secondary);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+    .tm-modal-close:hover{background:rgba(255,0,128,.15);border-color:var(--neon-pink);color:var(--neon-pink)}
+    .tm-avatar-preview{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.3rem;font-weight:900;color:var(--dark-bg);margin:0 auto 1.25rem;transition:all .2s}
+    /* Team del confirm */
+    .tmdel-overlay{position:fixed;inset:0;z-index:6000;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:rgba(5,10,20,.92);opacity:0;pointer-events:none;transition:opacity .2s}
+    .tmdel-overlay.open{opacity:1;pointer-events:all}
+    .tmdel-box{background:var(--dark-card);border:1px solid var(--neon-pink);border-radius:16px;padding:2rem;max-width:380px;width:100%;text-align:center;box-shadow:var(--shadow-pink)}
+  </style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="li">✏️</div>
+    CASUAL <span style="color:var(--neon-pink)">GAMERZ</span>
+    <span style="color:var(--text-secondary);font-weight:400;font-size:.7rem;letter-spacing:.15em;">· CONTENT MANAGER</span>
+  </div>
+  <div class="topbar-right">
+    <div class="live-pill"><span class="live-dot"></span>Live Sync</div>
+    <a href="../index.html" target="_blank" class="topbar-link">🌐 View Site</a>
+    <a href="admin.html" class="topbar-link pink">⚙ Repair Admin</a>
+  </div>
+</div>
+
+<div class="cm-wrap">
+<nav class="sidebar">
+  <div class="slbl">Pages</div>
+  <div class="sitem active" onclick="showPg('global')" data-pg="global"><span class="si">🌐</span>Global Settings</div>
+  <div class="sitem" onclick="showPg('home')" data-pg="home"><span class="si">🏠</span>Homepage</div>
+  <div class="sitem" onclick="showPg('services')" data-pg="services"><span class="si">🔧</span>Services Page</div>
+  <div class="sitem" onclick="showPg('about')" data-pg="about"><span class="si">👥</span>About Page</div>
+  <div class="sitem" onclick="showPg('contact')" data-pg="contact"><span class="si">📞</span>Contact Page</div>
+  <div class="sitem" onclick="showPg('pricing')" data-pg="pricing"><span class="si">💰</span>Pricing</div>
+  <div class="sitem" onclick="showPg('reviews')" data-pg="reviews"><span class="si">⭐</span>Testimonials</div>
+  <div class="sitem" onclick="showPg('team')" data-pg="team"><span class="si">🎯</span>Team Members</div>
+  <div class="sitem" onclick="showPg('warranty')" data-pg="warranty"><span class="si">🛡️</span>Warranty Page</div>
+  <div class="sitem" onclick="showPg('announce')" data-pg="announce"><span class="si">📢</span>Announcement</div>
+  <div class="slbl">Tools</div>
+  <div class="sitem" onclick="showPg('preview')" data-pg="preview"><span class="si">👁️</span>Live Preview</div>
+  <div class="sitem" onclick="showPg('backup')" data-pg="backup"><span class="si">💾</span>Backup / Restore</div>
+  <div class="slbl">Admin</div>
+  <div class="sitem" onclick="window.open('admin.html')"><span class="si">⚙</span>Repair Admin</div>
+  <div class="sitem" onclick="window.open('../index.html')"><span class="si">🌐</span>View Live Site</div>
+</nav>
+
+<main class="cm-main">
+
+<!-- ════ GLOBAL SETTINGS ════ -->
+<div class="pg active" id="pg-global">
+  <div class="pg-header">
+    <div><h2>🌐 Global <span class="highlight">Settings</span></h2>
+    <p>These update phone, email, address, and hours on every page simultaneously.</p></div>
+    <div class="pg-header-right">
+      <a href="../index.html" target="_blank" class="preview-a">👁 View Site</a>
+      <button class="btn-save" onclick="saveSection('global')">💾 Save & Update All Pages</button>
+    </div>
+  </div>
+
+  <div class="card" id="c-company">
+    <div class="card-hdr" onclick="tog('company')"><h3>🏢 Company Info</h3><span class="card-tog open" id="t-company">▼</span></div>
+    <div class="card-body open" id="b-company">
+      <div class="fg">
+        <div class="f"><label class="fl">Company Name <span class="fp">All pages</span></label><input class="fi" data-key="global.company_name" placeholder="Casual Gamerz"></div>
+        <div class="f"><label class="fl">Tagline <span class="fp">Homepage badge</span></label><input class="fi" data-key="global.tagline" placeholder="Brunei's #1 Gaming Repair Center"></div>
+        <div class="f"><label class="fl">Founded Year <span class="fp">About page</span></label><input class="fi" data-key="global.founded_year" placeholder="2018"></div>
+        <div class="f"><label class="fl">Warranty Days <span class="fp">All pages</span></label><input class="fi" data-key="global.warranty_days" placeholder="90"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="c-contact">
+    <div class="card-hdr" onclick="tog('contact')"><h3>📞 Phone &amp; Email</h3><span class="card-tog open" id="t-contact">▼</span></div>
+    <div class="card-body open" id="b-contact">
+      <div class="fg">
+        <div class="f"><label class="fl">Phone — display text <span class="fp">Footer, contact page</span></label><input class="fi" data-key="global.phone" placeholder="📞 +6738698291"><span class="fhint">Include emoji prefix e.g. 📞 +6738698291</span></div>
+        <div class="f"><label class="fl">Phone — raw number <span class="fp">tel: links</span></label><input class="fi" data-key="global.phone_raw" placeholder="+6738698291"><span class="fhint">No emoji, used for dial links</span></div>
+        <div class="f"><label class="fl">Email — display text <span class="fp">Footer, contact page</span></label><input class="fi" data-key="global.email" placeholder="✉️ c.gamerz@outlook.com"><span class="fhint">Include emoji prefix e.g. ✉️ c.gamerz@outlook.com</span></div>
+        <div class="f"><label class="fl">Email — raw address <span class="fp">mailto: links</span></label><input class="fi" data-key="global.email_raw" placeholder="c.gamerz@outlook.com"><span class="fhint">No emoji, used for mailto links</span></div>
+        <div class="f"><label class="fl">WhatsApp Number <span class="fp">WhatsApp button</span></label><input class="fi" data-key="global.whatsapp" placeholder="+6738698291"><span class="fhint">Digits only, no spaces</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="c-address">
+    <div class="card-hdr" onclick="tog('address')"><h3>📍 Address &amp; Location</h3><span class="card-tog open" id="t-address">▼</span></div>
+    <div class="card-body open" id="b-address">
+      <div class="fg c1">
+        <div class="f"><label class="fl">Full Address (multi-line) <span class="fp">Contact page — address box</span></label><textarea class="ft" data-key="global.address" placeholder="No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam"></textarea><span class="fhint">Each line appears on its own row on the contact page</span></div>
+        <div class="f"><label class="fl">Address Short <span class="fp">Footer on ALL pages</span></label><input class="fi" data-key="global.address_short" placeholder="📍 No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam"></div>
+        <div class="f"><label class="fl">Map Label — Line 1 <span class="fp">Contact page map box</span></label><input class="fi" data-key="global.address_map1" placeholder="No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam"></div>
+        <div class="f"><label class="fl">Map Label — Line 2 <span class="fp">Contact page map box</span></label><input class="fi" data-key="global.address_map2" placeholder="Brunei Darussalam"></div>
+        <div class="f"><label class="fl">Area Name <span class="fp">Tracking page pickup text</span></label><input class="fi" data-key="global.area_name" placeholder="No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="c-hours">
+    <div class="card-hdr" onclick="tog('hours')"><h3>🕐 Opening Hours</h3><span class="card-tog open" id="t-hours">▼</span></div>
+    <div class="card-body open" id="b-hours">
+      <div class="fg">
+        <div class="slbl2">Weekday Hours</div>
+        <div class="f"><label class="fl">Weekday Label <span class="fp">Contact page hours row label</span></label><input class="fi" data-key="global.hours_weekday_label" placeholder="Monday – Saturday"></div>
+        <div class="f"><label class="fl">Weekday Time <span class="fp">Contact page hours row time</span></label><input class="fi" data-key="global.hours_weekday_time" placeholder="6:00 AM – 10:00 PM"></div>
+        <div class="divider"></div>
+        <div class="slbl2">Weekend Hours</div>
+        <div class="f"><label class="fl">Weekend Label <span class="fp">Contact page hours row label</span></label><input class="fi" data-key="global.hours_weekend_label" placeholder="Sunday"></div>
+        <div class="f"><label class="fl">Weekend Time <span class="fp">Contact page hours row time</span></label><input class="fi" data-key="global.hours_weekend_time" placeholder="12:00 PM – 10:00 PM"></div>
+        <div class="divider"></div>
+        <div class="slbl2">Short Format</div>
+        <div class="f full"><label class="fl">Hours Short Format <span class="fp">Footer link on ALL pages</span></label><input class="fi" data-key="global.hours_short" placeholder="🕐 Mon–Sat: 10am–8pm"><span class="fhint">Shown in every page footer</span></div>
+      </div>
+      <div class="tip"><strong>Note:</strong> Save this section — all pages update within 1.5 seconds automatically.</div>
+    </div>
+  </div>
+
+  <div class="card" id="c-social">
+    <div class="card-hdr" onclick="tog('social')"><h3>📱 Social Media</h3><span class="card-tog" id="t-social">▼</span></div>
+    <div class="card-body" id="b-social">
+      <div class="fg">
+        <div class="f"><label class="fl">Facebook URL</label><input class="fi" data-key="global.facebook_url" placeholder="https://facebook.com/casualgamerz"></div>
+        <div class="f"><label class="fl">Instagram URL</label><input class="fi" data-key="global.instagram_url" placeholder="https://instagram.com/casualgamerz"></div>
+        <div class="f"><label class="fl">TikTok URL</label><input class="fi" data-key="global.tiktok_url" placeholder="https://tiktok.com/@casualgamerz"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ HOMEPAGE ════ -->
+<div class="pg" id="pg-home">
+  <div class="pg-header">
+    <div><h2>🏠 Homepage <span class="highlight">Content</span></h2><p>Hero section, stats, service cards, and CTA banner.</p></div>
+    <div class="pg-header-right"><a href="../index.html" target="_blank" class="preview-a">👁 Preview</a><button class="btn-save" onclick="saveSection('home')">💾 Save Homepage</button></div>
+  </div>
+
+  <div class="card" id="c-hero">
+    <div class="card-hdr" onclick="tog('hero')"><h3>🚀 Hero Section</h3><span class="card-tog open" id="t-hero">▼</span></div>
+    <div class="card-body open" id="b-hero">
+      <div class="fg">
+        <div class="f"><label class="fl">Badge Text</label><input class="fi" data-key="home.hero_badge"></div>
+        <div class="f"><label class="fl">Title Line 1</label><input class="fi" data-key="home.hero_title_line1"></div>
+        <div class="f"><label class="fl">Title Line 2 (gradient)</label><input class="fi" data-key="home.hero_title_line2"></div>
+        <div class="f full"><label class="fl">Hero Description</label><textarea class="ft" data-key="home.hero_description"></textarea></div>
+        <div class="f"><label class="fl">Primary Button</label><input class="fi" data-key="home.hero_btn_primary"></div>
+        <div class="f"><label class="fl">Secondary Button</label><input class="fi" data-key="home.hero_btn_secondary"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="c-stats">
+    <div class="card-hdr" onclick="tog('stats')"><h3>📊 Hero Stats</h3><span class="card-tog" id="t-stats">▼</span></div>
+    <div class="card-body" id="b-stats">
+      <div class="fg c3">
+        <div class="f"><label class="fl">Stat 1 Number</label><input class="fi" data-key="home.stat1_number" placeholder="5000+"></div>
+        <div class="f"><label class="fl">Stat 1 Label</label><input class="fi" data-key="home.stat1_label" placeholder="Devices Fixed"></div>
+        <div style="display:none"></div>
+        <div class="f"><label class="fl">Stat 2 Number</label><input class="fi" data-key="home.stat2_number" placeholder="98%"></div>
+        <div class="f"><label class="fl">Stat 2 Label</label><input class="fi" data-key="home.stat2_label" placeholder="Satisfaction"></div>
+        <div style="display:none"></div>
+        <div class="f"><label class="fl">Stat 3 Number</label><input class="fi" data-key="home.stat3_number" placeholder="24H"></div>
+        <div class="f"><label class="fl">Stat 3 Label</label><input class="fi" data-key="home.stat3_label" placeholder="Avg Turnaround"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="c-svcards">
+    <div class="card-hdr" onclick="tog('svcards')"><h3>🔧 Service Cards</h3><span class="card-tog" id="t-svcards">▼</span></div>
+    <div class="card-body" id="b-svcards">
+      <div style="margin-bottom:1rem">
+        <div class="slbl2">Service Card 1</div>
+        <div class="fg">
+          <div class="f"><label class="fl">Title</label><input class="fi" data-key="home.service1_title"></div>
+          <div class="f full"><label class="fl">Description</label><textarea class="ft" data-key="home.service1_desc" style="min-height:58px"></textarea></div>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="slbl2">Service Card 2</div>
+        <div class="fg">
+          <div class="f"><label class="fl">Title</label><input class="fi" data-key="home.service2_title"></div>
+          <div class="f full"><label class="fl">Description</label><textarea class="ft" data-key="home.service2_desc" style="min-height:58px"></textarea></div>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="slbl2">Service Card 3</div>
+        <div class="fg">
+          <div class="f"><label class="fl">Title</label><input class="fi" data-key="home.service3_title"></div>
+          <div class="f full"><label class="fl">Description</label><textarea class="ft" data-key="home.service3_desc" style="min-height:58px"></textarea></div>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="slbl2">Service Card 4</div>
+        <div class="fg">
+          <div class="f"><label class="fl">Title</label><input class="fi" data-key="home.service4_title"></div>
+          <div class="f full"><label class="fl">Description</label><textarea class="ft" data-key="home.service4_desc" style="min-height:58px"></textarea></div>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="slbl2">Service Card 5</div>
+        <div class="fg">
+          <div class="f"><label class="fl">Title</label><input class="fi" data-key="home.service5_title"></div>
+          <div class="f full"><label class="fl">Description</label><textarea class="ft" data-key="home.service5_desc" style="min-height:58px"></textarea></div>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="slbl2">Service Card 6</div>
+        <div class="fg">
+          <div class="f"><label class="fl">Title</label><input class="fi" data-key="home.service6_title"></div>
+          <div class="f full"><label class="fl">Description</label><textarea class="ft" data-key="home.service6_desc" style="min-height:58px"></textarea></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="c-cta">
+    <div class="card-hdr" onclick="tog('cta')"><h3>📣 CTA Banner</h3><span class="card-tog" id="t-cta">▼</span></div>
+    <div class="card-body" id="b-cta">
+      <div class="fg">
+        <div class="f"><label class="fl">CTA Title</label><input class="fi" data-key="home.cta_title"></div>
+        <div class="f full"><label class="fl">CTA Description</label><textarea class="ft" data-key="home.cta_desc" style="min-height:58px"></textarea></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SERVICES PAGE ════ -->
+<div class="pg" id="pg-services">
+  <div class="pg-header">
+    <div><h2>🔧 Services Page <span class="highlight">Content</span></h2></div>
+    <div class="pg-header-right"><a href="services.html" target="_blank" class="preview-a">👁 Preview</a><button class="btn-save" onclick="saveSection('services')">💾 Save</button></div>
+  </div>
+  <div class="card" id="c-svc-hero">
+    <div class="card-hdr" onclick="tog('svc-hero')"><h3>🚀 Page Hero</h3><span class="card-tog open" id="t-svc-hero">▼</span></div>
+    <div class="card-body open" id="b-svc-hero">
+      <div class="fg">
+        <div class="f"><label class="fl">Page Title</label><input class="fi" data-key="services.hero_title"></div>
+        <div class="f full"><label class="fl">Page Description</label><textarea class="ft" data-key="services.hero_desc" style="min-height:58px"></textarea></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ABOUT PAGE ════ -->
+<div class="pg" id="pg-about">
+  <div class="pg-header">
+    <div><h2>👥 About Page <span class="highlight">Content</span></h2><p>Hero, company story, and stats.</p></div>
+    <div class="pg-header-right"><a href="about.html" target="_blank" class="preview-a">👁 Preview</a><button class="btn-save" onclick="saveSection('about')">💾 Save About</button></div>
+  </div>
+
+  <div class="card" id="c-about-hero">
+    <div class="card-hdr" onclick="tog('about-hero')"><h3>🚀 Page Hero</h3><span class="card-tog open" id="t-about-hero">▼</span></div>
+    <div class="card-body open" id="b-about-hero">
+      <div class="fg">
+        <div class="f"><label class="fl">Page Title</label><input class="fi" data-key="about.hero_title"></div>
+        <div class="f full"><label class="fl">Page Description</label><textarea class="ft" data-key="about.hero_desc" style="min-height:58px"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="c-story">
+    <div class="card-hdr" onclick="tog('story')"><h3>📖 Company Story</h3><span class="card-tog" id="t-story">▼</span></div>
+    <div class="card-body" id="b-story">
+      <div class="fg c1">
+        <div class="f"><label class="fl">Story Title</label><input class="fi" data-key="about.story_title"></div>
+        <div class="f"><label class="fl">Paragraph 1</label><textarea class="ft" data-key="about.story_p1"></textarea></div>
+        <div class="f"><label class="fl">Paragraph 2</label><textarea class="ft" data-key="about.story_p2"></textarea></div>
+        <div class="f"><label class="fl">Paragraph 3</label><textarea class="ft" data-key="about.story_p3"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="c-about-stats">
+    <div class="card-hdr" onclick="tog('about-stats')"><h3>📊 Company Stats</h3><span class="card-tog" id="t-about-stats">▼</span></div>
+    <div class="card-body" id="b-about-stats">
+      <div class="fg">
+        <div class="f"><label class="fl">Stat 1 Value</label><input class="fi" data-key="about.stat1_val"></div>
+        <div class="f"><label class="fl">Stat 1 Label</label><input class="fi" data-key="about.stat1_label"></div>
+        <div class="f"><label class="fl">Stat 2 Value</label><input class="fi" data-key="about.stat2_val"></div>
+        <div class="f"><label class="fl">Stat 2 Label</label><input class="fi" data-key="about.stat2_label"></div>
+        <div class="f"><label class="fl">Stat 3 Value</label><input class="fi" data-key="about.stat3_val"></div>
+        <div class="f"><label class="fl">Stat 3 Label</label><input class="fi" data-key="about.stat3_label"></div>
+        <div class="f"><label class="fl">Stat 4 Value</label><input class="fi" data-key="about.stat4_val"></div>
+        <div class="f"><label class="fl">Stat 4 Label</label><input class="fi" data-key="about.stat4_label"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ CONTACT PAGE ════ -->
+<div class="pg" id="pg-contact">
+  <div class="pg-header">
+    <div><h2>📞 Contact Page <span class="highlight">Content</span></h2><p>Hero text and contact-specific content.</p></div>
+    <div class="pg-header-right"><a href="contact.html" target="_blank" class="preview-a">👁 Preview</a><button class="btn-save" onclick="saveSection('contact')">💾 Save Contact</button></div>
+  </div>
+  <div class="card" id="c-contact-pg">
+    <div class="card-hdr" onclick="tog('contact-pg')"><h3>📞 Contact Page Fields</h3><span class="card-tog open" id="t-contact-pg">▼</span></div>
+    <div class="card-body open" id="b-contact-pg">
+      <div class="fg">
+        <div class="f"><label class="fl">Page Title</label><input class="fi" data-key="contact.hero_title"></div>
+        <div class="f full"><label class="fl">Page Description</label><textarea class="ft" data-key="contact.hero_desc" style="min-height:58px"></textarea></div>
+        <div class="f"><label class="fl">Contact Form Title</label><input class="fi" data-key="contact.form_title"></div>
+        <div class="f"><label class="fl">Walk-in Info Text</label><input class="fi" data-key="contact.walkin_text"></div>
+        <div class="f"><label class="fl">Parking Info</label><input class="fi" data-key="contact.parking_info"></div>
+        <div class="f full"><label class="fl">Map Address Label</label><input class="fi" data-key="contact.map_address"></div>
+      </div>
+      <div class="warn"><strong>📌 Phone, email, address, and opening hours</strong> are in <strong>Global Settings</strong> — edit them there to update the contact page and all footers at once.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PRICING ════ -->
+<div class="pg" id="pg-pricing">
+  <div class="pg-header">
+    <div><h2>💰 Pricing <span class="highlight">Editor</span></h2><p>Custom PC build package names, prices, and descriptions.</p></div>
+    <div class="pg-header-right"><a href="services.html#custom-build" target="_blank" class="preview-a">👁 Preview</a><button class="btn-save" onclick="saveSection('pricing')">💾 Save Pricing</button></div>
+  </div>
+  <div class="card" id="c-pricing-prev">
+    <div class="card-hdr" onclick="tog('pricing-prev')"><h3>👁 Live Preview</h3><span class="card-tog open" id="t-pricing-prev">▼</span></div>
+    <div class="card-body open" id="b-pricing-prev"><div class="ppc-wrap" id="pricingPreview"></div></div>
+  </div>
+  <div class="card" id="c-pricing-fields">
+    <div class="card-hdr" onclick="tog('pricing-fields')"><h3>💰 Package Details</h3><span class="card-tog open" id="t-pricing-fields">▼</span></div>
+    <div class="card-body open" id="b-pricing-fields">
+      <div style="margin-bottom:1rem">
+        <div class="slbl2">Starter Build</div>
+        <div class="fg c3">
+          <div class="f"><label class="fl">Package Name</label><input class="fi" data-key="pricing.starter_name" oninput="updatePricingPreview()"></div>
+          <div class="f"><label class="fl">Price (BND$)</label><input class="fi" type="number" data-key="pricing.starter_price" min="0" oninput="updatePricingPreview()"></div>
+          <div class="f"><label class="fl">Note / Tagline</label><input class="fi" data-key="pricing.starter_desc" oninput="updatePricingPreview()"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="slbl2">Pro Gamer Build</div>
+        <div class="fg c3">
+          <div class="f"><label class="fl">Package Name</label><input class="fi" data-key="pricing.pro_name" oninput="updatePricingPreview()"></div>
+          <div class="f"><label class="fl">Price (BND$)</label><input class="fi" type="number" data-key="pricing.pro_price" min="0" oninput="updatePricingPreview()"></div>
+          <div class="f"><label class="fl">Note / Tagline</label><input class="fi" data-key="pricing.pro_desc" oninput="updatePricingPreview()"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="slbl2">Beast Mode Build</div>
+        <div class="fg c3">
+          <div class="f"><label class="fl">Package Name</label><input class="fi" data-key="pricing.beast_name" oninput="updatePricingPreview()"></div>
+          <div class="f"><label class="fl">Price (BND$)</label><input class="fi" type="number" data-key="pricing.beast_price" min="0" oninput="updatePricingPreview()"></div>
+          <div class="f"><label class="fl">Note / Tagline</label><input class="fi" data-key="pricing.beast_desc" oninput="updatePricingPreview()"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ TESTIMONIALS ════ -->
+<div class="pg" id="pg-reviews">
+  <div class="pg-header">
+    <div><h2>⭐ Testimonials <span class="highlight">Editor</span></h2><p>Edit the 3 customer reviews shown on Homepage and About page.</p></div>
+    <div class="pg-header-right"><a href="../index.html#reviews" target="_blank" class="preview-a">👁 Preview</a><button class="btn-save" onclick="saveSection('reviews')">💾 Save Testimonials</button></div>
+  </div>
+  <div class="card" id="c-rev1">
+    <div class="card-hdr" onclick="tog('rev1')"><h3>⭐ Review 1</h3><span class="card-tog" id="t-rev1">▼</span></div>
+    <div class="card-body" id="b-rev1">
+      <div class="fg">
+        <div class="f"><label class="fl">Customer Name</label><input class="fi" data-key="home.review1_name"></div>
+        <div class="f"><label class="fl">Role / Location</label><input class="fi" data-key="home.review1_role"></div>
+        <div class="f full"><label class="fl">Review Text</label><textarea class="ft" data-key="home.review1_text"></textarea></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="c-rev2">
+    <div class="card-hdr" onclick="tog('rev2')"><h3>⭐ Review 2</h3><span class="card-tog" id="t-rev2">▼</span></div>
+    <div class="card-body" id="b-rev2">
+      <div class="fg">
+        <div class="f"><label class="fl">Customer Name</label><input class="fi" data-key="home.review2_name"></div>
+        <div class="f"><label class="fl">Role / Location</label><input class="fi" data-key="home.review2_role"></div>
+        <div class="f full"><label class="fl">Review Text</label><textarea class="ft" data-key="home.review2_text"></textarea></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="c-rev3">
+    <div class="card-hdr" onclick="tog('rev3')"><h3>⭐ Review 3</h3><span class="card-tog" id="t-rev3">▼</span></div>
+    <div class="card-body" id="b-rev3">
+      <div class="fg">
+        <div class="f"><label class="fl">Customer Name</label><input class="fi" data-key="home.review3_name"></div>
+        <div class="f"><label class="fl">Role / Location</label><input class="fi" data-key="home.review3_role"></div>
+        <div class="f full"><label class="fl">Review Text</label><textarea class="ft" data-key="home.review3_text"></textarea></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ TEAM MEMBERS ════ -->
+<div class="pg" id="pg-team">
+  <div class="pg-header">
+    <div>
+      <h2>🎯 Team <span class="highlight">Members</span></h2>
+      <p>Add, edit, or remove team members. Changes appear live on the About page.</p>
+    </div>
+    <div class="pg-header-right">
+      <a href="about.html#team" target="_blank" class="preview-a">👁 Preview About Page</a>
+      <button class="btn-save" onclick="saveTeam()">💾 Save Team</button>
+    </div>
+  </div>
+
+  <div class="card" id="c-team-mgr">
+    <div class="card-hdr" onclick="tog('team-mgr')"><h3>👥 Team Members <span id="teamCountBadge" style="font-family:var(--font-display);font-size:.65rem;background:rgba(0,245,255,.12);color:var(--neon-cyan);padding:.15rem .55rem;border-radius:100px;margin-left:.5rem;">0</span></h3><span class="card-tog open" id="t-team-mgr">▼</span></div>
+    <div class="card-body open" id="b-team-mgr">
+      <div class="team-mgr" id="teamMgrList"></div>
+      <button class="add-member-btn" onclick="openTeamModal(null)" id="addMemberBtn" style="margin-top:.75rem">
+        + Add New Team Member
+      </button>
+      <p style="font-size:.78rem;color:var(--text-secondary);margin-top:.6rem;text-align:center">Maximum 8 members · Drag to reorder not yet supported</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════ WARRANTY PAGE ════ -->
+<div class="pg" id="pg-warranty">
+  <div class="pg-header">
+    <div><h2>🛡️ Warranty Page <span class="highlight">Content</span></h2></div>
+    <div class="pg-header-right"><a href="warranty.html" target="_blank" class="preview-a">👁 Preview</a><button class="btn-save" onclick="saveSection('warranty')">💾 Save Warranty</button></div>
+  </div>
+  <div class="card" id="c-warranty">
+    <div class="card-hdr" onclick="tog('warranty')"><h3>🛡️ Warranty Content</h3><span class="card-tog open" id="t-warranty">▼</span></div>
+    <div class="card-body open" id="b-warranty">
+      <div class="fg c1">
+        <div class="f"><label class="fl">Page Title</label><input class="fi" data-key="warranty.hero_title"></div>
+        <div class="f"><label class="fl">Main Headline</label><input class="fi" data-key="warranty.headline"></div>
+        <div class="f"><label class="fl">Headline Sub-text</label><input class="fi" data-key="warranty.headline_sub"></div>
+        <div class="f"><label class="fl">Claim Process Description</label><textarea class="ft" data-key="warranty.claim_process"></textarea></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ANNOUNCEMENT BANNER ════ -->
+<div class="pg" id="pg-announce">
+  <div class="pg-header">
+    <div><h2>📢 Announcement <span class="highlight">Banner</span></h2><p>Sitewide banner at the top of every page. Toggle on, type message, save.</p></div>
+    <div class="pg-header-right"><a href="../index.html" target="_blank" class="preview-a">👁 Preview</a><button class="btn-save" onclick="saveSection('announce')">💾 Save Banner</button></div>
+  </div>
+  <div class="card" id="c-ann">
+    <div class="card-hdr" onclick="tog('ann')"><h3>📢 Banner Settings</h3><span class="card-tog open" id="t-ann">▼</span></div>
+    <div class="card-body open" id="b-ann">
+      <div class="fg c1">
+        <div class="f"><label class="fl">Enable Banner</label>
+          <div class="tw"><button class="tbtn" id="annToggle" onclick="toggleAnn()"></button><span class="tlbl" id="annToggleLabel">Disabled</span></div>
+        </div>
+        <div class="f"><label class="fl">Banner Message</label><input class="fi" data-key="announcement.text" id="annText" placeholder="🎉 Special offer this weekend!" oninput="updateAnnPreview()"></div>
+        <div class="f"><label class="fl">Text Colour</label>
+          <div class="cfield"><input type="color" id="annColor" value="#ffffff" oninput="syncColor('annColor','announcement.color'); updateAnnPreview()"><input class="fi" data-key="announcement.color" id="annColorHex" placeholder="#ffffff" oninput="syncHex('annColor','annColorHex','announcement.color'); updateAnnPreview()"></div>
+        </div>
+        <div class="f"><label class="fl">Background Colour</label>
+          <div class="cfield"><input type="color" id="annBg" value="#0a1220" oninput="syncColor('annBg','announcement.bg'); updateAnnPreview()"><input class="fi" data-key="announcement.bg" id="annBgHex" placeholder="rgba(0,245,255,0.15)" oninput="updateAnnPreview()"></div>
+        </div>
+        <div class="f"><label class="fl">Preview</label><div class="ann-prev" id="annPreview">Your banner message appears here.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ LIVE PREVIEW ════ -->
+<div class="pg" id="pg-preview">
+  <div class="pg-header"><div><h2>👁️ Live <span class="highlight">Preview</span></h2><p>Open any page to see your saved changes live.</p></div></div>
+  <div class="prev-grid">
+    <a href="../index.html" target="_blank" class="service-card" style="text-align:center;text-decoration:none;">
+      <div style="font-size:2rem;margin-bottom:.6rem">🏠</div>
+      <h3 style="font-size:.92rem">Homepage</h3>
+      <span class="service-link" style="margin-top:.4rem">Open →</span>
+    </a>
+    <a href="services.html" target="_blank" class="service-card" style="text-align:center;text-decoration:none;">
+      <div style="font-size:2rem;margin-bottom:.6rem">🔧</div>
+      <h3 style="font-size:.92rem">Services</h3>
+      <span class="service-link" style="margin-top:.4rem">Open →</span>
+    </a>
+    <a href="repair.html" target="_blank" class="service-card" style="text-align:center;text-decoration:none;">
+      <div style="font-size:2rem;margin-bottom:.6rem">📋</div>
+      <h3 style="font-size:.92rem">Book Repair</h3>
+      <span class="service-link" style="margin-top:.4rem">Open →</span>
+    </a>
+    <a href="tracking.html" target="_blank" class="service-card" style="text-align:center;text-decoration:none;">
+      <div style="font-size:2rem;margin-bottom:.6rem">🔍</div>
+      <h3 style="font-size:.92rem">Track Order</h3>
+      <span class="service-link" style="margin-top:.4rem">Open →</span>
+    </a>
+    <a href="history.html" target="_blank" class="service-card" style="text-align:center;text-decoration:none;">
+      <div style="font-size:2rem;margin-bottom:.6rem">📊</div>
+      <h3 style="font-size:.92rem">Repair History</h3>
+      <span class="service-link" style="margin-top:.4rem">Open →</span>
+    </a>
+    <a href="about.html" target="_blank" class="service-card" style="text-align:center;text-decoration:none;">
+      <div style="font-size:2rem;margin-bottom:.6rem">👥</div>
+      <h3 style="font-size:.92rem">About</h3>
+      <span class="service-link" style="margin-top:.4rem">Open →</span>
+    </a>
+    <a href="contact.html" target="_blank" class="service-card" style="text-align:center;text-decoration:none;">
+      <div style="font-size:2rem;margin-bottom:.6rem">📞</div>
+      <h3 style="font-size:.92rem">Contact</h3>
+      <span class="service-link" style="margin-top:.4rem">Open →</span>
+    </a>
+    <a href="warranty.html" target="_blank" class="service-card" style="text-align:center;text-decoration:none;">
+      <div style="font-size:2rem;margin-bottom:.6rem">🛡️</div>
+      <h3 style="font-size:.92rem">Warranty</h3>
+      <span class="service-link" style="margin-top:.4rem">Open →</span>
+    </a>
+    <a href="admin.html" target="_blank" class="service-card" style="text-align:center;text-decoration:none;">
+      <div style="font-size:2rem;margin-bottom:.6rem">⚙</div>
+      <h3 style="font-size:.92rem">Repair Admin</h3>
+      <span class="service-link" style="margin-top:.4rem">Open →</span>
+    </a>
+  </div>
+</div>
+
+<!-- ════ BACKUP / RESTORE ════ -->
+<div class="pg" id="pg-backup">
+  <div class="pg-header"><div><h2>💾 Backup / <span class="highlight">Restore</span></h2><p>Export all content settings as JSON, or import a saved backup.</p></div></div>
+  <div class="card" id="c-backup">
+    <div class="card-hdr" onclick="tog('backup')"><h3>💾 Export / Import</h3><span class="card-tog open" id="t-backup">▼</span></div>
+    <div class="card-body open" id="b-backup">
+      <p style="color:var(--text-secondary);font-size:.87rem;margin-bottom:1.1rem">Export downloads a JSON snapshot of all current settings. Import restores from a previous export.</p>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.25rem">
+        <button class="xbtn xbtn-xl" onclick="doExport()">📥 Export Backup JSON</button>
+        <label class="xbtn xbtn-csv" style="cursor:pointer">📤 Import Backup JSON<input type="file" accept=".json" onchange="doImport(event)" style="display:none"></label>
+      </div>
+      <label class="fl" style="margin-bottom:.4rem;display:block">Current settings (read-only)</label>
+      <textarea id="backupPreview" class="ft" style="min-height:220px;font-family:monospace;font-size:.76rem;color:var(--neon-cyan)" readonly></textarea>
+    </div>
+  </div>
+  <div class="danger-zone">
+    <h3 style="color:var(--neon-pink);margin-bottom:.4rem">⚠️ Reset to Defaults</h3>
+    <p style="color:var(--text-secondary);font-size:.87rem;margin-bottom:.9rem">Resets ALL content to original default text. Repair database is not affected.</p>
+    <button class="btn-danger" onclick="doReset()">🗑️ Reset All Content to Defaults</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastMsg" style="font-size:.88rem"></span></div>
+
+<!-- ══ TEAM MEMBER MODAL ══ -->
+<div class="tm-overlay" id="tmOverlay" onclick="if(event.target===this)closeTeamModal()">
+  <div class="tm-modal">
+    <button class="tm-modal-close" onclick="closeTeamModal()">✕</button>
+    <div id="tmModalBody"></div>
+  </div>
+</div>
+
+<!-- ══ TEAM DELETE CONFIRM ══ -->
+<div class="tmdel-overlay" id="tmDelOverlay">
+  <div class="tmdel-box">
+    <div style="font-size:2.5rem;margin-bottom:.75rem">🗑️</div>
+    <h3 style="margin-bottom:.5rem">Remove Team Member?</h3>
+    <p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:1.5rem" id="tmDelMsg">This will remove them from the About page.</p>
+    <div style="display:flex;gap:.75rem;justify-content:center">
+      <button onclick="execTeamDelete()" class="btn-save" style="background:var(--neon-pink);box-shadow:var(--shadow-pink);padding:.6rem 1.4rem">Yes, Remove</button>
+      <button onclick="document.getElementById('tmDelOverlay').classList.remove('open')" style="padding:.6rem 1.4rem;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--text-secondary);border-radius:8px;cursor:pointer;font-family:var(--font-display);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+</body>
+</html>

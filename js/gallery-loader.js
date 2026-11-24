@@ -54,7 +54,6 @@
     var label = niceName(file.name);
     return '<div class="gallery-card">' +
       '<img src="' + url + '" alt="' + label + '" loading="lazy" onerror="this.style.display=\'none\'">' +
-      '<div class="gallery-card-label">' + label + '</div>' +
       '</div>';
   }
 
@@ -66,9 +65,6 @@
         '<img src="' + url + '" alt="' + label + '" loading="lazy" ' +
              'style="width:100%;height:100%;object-fit:cover;" ' +
              'onerror="this.parentElement.innerHTML=\'🎮\'">' +
-      '</div>' +
-      '<div class="game-card-info">' +
-        '<div class="game-card-title">' + label + '</div>' +
       '</div>' +
       '</div>';
   }

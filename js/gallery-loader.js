@@ -47,12 +47,62 @@
       .replace(/\b\w/g, function (c) { return c.toUpperCase(); }); // Title Case
   }
 
+  /* ── lightbox ────────────────────────────────────────── */
+
+  var lightbox = null;
+
+  function initLightbox() {
+    if (lightbox) return;
+    lightbox = document.createElement('div');
+    lightbox.id = 'cgz-lightbox';
+    lightbox.style.cssText = [
+      'display:none;position:fixed;inset:0;z-index:9999',
+      'background:rgba(0,0,0,0.92)',
+      'align-items:center;justify-content:center',
+      'cursor:zoom-out;padding:1rem'
+    ].join(';');
+
+    var img = document.createElement('img');
+    img.style.cssText = 'max-width:92vw;max-height:92vh;border-radius:12px;object-fit:contain;box-shadow:0 8px 48px rgba(0,0,0,0.6);pointer-events:none';
+
+    var close = document.createElement('button');
+    close.innerHTML = '✕';
+    close.style.cssText = [
+      'position:absolute;top:1rem;right:1.25rem',
+      'background:rgba(255,255,255,0.12);border:none;color:#fff',
+      'font-size:1.4rem;width:2.4rem;height:2.4rem;border-radius:50%',
+      'cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center'
+    ].join(';');
+
+    lightbox.appendChild(img);
+    lightbox.appendChild(close);
+    document.body.appendChild(lightbox);
+
+    function closeLightbox() {
+      lightbox.style.display = 'none';
+      img.src = '';
+    }
+    lightbox.addEventListener('click', closeLightbox);
+    close.addEventListener('click', function (e) { e.stopPropagation(); closeLightbox(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  }
+
+  function openLightbox(url, alt) {
+    initLightbox();
+    var img = lightbox.querySelector('img');
+    img.src = url;
+    img.alt = alt || '';
+    lightbox.style.display = 'flex';
+  }
+
   /* ── card builders ────────────────────────────────────── */
 
   function buildRepairCard(file) {
     var url   = rawUrl(file);
     var label = niceName(file.name);
-    return '<div class="gallery-card">' +
+    return '<div class="gallery-card" data-lightbox="' + url + '" data-label="' + label + '" style="cursor:zoom-in">' +
       '<img src="' + url + '" alt="' + label + '" loading="lazy" onerror="this.style.display=\'none\'">' +
       '</div>';
   }
@@ -60,7 +110,7 @@
   function buildGameCard(file) {
     var url   = rawUrl(file);
     var label = niceName(file.name);
-    return '<div class="game-card">' +
+    return '<div class="game-card" data-lightbox="' + url + '" data-label="' + label + '" style="cursor:zoom-in">' +
       '<div class="game-card-cover" style="padding:0;overflow:hidden;">' +
         '<img src="' + url + '" alt="' + label + '" loading="lazy" ' +
              'style="width:100%;height:100%;object-fit:cover;" ' +
@@ -164,6 +214,16 @@
 
     el.innerHTML = html;
     el.classList.add('loaded');
+
+    // attach lightbox clicks for repair + game cards
+    if (type === 'repair' || type === 'game') {
+      initLightbox();
+      el.querySelectorAll('[data-lightbox]').forEach(function (card) {
+        card.addEventListener('click', function () {
+          openLightbox(card.getAttribute('data-lightbox'), card.getAttribute('data-label'));
+        });
+      });
+    }
   }
 
   /* ── fetch ────────────────────────────────────────────── */

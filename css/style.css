@@ -1500,6 +1500,32 @@ footer {
   box-shadow: var(--shadow-cyan);
 }
 
+.gallery-card > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+  opacity: 0.9;
+  transition: opacity 0.3s;
+}
+
+.gallery-card:hover > img { opacity: 1; }
+
+/* Text overlay when image is present */
+.gallery-card:has(> img) .gallery-card-label,
+.gallery-card:has(> img) .gallery-card-sub {
+  position: relative;
+  z-index: 1;
+  background: rgba(0,0,0,0.55);
+  padding: 2px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.gallery-card:has(> img) .gallery-card-icon { display: none; }
+
 .gallery-card-icon { font-size: 2.4rem; line-height: 1; }
 
 .gallery-card-label {

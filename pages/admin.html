@@ -1434,7 +1434,7 @@
   }
 
   // ── Share receipt via WhatsApp (wa.me link) ────────────────────────────
-  function whatsappReceipt() {
+  async function whatsappReceipt() {
     if (!_rcptRepair) return;
     const r = _rcptRepair;
     const labor = parseFloat(r.laborCost)||0;
@@ -1464,16 +1464,61 @@
       '',
       '✅ 90-day warranty on completed repairs.',
       'Thank you for choosing Casual Gamerz!',
-    ].filter(l => l !== null && l !== undefined && !(l==='' && false)).join('\n').replace(/\n{3,}/g,'\n\n');
+    ].filter(l => l !== null && l !== undefined).join('\n').replace(/\n{3,}/g,'\n\n');
 
     // Normalise phone: strip spaces/dashes, ensure +673 prefix for Brunei
     let phone = (r.phone || '').replace(/[\s\-().]/g, '');
     if (phone.startsWith('0')) phone = '673' + phone.slice(1);
     if (!phone.startsWith('+') && !phone.startsWith('673')) phone = '673' + phone;
     phone = phone.replace(/^\+/, '');
+    const waUrl = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
 
-    const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
-    window.open(url, '_blank');
+    // ── Generate Thermal 80mm PNG then share ───────────────────────────
+    showToast('Generating receipt image…', '🖼️');
+    try {
+      const cfg = RCPT_SIZES.t80;
+      const tmp = document.createElement('div');
+      tmp.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:' + cfg.widthPx + 'px;background:#fff;';
+      tmp.innerHTML = buildReceiptHTML(r, cfg);
+      document.body.appendChild(tmp);
+      const canvas = await html2canvas(tmp, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+      document.body.removeChild(tmp);
+
+      // Mobile: use Web Share API → native share sheet includes WhatsApp
+      if (navigator.share && navigator.canShare) {
+        canvas.toBlob(async blob => {
+          const file = new File([blob], 'CGZ_Receipt_' + r.ticketId + '.png', { type: 'image/png' });
+          if (navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({ files: [file], title: 'Repair Receipt ' + r.ticketId, text: msg });
+              showToast('Receipt shared!', '✅');
+              return;
+            } catch(e) {
+              if (e.name === 'AbortError') return; // user cancelled
+            }
+          }
+          _waFallback(canvas, r, waUrl);
+        }, 'image/png');
+      } else {
+        // Desktop: download PNG + open WhatsApp
+        _waFallback(canvas, r, waUrl);
+      }
+    } catch(e) {
+      // If PNG generation fails, fall back to text-only WhatsApp
+      showToast('Opening WhatsApp with text receipt…', '💬');
+      window.open(waUrl, '_blank');
+    }
+  }
+
+  function _waFallback(canvas, r, waUrl) {
+    // Download the Thermal 80mm PNG
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'CGZ_Receipt_' + r.ticketId + '.png';
+    a.click();
+    // Open WhatsApp with text (user attaches the downloaded PNG)
+    setTimeout(() => window.open(waUrl, '_blank'), 500);
+    showToast('PNG saved! Attach it in WhatsApp 📎', '💬');
   }
 
   function applyReceiptSize() {

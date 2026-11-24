@@ -186,15 +186,93 @@
       '</div>';
   }
 
+  /* ── order persistence ────────────────────────────────── */
+
+  function orderKey(folder) { return 'cgz_order_' + folder.replace(/\//g, '_'); }
+
+  function readOrder(folder) {
+    try { return JSON.parse(localStorage.getItem(orderKey(folder))) || null; } catch (e) { return null; }
+  }
+
+  function writeOrder(folder, names) {
+    try { localStorage.setItem(orderKey(folder), JSON.stringify(names)); } catch (e) {}
+  }
+
+  function applyOrder(images, folder) {
+    var order = readOrder(folder);
+    if (!order || !order.length) return images;
+    var map = {};
+    images.forEach(function (f) { map[f.name] = f; });
+    var sorted = order.filter(function (n) { return map[n]; }).map(function (n) { return map[n]; });
+    var seen = {};
+    order.forEach(function (n) { seen[n] = true; });
+    images.forEach(function (f) { if (!seen[f.name]) sorted.push(f); });
+    return sorted;
+  }
+
+  /* ── drag-to-reorder ──────────────────────────────────── */
+
+  var dragHappened = false;
+
+  function saveCurrentOrder(container, folder) {
+    var names = [];
+    container.querySelectorAll('[data-lightbox]').forEach(function (card) {
+      var url = card.getAttribute('data-lightbox');
+      names.push(decodeURIComponent(url.split('/').pop()));
+    });
+    writeOrder(folder, names);
+  }
+
+  function makeSortable(container, folder) {
+    var dragged = null;
+
+    container.querySelectorAll('[data-lightbox]').forEach(function (card) {
+      card.setAttribute('draggable', 'true');
+      card.style.cursor = 'grab';
+
+      card.addEventListener('dragstart', function (e) {
+        dragged = card;
+        dragHappened = false;
+        setTimeout(function () { if (dragged) dragged.style.opacity = '0.35'; }, 0);
+        e.dataTransfer.effectAllowed = 'move';
+      });
+
+      card.addEventListener('dragend', function () {
+        card.style.opacity = '';
+        dragged = null;
+        saveCurrentOrder(container, folder);
+      });
+
+      card.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        dragHappened = true;
+        if (!dragged || dragged === card) return;
+        var rect = card.getBoundingClientRect();
+        if (e.clientX < rect.left + rect.width / 2) {
+          container.insertBefore(dragged, card);
+        } else {
+          container.insertBefore(dragged, card.nextSibling);
+        }
+      });
+    });
+
+    container.addEventListener('dragover', function (e) { e.preventDefault(); });
+  }
+
   /* ── render ───────────────────────────────────────────── */
 
-  function render(el, files, type) {
+  function render(el, files, type, folder) {
     var builder = BUILDERS[type] || buildGridCard;
     var images  = files.filter(function (f) { return IMG_RE.test(f.name); });
 
     if (images.length === 0) {
       el.innerHTML = emptyState();
       return;
+    }
+
+    // apply saved drag order for sortable types
+    if (type === 'repair' || type === 'game') {
+      images = applyOrder(images, folder);
     }
 
     var wrapClass = type === 'game'    ? 'games-scroll' :
@@ -215,14 +293,19 @@
     el.innerHTML = html;
     el.classList.add('loaded');
 
-    // attach lightbox clicks for repair + game cards
+    // lightbox + drag-to-reorder for repair and game
     if (type === 'repair' || type === 'game') {
       initLightbox();
+      var container = el.querySelector('.' + wrapClass);
+
       el.querySelectorAll('[data-lightbox]').forEach(function (card) {
         card.addEventListener('click', function () {
+          if (dragHappened) { dragHappened = false; return; }
           openLightbox(card.getAttribute('data-lightbox'), card.getAttribute('data-label'));
         });
       });
+
+      makeSortable(container, folder);
     }
   }
 
@@ -240,7 +323,7 @@
     // check cache
     var cached = readCache(folder);
     if (cached) {
-      render(el, cached, type);
+      render(el, cached, type, folder);
       return;
     }
 
@@ -257,7 +340,7 @@
         if (!Array.isArray(data)) throw new Error('bad_response');
         var files = data.filter(function (f) { return f.type === 'file'; });
         writeCache(folder, files);
-        render(el, files, type);
+        render(el, files, type, folder);
       })
       .catch(function (err) {
         // graceful fallback: hide if no images, show empty state

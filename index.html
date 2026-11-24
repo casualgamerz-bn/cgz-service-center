@@ -214,6 +214,60 @@
         
       </div>
 
+      <!-- SERVICES PHOTO GALLERY -->
+      <div class="section-header fade-in" style="margin-top:3.5rem;">
+        <div class="section-tag">Workshop Snapshots</div>
+        <h3 class="section-title" style="font-size:clamp(1.2rem,2.5vw,1.8rem);">Inside the <span class="highlight">Repair Lab</span></h3>
+        <p class="section-desc" style="font-size:0.9rem;">Real repairs. Real results. Updated regularly.</p>
+      </div>
+
+      <div class="repair-gallery-grid fade-in">
+        <div class="gallery-card">
+          <div class="gallery-card-icon">🎮</div>
+          <div class="gallery-card-label">PS5 Disc Drive Replacement</div>
+          <div class="gallery-card-sub">Console Repair</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-card-icon">💻</div>
+          <div class="gallery-card-label">Gaming Laptop Screen Swap</div>
+          <div class="gallery-card-sub">Laptop Repair</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-card-icon">🖥️</div>
+          <div class="gallery-card-label">RGB Custom PC Build</div>
+          <div class="gallery-card-sub">Custom Build</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-card-icon">🕹️</div>
+          <div class="gallery-card-label">Controller Joystick Drift Fix</div>
+          <div class="gallery-card-sub">Controller Repair</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-card-icon">🔧</div>
+          <div class="gallery-card-label">Motherboard Reball & Reflow</div>
+          <div class="gallery-card-sub">Advanced Repair</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-card-icon">💾</div>
+          <div class="gallery-card-label">SSD & HDD Upgrade</div>
+          <div class="gallery-card-sub">Storage Upgrade</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-card-icon">🧊</div>
+          <div class="gallery-card-label">PS4 Overheating Fix</div>
+          <div class="gallery-card-sub">Thermal Repair</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-card-icon">⚡</div>
+          <div class="gallery-card-label">Power Supply Replacement</div>
+          <div class="gallery-card-sub">PC Repair</div>
+        </div>
+        <div class="gallery-card add-slot">
+          <div class="gallery-card-icon">📸</div>
+          <div class="gallery-card-label">More photos coming soon</div>
+        </div>
+      </div>
+
       <div style="text-align:center; margin-top:3rem;" class="fade-in">
         <a href="pages/services.html" class="btn-primary">View All Services 🎮</a>
       </div>
@@ -283,6 +337,373 @@
           <div style="margin-top:1.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
             <a href="pages/about.html" class="btn-primary">About Our Team</a>
             <a href="pages/repair.html" class="btn-secondary">Book Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PS PLUS MONTHLY GAMES -->
+  <section class="section" id="psplus">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">PlayStation Network</div>
+        <h2 class="section-title">
+          <span class="ps-plus-logo">PS+</span>
+          <span class="highlight"> Monthly Free Games</span>
+        </h2>
+        <p class="section-desc">Free games included with PlayStation Plus — updated every month. Essential · Extra · Premium</p>
+        <div class="glow-divider"></div>
+      </div>
+
+      <!-- Tier Tabs -->
+      <div class="ps-tier-tabs fade-in">
+        <button class="ps-tier-tab active" onclick="switchPsTab(this,'essential')">Essential</button>
+        <button class="ps-tier-tab" onclick="switchPsTab(this,'extra')">Extra</button>
+        <button class="ps-tier-tab" onclick="switchPsTab(this,'premium')">Premium</button>
+      </div>
+
+      <!-- Essential Tier -->
+      <div class="ps-games-panel active" id="ps-essential">
+        <div class="games-scroll-wrap fade-in">
+          <div class="games-scroll">
+            <div class="game-card">
+              <div class="game-card-cover" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">
+                🎮
+                <span class="game-new-badge">NEW</span>
+                <span class="game-card-rating">★ 8.5</span>
+              </div>
+              <div class="game-card-info">
+                <div class="game-card-title">Game Title Here</div>
+                <div class="game-card-genre">Action / Adventure</div>
+              </div>
+            </div>
+            <div class="game-card">
+              <div class="game-card-cover" style="background:linear-gradient(135deg,#0f3460,#533483);">
+                🕹️
+                <span class="game-card-rating">★ 7.9</span>
+              </div>
+              <div class="game-card-info">
+                <div class="game-card-title">Game Title Here</div>
+                <div class="game-card-genre">RPG / Open World</div>
+              </div>
+            </div>
+            <div class="game-card">
+              <div class="game-card-cover" style="background:linear-gradient(135deg,#2d1b69,#11998e);">
+                🏎️
+                <span class="game-card-rating">★ 8.1</span>
+              </div>
+              <div class="game-card-info">
+                <div class="game-card-title">Game Title Here</div>
+                <div class="game-card-genre">Racing / Sports</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="text-align:center; color:var(--text-secondary); font-size:0.78rem; margin-top:1rem;">✏️ Update game titles monthly — edit index.html · PS+ Essential section</p>
+      </div>
+
+      <!-- Extra Tier -->
+      <div class="ps-games-panel" id="ps-extra">
+        <div class="games-scroll-wrap fade-in">
+          <div class="games-scroll">
+            <div class="game-card">
+              <div class="game-card-cover" style="background:linear-gradient(135deg,#1e3c72,#2a5298);">
+                ⚔️
+                <span class="game-new-badge">NEW</span>
+                <span class="game-card-rating">★ 9.0</span>
+              </div>
+              <div class="game-card-info">
+                <div class="game-card-title">Game Title Here</div>
+                <div class="game-card-genre">Action RPG</div>
+              </div>
+            </div>
+            <div class="game-card">
+              <div class="game-card-cover" style="background:linear-gradient(135deg,#4b1248,#f10711);">
+                🔫
+                <span class="game-card-rating">★ 8.7</span>
+              </div>
+              <div class="game-card-info">
+                <div class="game-card-title">Game Title Here</div>
+                <div class="game-card-genre">FPS / Shooter</div>
+              </div>
+            </div>
+            <div class="game-card">
+              <div class="game-card-cover" style="background:linear-gradient(135deg,#005c97,#363795);">
+                🌍
+                <span class="game-card-rating">★ 8.4</span>
+              </div>
+              <div class="game-card-info">
+                <div class="game-card-title">Game Title Here</div>
+                <div class="game-card-genre">Open World</div>
+              </div>
+            </div>
+            <div class="game-card">
+              <div class="game-card-cover" style="background:linear-gradient(135deg,#141e30,#243b55);">
+                🏆
+                <span class="game-card-rating">★ 8.2</span>
+              </div>
+              <div class="game-card-info">
+                <div class="game-card-title">Game Title Here</div>
+                <div class="game-card-genre">Platformer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="text-align:center; color:var(--text-secondary); font-size:0.78rem; margin-top:1rem;">✏️ Update game titles monthly — edit index.html · PS+ Extra section</p>
+      </div>
+
+      <!-- Premium Tier -->
+      <div class="ps-games-panel" id="ps-premium">
+        <div class="games-scroll-wrap fade-in">
+          <div class="games-scroll">
+            <div class="game-card">
+              <div class="game-card-cover" style="background:linear-gradient(135deg,#56ab2f,#a8e063);">
+                🧟
+                <span class="game-new-badge">NEW</span>
+                <span class="game-card-rating">★ 9.2</span>
+              </div>
+              <div class="game-card-info">
+                <div class="game-card-title">Game Title Here</div>
+                <div class="game-card-genre">Survival Horror</div>
+              </div>
+            </div>
+            <div class="game-card">
+              <div class="game-card-cover" style="background:linear-gradient(135deg,#c94b4b,#4b134f);">
+                🗡️
+                <span class="game-card-rating">★ 8.8</span>
+              </div>
+              <div class="game-card-info">
+                <div class="game-card-title">Game Title Here</div>
+                <div class="game-card-genre">Action / Classic</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="text-align:center; color:var(--text-secondary); font-size:0.78rem; margin-top:1rem;">✏️ Update game titles monthly — edit index.html · PS+ Premium section</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LATEST RELEASED GAMES -->
+  <section class="section" style="background: rgba(255,0,128,0.02);" id="latest-games">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Just Dropped</div>
+        <h2 class="section-title">Latest <span class="highlight">Released Games</span></h2>
+        <p class="section-desc">Freshest titles across all platforms — scroll to explore.</p>
+        <div class="glow-divider"></div>
+      </div>
+
+      <div class="games-scroll-wrap fade-in">
+        <div class="games-scroll">
+          <div class="game-card">
+            <div class="game-card-cover" style="background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);">
+              🎯
+              <span class="game-new-badge">NEW</span>
+              <span class="game-card-rating">★ 9.1</span>
+            </div>
+            <div class="game-card-info">
+              <div class="game-card-title">Game Title Here</div>
+              <div class="game-card-genre">PS5 · Action RPG</div>
+            </div>
+          </div>
+          <div class="game-card">
+            <div class="game-card-cover" style="background:linear-gradient(135deg,#1a1a1a,#363636);">
+              🌌
+              <span class="game-new-badge">NEW</span>
+              <span class="game-card-rating">★ 8.9</span>
+            </div>
+            <div class="game-card-info">
+              <div class="game-card-title">Game Title Here</div>
+              <div class="game-card-genre">PC · Sci-Fi RPG</div>
+            </div>
+          </div>
+          <div class="game-card">
+            <div class="game-card-cover" style="background:linear-gradient(135deg,#200122,#6f0000);">
+              🧙
+              <span class="game-new-badge">NEW</span>
+              <span class="game-card-rating">★ 8.6</span>
+            </div>
+            <div class="game-card-info">
+              <div class="game-card-title">Game Title Here</div>
+              <div class="game-card-genre">PS4/PS5 · Fantasy</div>
+            </div>
+          </div>
+          <div class="game-card">
+            <div class="game-card-cover" style="background:linear-gradient(135deg,#003973,#e5e5be);">
+              ⚽
+              <span class="game-card-rating">★ 8.3</span>
+            </div>
+            <div class="game-card-info">
+              <div class="game-card-title">Game Title Here</div>
+              <div class="game-card-genre">Multi · Sports</div>
+            </div>
+          </div>
+          <div class="game-card">
+            <div class="game-card-cover" style="background:linear-gradient(135deg,#4facfe,#00f2fe);">
+              🚀
+              <span class="game-new-badge">NEW</span>
+              <span class="game-card-rating">★ 8.7</span>
+            </div>
+            <div class="game-card-info">
+              <div class="game-card-title">Game Title Here</div>
+              <div class="game-card-genre">PC · Shooter</div>
+            </div>
+          </div>
+          <div class="game-card">
+            <div class="game-card-cover" style="background:linear-gradient(135deg,#f7971e,#ffd200);">
+              🏍️
+              <span class="game-card-rating">★ 7.8</span>
+            </div>
+            <div class="game-card-info">
+              <div class="game-card-title">Game Title Here</div>
+              <div class="game-card-genre">Multi · Racing</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center; color:var(--text-secondary); font-size:0.78rem; margin-top:1.5rem;">✏️ Update game titles as new releases drop — edit index.html · Latest Released section</p>
+    </div>
+  </section>
+
+  <!-- PC GAMES GALLERY -->
+  <section class="section" id="pc-games">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">PC Gaming</div>
+        <h2 class="section-title">Top <span class="highlight">PC Games</span> Right Now</h2>
+        <p class="section-desc">Must-play titles on PC — from indie gems to AAA giants.</p>
+        <div class="glow-divider"></div>
+      </div>
+
+      <div class="pc-games-grid fade-in">
+        <div class="game-card">
+          <div class="game-card-cover" style="background:linear-gradient(135deg,#141414,#2c2c2c);">
+            🏰
+            <span class="game-card-rating">★ 9.4</span>
+          </div>
+          <div class="game-card-info">
+            <div class="game-card-title">Game Title Here</div>
+            <div class="game-card-genre">Strategy / RPG</div>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-card-cover" style="background:linear-gradient(135deg,#0d0d0d,#1a3a1a);">
+            🌲
+            <span class="game-card-rating">★ 9.1</span>
+          </div>
+          <div class="game-card-info">
+            <div class="game-card-title">Game Title Here</div>
+            <div class="game-card-genre">Open World / Survival</div>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-card-cover" style="background:linear-gradient(135deg,#1a0533,#6b21a8);">
+            🔮
+            <span class="game-card-rating">★ 8.9</span>
+          </div>
+          <div class="game-card-info">
+            <div class="game-card-title">Game Title Here</div>
+            <div class="game-card-genre">Action RPG</div>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-card-cover" style="background:linear-gradient(135deg,#0a0a0a,#1e3a5f);">
+            🌊
+            <span class="game-new-badge">NEW</span>
+            <span class="game-card-rating">★ 8.7</span>
+          </div>
+          <div class="game-card-info">
+            <div class="game-card-title">Game Title Here</div>
+            <div class="game-card-genre">Adventure / Exploration</div>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-card-cover" style="background:linear-gradient(135deg,#2d0a0a,#7f1d1d);">
+            👹
+            <span class="game-card-rating">★ 9.0</span>
+          </div>
+          <div class="game-card-info">
+            <div class="game-card-title">Game Title Here</div>
+            <div class="game-card-genre">Horror / Action</div>
+          </div>
+        </div>
+        <div class="game-card">
+          <div class="game-card-cover" style="background:linear-gradient(135deg,#001d3d,#003566);">
+            🛸
+            <span class="game-new-badge">NEW</span>
+            <span class="game-card-rating">★ 8.5</span>
+          </div>
+          <div class="game-card-info">
+            <div class="game-card-title">Game Title Here</div>
+            <div class="game-card-genre">Sci-Fi / Strategy</div>
+          </div>
+        </div>
+      </div>
+      <p style="text-align:center; color:var(--text-secondary); font-size:0.78rem; margin-top:1.5rem;">✏️ Update game titles anytime — edit index.html · PC Games section</p>
+    </div>
+  </section>
+
+  <!-- GAME HIGHLIGHTS -->
+  <section class="section" style="background: rgba(0,245,255,0.02);" id="game-highlights">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-tag">Staff Picks</div>
+        <h2 class="section-title">Game <span class="highlight">Highlights</span></h2>
+        <p class="section-desc">Hand-picked by our techs — the games we can't stop talking about.</p>
+        <div class="glow-divider"></div>
+      </div>
+
+      <div class="highlights-grid">
+        <div class="highlight-card fade-in">
+          <div class="highlight-banner" style="background:linear-gradient(135deg,#0f0c29,#302b63);">
+            ⚔️
+            <span class="hl-new-badge">TRENDING</span>
+          </div>
+          <div class="highlight-body">
+            <div class="highlight-platform">PS5 · PS4</div>
+            <h3 class="highlight-title">Game Title Here</h3>
+            <p class="highlight-desc">Write a short description of why your team loves this game. Update this whenever you have a new staff pick.</p>
+            <div class="highlight-meta">
+              <span class="highlight-tag">Action RPG</span>
+              <span class="highlight-tag">Open World</span>
+              <span class="highlight-tag">Multiplayer</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-card fade-in">
+          <div class="highlight-banner" style="background:linear-gradient(135deg,#1a0533,#6b21a8);">
+            🧟
+            <span class="hl-new-badge">HOT</span>
+          </div>
+          <div class="highlight-body">
+            <div class="highlight-platform">PC · Xbox</div>
+            <h3 class="highlight-title">Game Title Here</h3>
+            <p class="highlight-desc">Write a short description of why your team loves this game. Update this whenever you have a new staff pick.</p>
+            <div class="highlight-meta">
+              <span class="highlight-tag">Survival Horror</span>
+              <span class="highlight-tag">Co-op</span>
+              <span class="highlight-tag">Story-rich</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-card fade-in">
+          <div class="highlight-banner" style="background:linear-gradient(135deg,#0d2137,#164e63);">
+            🌌
+          </div>
+          <div class="highlight-body">
+            <div class="highlight-platform">PC · Multi-platform</div>
+            <h3 class="highlight-title">Game Title Here</h3>
+            <p class="highlight-desc">Write a short description of why your team loves this game. Update this whenever you have a new staff pick.</p>
+            <div class="highlight-meta">
+              <span class="highlight-tag">Sci-Fi RPG</span>
+              <span class="highlight-tag">100+ Hours</span>
+              <span class="highlight-tag">Mod Support</span>
+            </div>
           </div>
         </div>
       </div>
@@ -428,5 +849,14 @@
   
   <script src="js/theme.js"></script>
   <script src="js/main.js"></script>
+  <script>
+    function switchPsTab(btn, tier) {
+      document.querySelectorAll('.ps-tier-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.ps-games-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      var panel = document.getElementById('ps-' + tier);
+      if (panel) panel.classList.add('active');
+    }
+  </script>
 </body>
 </html>

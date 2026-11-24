@@ -114,6 +114,13 @@ const CasualGamerzDB = (() => {
     deleteRepair: (ticket) =>
       post({ action: 'deleteRepair', ticketId: ticket }),
 
+    /** Send receipt email via Apps Script MailApp */
+    sendReceiptEmail: (ticket) =>
+      post({ action: 'sendReceiptEmail', ticketId: ticket }),
+
+    /** Low-level POST (for custom actions) */
+    _post: post,
+
     // ── Utilities ──────────────────────────────────────────────────────
 
     fmt,

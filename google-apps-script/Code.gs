@@ -193,8 +193,101 @@ function doPost(e) {
       return corsOutput({ ok: true });
     }
 
+    if (action === 'sendReceiptEmail') {
+      const ticketId = body.ticketId || body.ticket;
+      const repairs  = sheetToObjects(repairSheet(), REPAIR_COLS);
+      const repair   = repairs.find(r => r.ticketId === ticketId);
+      if (!repair)        return corsOutput({ ok: false, error: 'Ticket not found' });
+      if (!repair.email)  return corsOutput({ ok: false, error: 'No email address on file for this customer' });
+      const subject = 'Your Repair Receipt — ' + ticketId + ' | Casual Gamerz Service Center';
+      MailApp.sendEmail({ to: repair.email, subject: subject, htmlBody: buildReceiptEmailHTML_(repair) });
+      return corsOutput({ ok: true });
+    }
+
     return corsOutput({ ok: false, error: 'Unknown action: ' + action });
   } catch (err) {
     return corsOutput({ ok: false, error: err.message });
   }
+}
+
+// ── Email receipt HTML builder ──────────────────────────────────────────────
+function buildReceiptEmailHTML_(r) {
+  var fmtDate = function(s) {
+    if (!s) return '—';
+    try { return new Date(s).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); }
+    catch(e) { return s; }
+  };
+  var labor = parseFloat(r.laborCost) || 0;
+  var parts = parseFloat(r.partsCost) || 0;
+  var total = parseFloat(r.totalCost) || (labor + parts);
+  var sc = {Received:'#0ea5e9',Diagnosing:'#8b5cf6',Repairing:'#f97316',Testing:'#eab308',Ready:'#22c55e',Completed:'#16a34a',Cancelled:'#9ca3af'}[r.status] || '#6b7280';
+  var deviceLine = [r.brand, r.model].filter(Boolean).join(' · ');
+  var datesHtml = '';
+  if (r.estimatedReady) datesHtml += '<td width="8"></td><td style="padding:10px 12px;background:#f8fafc;border-radius:6px;font-size:12px;"><div style="color:#94a3b8;font-size:10px;text-transform:uppercase;">Est. Ready</div><div style="font-weight:600;color:#0f172a;">' + fmtDate(r.estimatedReady) + '</div></td>';
+  if (r.completedAt)    datesHtml += '<td width="8"></td><td style="padding:10px 12px;background:#f8fafc;border-radius:6px;font-size:12px;"><div style="color:#94a3b8;font-size:10px;text-transform:uppercase;">Completed</div><div style="font-weight:600;color:#0f172a;">' + fmtDate(r.completedAt) + '</div></td>';
+  if (r.warrantyExpiry) datesHtml += '<td width="8"></td><td style="padding:10px 12px;background:#dcfce7;border-radius:6px;font-size:12px;"><div style="color:#16a34a;font-size:10px;text-transform:uppercase;font-weight:700;">Warranty Until</div><div style="font-weight:700;color:#15803d;">' + fmtDate(r.warrantyExpiry) + '</div></td>';
+
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head>'
+    +'<body style="margin:0;padding:0;background:#f4f4f5;font-family:Arial,sans-serif;">'
+    +'<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:32px 0;"><tr><td align="center">'
+    +'<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#fff;border-radius:12px;overflow:hidden;">'
+    // Header
+    +'<tr><td style="background:#0f172a;padding:28px 32px;text-align:center;">'
+    +'<div style="font-size:32px;">🎮</div>'
+    +'<div style="color:#00f5ff;font-size:20px;font-weight:900;letter-spacing:0.08em;text-transform:uppercase;">CASUAL GAMERZ</div>'
+    +'<div style="color:#94a3b8;font-size:12px;margin-top:4px;">CGZ Service Center — Brunei Darussalam</div></td></tr>'
+    // Ticket
+    +'<tr><td style="background:#1e293b;padding:14px 32px;text-align:center;">'
+    +'<div style="color:#94a3b8;font-size:10px;text-transform:uppercase;letter-spacing:0.12em;">REPAIR RECEIPT</div>'
+    +'<div style="color:#fff;font-size:26px;font-weight:900;letter-spacing:0.06em;">' + r.ticketId + '</div></td></tr>'
+    // Status
+    +'<tr><td style="padding:20px 32px 0;"><table width="100%" cellpadding="0" cellspacing="0" style="background:' + sc + '18;border-left:4px solid ' + sc + ';border-radius:4px;">'
+    +'<tr><td style="padding:12px 16px;"><span style="color:' + sc + ';font-weight:700;font-size:13px;text-transform:uppercase;">Status: ' + r.status + '</span>'
+    +(r.serviceType ? '<span style="color:#64748b;font-size:12px;float:right;">' + r.serviceType + '</span>' : '')
+    +'</td></tr></table></td></tr>'
+    // Customer & Device
+    +'<tr><td style="padding:16px 32px 0;"><table width="100%" cellpadding="0" cellspacing="0"><tr>'
+    +'<td width="48%" valign="top" style="background:#f8fafc;border-radius:8px;padding:14px;">'
+    +'<div style="color:#94a3b8;font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:6px;">Customer</div>'
+    +'<div style="font-weight:700;font-size:15px;color:#0f172a;">' + r.firstName + ' ' + r.lastName + '</div>'
+    +'<div style="color:#475569;font-size:13px;">' + r.phone + '</div>'
+    +(r.email ? '<div style="color:#475569;font-size:12px;">' + r.email + '</div>' : '')
+    +'</td><td width="4%"></td>'
+    +'<td width="48%" valign="top" style="background:#f8fafc;border-radius:8px;padding:14px;">'
+    +'<div style="color:#94a3b8;font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:6px;">Device</div>'
+    +'<div style="font-weight:700;font-size:15px;color:#0f172a;">' + r.deviceType + '</div>'
+    +(deviceLine ? '<div style="color:#475569;font-size:13px;">' + deviceLine + '</div>' : '')
+    +'</td></tr></table></td></tr>'
+    // Issue
+    +'<tr><td style="padding:16px 32px 0;"><table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:8px;">'
+    +'<tr><td style="padding:14px;">'
+    +'<div style="color:#94a3b8;font-size:10px;text-transform:uppercase;font-weight:700;margin-bottom:6px;">Issue Reported</div>'
+    +'<div style="font-weight:600;color:#0f172a;">' + r.issue + '</div>'
+    +(r.issueDetail ? '<div style="color:#475569;font-size:12px;margin-top:4px;">' + r.issueDetail + '</div>' : '')
+    +'</td></tr></table></td></tr>'
+    // Costs
+    +'<tr><td style="padding:16px 32px 0;"><table width="100%" cellpadding="0" cellspacing="0" style="border:2px solid #0f172a;border-radius:8px;overflow:hidden;">'
+    +'<tr><td colspan="2" style="background:#0f172a;color:#fff;padding:10px 16px;font-size:11px;text-transform:uppercase;font-weight:700;">Cost Breakdown</td></tr>'
+    +'<tr><td style="padding:10px 16px;color:#475569;font-size:13px;border-bottom:1px solid #f1f5f9;">Labour</td><td style="padding:10px 16px;text-align:right;font-weight:600;font-size:13px;border-bottom:1px solid #f1f5f9;">BND$ ' + labor.toFixed(2) + '</td></tr>'
+    +'<tr><td style="padding:10px 16px;color:#475569;font-size:13px;border-bottom:1px solid #f1f5f9;">Parts</td><td style="padding:10px 16px;text-align:right;font-weight:600;font-size:13px;border-bottom:1px solid #f1f5f9;">BND$ ' + parts.toFixed(2) + '</td></tr>'
+    +'<tr><td style="padding:12px 16px;font-weight:900;font-size:16px;color:#0f172a;">TOTAL</td><td style="padding:12px 16px;text-align:right;font-weight:900;font-size:16px;color:#0f172a;">BND$ ' + total.toFixed(2) + '</td></tr>'
+    +'</table></td></tr>'
+    // Dates
+    +'<tr><td style="padding:16px 32px 0;"><table width="100%" cellpadding="0" cellspacing="0"><tr>'
+    +'<td style="padding:10px 12px;background:#f8fafc;border-radius:6px;font-size:12px;"><div style="color:#94a3b8;font-size:10px;text-transform:uppercase;">Date In</div><div style="font-weight:600;color:#0f172a;">' + fmtDate(r.createdAt) + '</div></td>'
+    + datesHtml
+    +'</tr></table></td></tr>'
+    // Footer
+    +'<tr><td style="background:#f8fafc;border-top:2px solid #e2e8f0;padding:24px 32px;margin-top:16px;">'
+    +'<table width="100%" cellpadding="0" cellspacing="0"><tr>'
+    +'<td valign="top"><div style="font-size:12px;color:#475569;line-height:1.7;">'
+    +'<strong style="color:#0f172a;">Warranty Terms</strong><br>'
+    +'• 90-day warranty on all completed repairs<br>'
+    +'• Keep this email for warranty claims<br>'
+    +'• Uncollected devices after 90 days may be disposed</div></td>'
+    +'<td valign="top" align="right">'
+    +'<div style="font-size:13px;font-weight:700;color:#0f172a;">Thank you! 🎮</div>'
+    +'<div style="font-size:11px;color:#94a3b8;margin-top:4px;">Casual Gamerz Service Center</div>'
+    +'</td></tr></table></td></tr>'
+    +'</table></td></tr></table></body></html>';
 }

@@ -325,6 +325,10 @@
     .rcbt-pdf:hover  { background:rgba(255,107,53,0.25); }
     .rcbt-close{ background:rgba(255,0,128,0.1); color:var(--neon-pink); border:1px solid rgba(255,0,128,0.25); }
     .rcbt-close:hover { background:rgba(255,0,128,0.25); }
+    .rcbt-email{ background:rgba(99,102,241,0.12); color:#818cf8; border:1px solid rgba(99,102,241,0.3); }
+    .rcbt-email:hover { background:rgba(99,102,241,0.25); }
+    .rcbt-wa   { background:rgba(37,211,102,0.1); color:#25d366; border:1px solid rgba(37,211,102,0.3); }
+    .rcbt-wa:hover    { background:rgba(37,211,102,0.22); }
 
     /* Actual receipt (white, print-style) */
     #receiptDoc {
@@ -729,6 +733,8 @@
           <button class="rcpt-btn rcbt-png"  onclick="exportReceipt('png')">⬇ PNG</button>
           <button class="rcpt-btn rcbt-jpg"  onclick="exportReceipt('jpg')">⬇ JPG</button>
           <button class="rcpt-btn rcbt-pdf"  onclick="exportReceipt('pdf')">⬇ PDF</button>
+          <button class="rcpt-btn rcbt-email" onclick="emailReceipt()">📧 Email</button>
+          <button class="rcpt-btn rcbt-wa"    onclick="whatsappReceipt()">💬 WhatsApp</button>
           <button class="rcpt-btn rcbt-close" onclick="closeReceipt()">✕ Close</button>
         </div>
       </div>
@@ -1407,6 +1413,65 @@
   function closeReceipt() {
     document.getElementById('rcptOverlay').classList.remove('open');
     _rcptRepair = null;
+  }
+
+  // ── Send receipt via email (calls Apps Script MailApp) ─────────────────
+  async function emailReceipt() {
+    if (!_rcptRepair) return;
+    if (!_rcptRepair.email) {
+      showToast('No email address on file for this customer.', '⚠️');
+      return;
+    }
+    showToast('Sending email…', '📧');
+    try {
+      await CasualGamerzDB.sendReceiptEmail(_rcptRepair.ticketId);
+      showToast('Receipt emailed to ' + _rcptRepair.email + '!', '📧');
+    } catch(e) {
+      showToast('Email failed: ' + e.message, '❌');
+    }
+  }
+
+  // ── Share receipt via WhatsApp (wa.me link) ────────────────────────────
+  function whatsappReceipt() {
+    if (!_rcptRepair) return;
+    const r = _rcptRepair;
+    const labor = parseFloat(r.laborCost)||0;
+    const parts = parseFloat(r.partsCost)||0;
+    const total = parseFloat(r.totalCost)||(labor+parts);
+    const fmtDate = s => { try { return new Date(s).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); } catch{return s||'—';} };
+
+    const msg = [
+      '🎮 *CASUAL GAMERZ SERVICE CENTER*',
+      '📋 Repair Receipt',
+      '',
+      `*Ticket:* ${r.ticketId}`,
+      `*Status:* ${r.status}`,
+      '',
+      `*Customer:* ${r.firstName} ${r.lastName}`,
+      `*Device:* ${r.deviceType}${r.brand?' — '+r.brand:''}${r.model?' '+r.model:''}`,
+      `*Issue:* ${r.issue}`,
+      '',
+      `*Labour:* BND$ ${labor.toFixed(2)}`,
+      `*Parts:* BND$ ${parts.toFixed(2)}`,
+      `*Total:* BND$ ${total.toFixed(2)}`,
+      '',
+      `*Date In:* ${fmtDate(r.createdAt)}`,
+      r.estimatedReady ? `*Est. Ready:* ${fmtDate(r.estimatedReady)}` : '',
+      r.completedAt    ? `*Completed:* ${fmtDate(r.completedAt)}` : '',
+      r.warrantyExpiry ? `*Warranty Until:* ${fmtDate(r.warrantyExpiry)}` : '',
+      '',
+      '✅ 90-day warranty on completed repairs.',
+      'Thank you for choosing Casual Gamerz!',
+    ].filter(l => l !== null && l !== undefined && !(l==='' && false)).join('\n').replace(/\n{3,}/g,'\n\n');
+
+    // Normalise phone: strip spaces/dashes, ensure +673 prefix for Brunei
+    let phone = (r.phone || '').replace(/[\s\-().]/g, '');
+    if (phone.startsWith('0')) phone = '673' + phone.slice(1);
+    if (!phone.startsWith('+') && !phone.startsWith('673')) phone = '673' + phone;
+    phone = phone.replace(/^\+/, '');
+
+    const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+    window.open(url, '_blank');
   }
 
   function applyReceiptSize() {

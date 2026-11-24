@@ -284,6 +284,55 @@
     /* ── Empty row ── */
     .empty-row td { text-align:center; padding:3rem; color:var(--text-secondary); font-style:italic; }
 
+    /* ── Receipt modal ── */
+    .rcpt-overlay {
+      position:fixed; inset:0; z-index:5000; display:flex; align-items:flex-start;
+      justify-content:center; padding:1.5rem 1rem 2rem; background:rgba(5,10,20,0.95);
+      backdrop-filter:blur(12px); overflow-y:auto;
+      opacity:0; pointer-events:none; transition:opacity 0.3s;
+    }
+    .rcpt-overlay.open { opacity:1; pointer-events:all; }
+    .rcpt-shell {
+      width:100%; max-width:780px; display:flex; flex-direction:column; gap:1.25rem;
+    }
+    /* Controls bar above receipt */
+    .rcpt-controls {
+      background:var(--dark-card); border:var(--border-glow); border-radius:16px;
+      padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap;
+    }
+    .rcpt-controls h3 { font-size:1rem; flex:1; min-width:160px; }
+    .rcpt-size-label { font-family:var(--font-display); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--neon-cyan); white-space:nowrap; }
+    .rcpt-size-select {
+      padding:0.5rem 2rem 0.5rem 0.75rem; background:rgba(255,255,255,0.05);
+      border:1px solid rgba(0,245,255,0.2); border-radius:8px; color:var(--text-primary);
+      font-family:var(--font-body); font-size:0.85rem; outline:none; cursor:pointer;
+      appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2300f5ff' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 0.6rem center;
+    }
+    .rcpt-size-select option { background:var(--dark-card); }
+    .rcpt-export-btns { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .rcpt-btn {
+      display:inline-flex; align-items:center; gap:0.4rem; padding:0.55rem 1rem;
+      border-radius:8px; font-family:var(--font-display); font-size:0.68rem; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; border:none;
+      transition:var(--transition); white-space:nowrap;
+    }
+    .rcbt-png  { background:rgba(0,245,255,0.15); color:var(--neon-cyan); border:1px solid rgba(0,245,255,0.3); }
+    .rcbt-png:hover  { background:rgba(0,245,255,0.3); }
+    .rcbt-jpg  { background:rgba(255,200,0,0.12); color:#ffc800; border:1px solid rgba(255,200,0,0.3); }
+    .rcbt-jpg:hover  { background:rgba(255,200,0,0.25); }
+    .rcbt-pdf  { background:rgba(255,107,53,0.12); color:#ff6b35; border:1px solid rgba(255,107,53,0.3); }
+    .rcbt-pdf:hover  { background:rgba(255,107,53,0.25); }
+    .rcbt-close{ background:rgba(255,0,128,0.1); color:var(--neon-pink); border:1px solid rgba(255,0,128,0.25); }
+    .rcbt-close:hover { background:rgba(255,0,128,0.25); }
+
+    /* Actual receipt (white, print-style) */
+    #receiptDoc {
+      background:#fff; color:#111; font-family:'Exo 2',sans-serif;
+      border-radius:12px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.5);
+      transition:width 0.25s ease;
+    }
+
     @media(max-width:900px) {
       .admin-wrap { grid-template-columns:1fr; }
       .admin-sidebar { position:static; height:auto; flex-direction:row; flex-wrap:wrap; gap:0; padding:0.75rem; border-right:none; border-bottom:1px solid rgba(0,245,255,0.1); }
@@ -663,8 +712,31 @@
     </div>
   </div>
 
-  
-  
+  <!-- ══ RECEIPT MODAL ══ -->
+  <div class="rcpt-overlay" id="rcptOverlay" onclick="if(event.target===this)closeReceipt()">
+    <div class="rcpt-shell">
+      <!-- Controls -->
+      <div class="rcpt-controls">
+        <h3>🧾 Repair Receipt</h3>
+        <span class="rcpt-size-label">Size:</span>
+        <select class="rcpt-size-select" id="rcptSize" onchange="applyReceiptSize()">
+          <option value="a4">A4 (Standard)</option>
+          <option value="a5">A5 (Half Sheet)</option>
+          <option value="t80">Thermal 80mm</option>
+          <option value="t58">Thermal 58mm</option>
+        </select>
+        <div class="rcpt-export-btns">
+          <button class="rcpt-btn rcbt-png"  onclick="exportReceipt('png')">⬇ PNG</button>
+          <button class="rcpt-btn rcbt-jpg"  onclick="exportReceipt('jpg')">⬇ JPG</button>
+          <button class="rcpt-btn rcbt-pdf"  onclick="exportReceipt('pdf')">⬇ PDF</button>
+          <button class="rcpt-btn rcbt-close" onclick="closeReceipt()">✕ Close</button>
+        </div>
+      </div>
+      <!-- Receipt document -->
+      <div id="receiptDoc"></div>
+    </div>
+  </div>
+
   <script src="../js/sheets-config.js"></script>
   <script src="../js/db.js"></script>
   <script src="../js/main.js"></script>
@@ -769,8 +841,9 @@
         <td>${r.techNotes?'🔧':'—'}</td>
         <td>${pill(r.status)}</td>
         <td class="tbl-actions" onclick="event.stopPropagation()">
-          <button class="tbl-btn tbl-btn-status" onclick="openQS('${r.ticketId}','${r.status}')">Status</button>
-          <button class="tbl-btn tbl-btn-edit"   onclick="openEdit('${r.ticketId}')">Edit</button>
+          <button class="tbl-btn tbl-btn-status"  onclick="openQS('${r.ticketId}','${r.status}')">Status</button>
+          <button class="tbl-btn tbl-btn-edit"    onclick="openEdit('${r.ticketId}')">Edit</button>
+          <button class="tbl-btn tbl-btn-receipt" onclick="openReceipt('${r.ticketId}')">🧾</button>
         </td>
       </tr>`).join('');
   }
@@ -864,10 +937,11 @@
         <td>${pill(r.status)}</td>
         <td style="font-family:var(--font-display);color:#39ff14;">${r.totalCost?'BND$ '+r.totalCost:'—'}</td>
         <td class="tbl-actions" onclick="event.stopPropagation()">
-          <button class="tbl-btn tbl-btn-status" onclick="openQS('${r.ticketId}','${r.status}')">Status</button>
-          <button class="tbl-btn tbl-btn-edit"   onclick="openEdit('${r.ticketId}')">Edit</button>
-          <button class="tbl-btn tbl-btn-log"    onclick="openLog('${r.ticketId}')">Log</button>
-          <button class="tbl-btn tbl-btn-del"    onclick="startDelete('${r.ticketId}')">Del</button>
+          <button class="tbl-btn tbl-btn-status"  onclick="openQS('${r.ticketId}','${r.status}')">Status</button>
+          <button class="tbl-btn tbl-btn-edit"    onclick="openEdit('${r.ticketId}')">Edit</button>
+          <button class="tbl-btn tbl-btn-log"     onclick="openLog('${r.ticketId}')">Log</button>
+          <button class="tbl-btn tbl-btn-receipt" onclick="openReceipt('${r.ticketId}')">🧾 Receipt</button>
+          <button class="tbl-btn tbl-btn-del"     onclick="startDelete('${r.ticketId}')">Del</button>
         </td>
       </tr>`).join('');
   }
@@ -1299,6 +1373,319 @@
     checkSheetsStatus();
     loadAdmin();
   });
+
+  // ══════════════════════════════════════════════════════
+  //  RECEIPT GENERATOR
+  // ══════════════════════════════════════════════════════
+
+  // Size configs: { widthPx, label, thermal }
+  const RCPT_SIZES = {
+    a4:  { widthPx: 794,  label: 'A4',          thermal: false },
+    a5:  { widthPx: 559,  label: 'A5',           thermal: false },
+    t80: { widthPx: 302,  label: 'Thermal 80mm', thermal: true  },
+    t58: { widthPx: 220,  label: 'Thermal 58mm', thermal: true  },
+  };
+
+  let _rcptRepair = null;
+
+  async function openReceipt(ticketId) {
+    const overlay = document.getElementById('rcptOverlay');
+    const doc     = document.getElementById('receiptDoc');
+    if (!overlay || !doc) return;
+    doc.innerHTML = '<p style="padding:3rem;text-align:center;color:#888;">⏳ Loading…</p>';
+    overlay.classList.add('open');
+    try {
+      const { repair } = await CasualGamerzDB.getByTicket(ticketId);
+      if (!repair) { doc.innerHTML = '<p style="padding:2rem;color:red;">Repair not found.</p>'; return; }
+      _rcptRepair = repair;
+      applyReceiptSize();
+    } catch(e) {
+      doc.innerHTML = `<p style="padding:2rem;color:red;">Error: ${e.message}</p>`;
+    }
+  }
+
+  function closeReceipt() {
+    document.getElementById('rcptOverlay').classList.remove('open');
+    _rcptRepair = null;
+  }
+
+  function applyReceiptSize() {
+    if (!_rcptRepair) return;
+    const sizeKey = document.getElementById('rcptSize').value || 'a4';
+    const cfg = RCPT_SIZES[sizeKey];
+    const doc = document.getElementById('receiptDoc');
+    doc.style.width = cfg.widthPx + 'px';
+    doc.innerHTML = buildReceiptHTML(_rcptRepair, cfg);
+  }
+
+  function buildReceiptHTML(r, cfg) {
+    const thermal = cfg.thermal;
+    const narrow  = cfg.widthPx < 320;
+    const pad     = thermal ? '14px' : '32px';
+    const fBase   = thermal ? '11px' : '13px';
+    const fSmall  = thermal ? '9px'  : '11px';
+    const fBig    = thermal ? '15px' : '20px';
+    const fTitle  = thermal ? '13px' : '17px';
+    const logoSz  = thermal ? '28px' : '48px';
+    const divider = thermal
+      ? `<div style="border-top:1px dashed #bbb;margin:10px 0;"></div>`
+      : `<div style="border-top:2px solid #e0e0e0;margin:18px 0;"></div>`;
+
+    const statusColor = {
+      Received:'#0ea5e9', Diagnosing:'#8b5cf6', Repairing:'#f97316',
+      Testing:'#eab308', Ready:'#22c55e', Completed:'#16a34a', Cancelled:'#9ca3af',
+    }[r.status] || '#6b7280';
+
+    const labor = parseFloat(r.laborCost)||0;
+    const parts = parseFloat(r.partsCost)||0;
+    const total = parseFloat(r.totalCost)||(labor+parts);
+
+    const fmtDate = s => {
+      if (!s) return '—';
+      try { return new Date(s).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
+      catch{return s;}
+    };
+    const fmtDT = s => {
+      if (!s) return '—';
+      try { return new Date(s).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+      catch{return s;}
+    };
+
+    // Barcode-style ticket display
+    const barcodeLines = Array.from({length: thermal?28:38}, (_,i)=>`<div style="width:${[1,1,2,1,3,1,2,1,1,2,3,1,2,1,2][i%15]}px;height:${thermal?'32':'44'}px;background:#111;display:inline-block;margin-right:1px;"></div>`).join('');
+
+    if (thermal) {
+      // ── THERMAL RECEIPT ───────────────────────────────────────────────
+      return `
+      <div style="font-family:monospace;font-size:${fBase};color:#111;padding:${pad};line-height:1.5;width:100%;box-sizing:border-box;">
+        <div style="text-align:center;margin-bottom:12px;">
+          <div style="font-size:${logoSz};line-height:1;">🎮</div>
+          <div style="font-size:${fBig};font-weight:900;letter-spacing:0.08em;text-transform:uppercase;margin:4px 0 2px;">CASUAL GAMERZ</div>
+          <div style="font-size:${fSmall};color:#555;">CGZ Service Center</div>
+          <div style="font-size:${fSmall};color:#555;">Brunei Darussalam</div>
+        </div>
+        ${divider}
+        <div style="text-align:center;margin:8px 0;">
+          <div style="font-size:${fSmall};text-transform:uppercase;letter-spacing:0.1em;color:#555;">REPAIR RECEIPT</div>
+          <div style="font-size:${fBig};font-weight:900;letter-spacing:0.06em;margin:4px 0;">${r.ticketId}</div>
+          <div style="display:flex;justify-content:center;gap:1px;margin:6px 0;">${barcodeLines}</div>
+        </div>
+        ${divider}
+        <div style="font-size:${fSmall};text-transform:uppercase;color:#555;margin-bottom:4px;">CUSTOMER</div>
+        <div style="font-weight:700;">${r.firstName} ${r.lastName}</div>
+        <div>${r.phone}</div>
+        ${r.email?`<div>${r.email}</div>`:''}
+        ${divider}
+        <div style="font-size:${fSmall};text-transform:uppercase;color:#555;margin-bottom:4px;">DEVICE</div>
+        <div style="font-weight:700;">${r.deviceType}${r.brand?' — '+r.brand:''}</div>
+        ${r.model?`<div>${r.model}</div>`:''}
+        <div style="margin-top:4px;">${r.issue}</div>
+        ${r.issueDetail?`<div style="color:#555;font-size:${fSmall};">${r.issueDetail}</div>`:''}
+        ${divider}
+        <div style="font-size:${fSmall};text-transform:uppercase;color:#555;margin-bottom:4px;">STATUS</div>
+        <div style="font-weight:900;text-transform:uppercase;color:${statusColor};">${r.status}</div>
+        ${divider}
+        <div style="font-size:${fSmall};text-transform:uppercase;color:#555;margin-bottom:4px;">COSTS</div>
+        ${labor?`<div style="display:flex;justify-content:space-between;"><span>Labour</span><span>BND$ ${labor.toFixed(2)}</span></div>`:''}
+        ${parts?`<div style="display:flex;justify-content:space-between;"><span>Parts</span><span>BND$ ${parts.toFixed(2)}</span></div>`:''}
+        <div style="border-top:1px solid #bbb;margin:6px 0;"></div>
+        <div style="display:flex;justify-content:space-between;font-weight:900;font-size:${fBig};">
+          <span>TOTAL</span><span>BND$ ${total.toFixed(2)}</span>
+        </div>
+        ${divider}
+        <div style="font-size:${fSmall};color:#555;">Date In: ${fmtDate(r.createdAt)}</div>
+        ${r.estimatedReady?`<div style="font-size:${fSmall};color:#555;">Est. Ready: ${fmtDate(r.estimatedReady)}</div>`:''}
+        ${r.completedAt?`<div style="font-size:${fSmall};color:#555;">Completed: ${fmtDate(r.completedAt)}</div>`:''}
+        ${r.warrantyExpiry?`<div style="font-size:${fSmall};color:#555;">Warranty: ${fmtDate(r.warrantyExpiry)}</div>`:''}
+        ${divider}
+        <div style="text-align:center;font-size:${fSmall};color:#777;line-height:1.6;">
+          <div>Thank you for choosing Casual Gamerz!</div>
+          <div>Keep this receipt for warranty claims.</div>
+          <div>90-day warranty on completed repairs.</div>
+        </div>
+        <div style="text-align:center;margin-top:10px;color:#bbb;font-size:8px;">
+          ${new Date().toLocaleString('en-GB')}
+        </div>
+      </div>`;
+    }
+
+    // ── STANDARD RECEIPT (A4 / A5) ────────────────────────────────────
+    return `
+    <div style="font-family:'Exo 2',sans-serif;font-size:${fBase};color:#111;padding:${pad};line-height:1.6;width:100%;box-sizing:border-box;">
+
+      <!-- Header -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:20px;border-bottom:3px solid #111;">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <span style="font-size:${logoSz};line-height:1;">🎮</span>
+            <div>
+              <div style="font-size:${fBig};font-weight:900;letter-spacing:0.06em;text-transform:uppercase;line-height:1.1;">CASUAL GAMERZ</div>
+              <div style="font-size:${fSmall};color:#666;letter-spacing:0.04em;">CGZ Service Center — Brunei Darussalam</div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:${fSmall};text-transform:uppercase;letter-spacing:0.12em;color:#888;margin-bottom:2px;">REPAIR RECEIPT</div>
+          <div style="font-size:${fTitle};font-weight:900;letter-spacing:0.04em;">${r.ticketId}</div>
+          <div style="font-size:${fSmall};color:#888;margin-top:2px;">${fmtDT(r.createdAt)}</div>
+        </div>
+      </div>
+
+      <!-- Status banner -->
+      <div style="background:${statusColor}18;border-left:4px solid ${statusColor};border-radius:4px;padding:10px 16px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-weight:700;text-transform:uppercase;letter-spacing:0.08em;font-size:${fSmall};color:${statusColor};">Status: ${r.status}</span>
+        ${r.serviceType?`<span style="font-size:${fSmall};color:#555;">${r.serviceType}</span>`:''}
+      </div>
+
+      <!-- Customer + Device grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <div style="background:#f8f8f8;border-radius:8px;padding:14px;">
+          <div style="font-size:${fSmall};text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:6px;font-weight:700;">Customer</div>
+          <div style="font-weight:700;font-size:${fTitle};">${r.firstName} ${r.lastName}</div>
+          <div style="color:#555;margin-top:2px;">${r.phone}</div>
+          ${r.email?`<div style="color:#555;font-size:${fSmall};">${r.email}</div>`:''}
+        </div>
+        <div style="background:#f8f8f8;border-radius:8px;padding:14px;">
+          <div style="font-size:${fSmall};text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:6px;font-weight:700;">Device</div>
+          <div style="font-weight:700;font-size:${fTitle};">${r.deviceType}</div>
+          ${(r.brand||r.model)?`<div style="color:#555;margin-top:2px;">${[r.brand,r.model].filter(Boolean).join(' · ')}</div>`:''}
+        </div>
+      </div>
+
+      <!-- Issue -->
+      <div style="border:1px solid #e5e5e5;border-radius:8px;padding:14px;margin-bottom:20px;">
+        <div style="font-size:${fSmall};text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:6px;font-weight:700;">Issue Reported</div>
+        <div style="font-weight:600;">${r.issue}</div>
+        ${r.issueDetail?`<div style="color:#555;font-size:${fSmall};margin-top:4px;">${r.issueDetail}</div>`:''}
+      </div>
+
+      ${r.techNotes||r.partsUsed?`
+      <!-- Tech section -->
+      <div style="border:1px solid #e5e5e5;border-radius:8px;padding:14px;margin-bottom:20px;">
+        <div style="font-size:${fSmall};text-transform:uppercase;letter-spacing:0.1em;color:#888;margin-bottom:8px;font-weight:700;">Technical Details</div>
+        ${r.techNotes?`<div style="margin-bottom:6px;"><strong>Notes:</strong> ${r.techNotes}</div>`:''}
+        ${r.partsUsed?`<div><strong>Parts:</strong> ${r.partsUsed}</div>`:''}
+      </div>`:''}
+
+      <!-- Costs table -->
+      <div style="border:2px solid #111;border-radius:8px;overflow:hidden;margin-bottom:20px;">
+        <div style="background:#111;color:#fff;padding:10px 16px;font-size:${fSmall};text-transform:uppercase;letter-spacing:0.1em;font-weight:700;">Cost Breakdown</div>
+        <div style="padding:12px 16px;">
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;">
+            <span style="color:#555;">Labour</span>
+            <span style="font-weight:600;">BND$ ${labor.toFixed(2)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;">
+            <span style="color:#555;">Parts</span>
+            <span style="font-weight:600;">BND$ ${parts.toFixed(2)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0 4px;font-weight:900;font-size:${fBig};">
+            <span>TOTAL</span>
+            <span>BND$ ${total.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dates row -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:24px;">
+        <div style="background:#f8f8f8;border-radius:6px;padding:10px 12px;">
+          <div style="font-size:${fSmall};color:#888;text-transform:uppercase;letter-spacing:0.08em;">Date In</div>
+          <div style="font-weight:600;margin-top:2px;">${fmtDate(r.createdAt)}</div>
+        </div>
+        ${r.estimatedReady?`<div style="background:#f8f8f8;border-radius:6px;padding:10px 12px;">
+          <div style="font-size:${fSmall};color:#888;text-transform:uppercase;letter-spacing:0.08em;">Est. Ready</div>
+          <div style="font-weight:600;margin-top:2px;">${fmtDate(r.estimatedReady)}</div>
+        </div>`:''}
+        ${r.completedAt?`<div style="background:#f8f8f8;border-radius:6px;padding:10px 12px;">
+          <div style="font-size:${fSmall};color:#888;text-transform:uppercase;letter-spacing:0.08em;">Completed</div>
+          <div style="font-weight:600;margin-top:2px;">${fmtDate(r.completedAt)}</div>
+        </div>`:''}
+        ${r.warrantyExpiry?`<div style="background:#dcfce7;border-radius:6px;padding:10px 12px;">
+          <div style="font-size:${fSmall};color:#16a34a;text-transform:uppercase;letter-spacing:0.08em;">Warranty Until</div>
+          <div style="font-weight:700;color:#15803d;margin-top:2px;">${fmtDate(r.warrantyExpiry)}</div>
+        </div>`:''}
+      </div>
+
+      <!-- Barcode row -->
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="display:inline-flex;gap:1px;align-items:flex-end;">${barcodeLines}</div>
+        <div style="font-size:${fSmall};letter-spacing:0.15em;margin-top:4px;color:#555;">${r.ticketId}</div>
+      </div>
+
+      <!-- Footer -->
+      <div style="border-top:2px solid #111;padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:${fSmall};color:#666;">
+        <div>
+          <div style="font-weight:700;color:#111;margin-bottom:4px;">Terms &amp; Warranty</div>
+          <div>• 90-day warranty on all completed repairs</div>
+          <div>• Keep this receipt for warranty claims</div>
+          <div>• Uncollected devices after 90 days may be disposed</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:700;color:#111;margin-bottom:4px;">Thank You!</div>
+          <div>Casual Gamerz Service Center</div>
+          <div style="margin-top:8px;color:#aaa;font-size:10px;">Printed: ${new Date().toLocaleString('en-GB')}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ── Export receipt ─────────────────────────────────────────────────────
+  async function exportReceipt(type) {
+    const doc = document.getElementById('receiptDoc');
+    if (!doc || !_rcptRepair) return;
+
+    const sizeKey = document.getElementById('rcptSize').value || 'a4';
+    const cfg     = RCPT_SIZES[sizeKey];
+    const fname   = `CGZ_Receipt_${_rcptRepair.ticketId}_${cfg.label.replace(/\s/g,'_')}`;
+
+    showToast('Generating ' + type.toUpperCase() + '…', '⏳');
+
+    try {
+      const canvas = await html2canvas(doc, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: doc.scrollWidth,
+        height: doc.scrollHeight,
+        windowWidth: doc.scrollWidth,
+        windowHeight: doc.scrollHeight,
+      });
+
+      if (type === 'pdf') {
+        const { jsPDF } = window.jspdf;
+        const imgData   = canvas.toDataURL('image/jpeg', 0.95);
+        const pxToMm    = 0.264583;
+        const wMm       = canvas.width  / 2 * pxToMm;
+        const hMm       = canvas.height / 2 * pxToMm;
+        // Pick orientation + format
+        let format, orientation;
+        if (sizeKey === 'a4') { format = 'a4'; orientation = wMm > hMm ? 'landscape' : 'portrait'; }
+        else if (sizeKey === 'a5') { format = 'a5'; orientation = wMm > hMm ? 'landscape' : 'portrait'; }
+        else { format = [wMm, hMm]; orientation = 'portrait'; }
+
+        const pdf = new jsPDF({ orientation, unit:'mm', format });
+        const pgW = pdf.internal.pageSize.getWidth();
+        const pgH = pdf.internal.pageSize.getHeight();
+        const scale = Math.min(pgW/wMm, pgH/hMm);
+        const x = (pgW - wMm*scale)/2;
+        const y = (pgH - hMm*scale)/2;
+        pdf.addImage(imgData, 'JPEG', x, y, wMm*scale, hMm*scale);
+        pdf.save(fname + '.pdf');
+      } else {
+        const quality = type === 'jpg' ? 0.92 : 1.0;
+        const mime    = type === 'jpg' ? 'image/jpeg' : 'image/png';
+        const dataUrl = type === 'jpg' ? canvas.toDataURL(mime, quality) : canvas.toDataURL(mime);
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = fname + '.' + type;
+        a.click();
+      }
+      showToast(type.toUpperCase() + ' saved!');
+    } catch(e) {
+      showToast('Export failed: ' + e.message, '❌');
+    }
+  }
   </script>
 </body>
 </html>

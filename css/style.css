@@ -1467,3 +1467,157 @@ footer {
   border-color: rgba(0,245,255,0.4);
   color: var(--text-primary);
 }
+
+/* ===== THEME TOGGLE BUTTON ===== */
+.theme-toggle {
+  background: none;
+  border: 1px solid rgba(0, 245, 255, 0.3);
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: var(--transition);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  background: rgba(0, 245, 255, 0.1);
+  border-color: var(--neon-cyan);
+}
+
+/* ===== LIGHT THEME ===== */
+[data-theme="light"] {
+  --neon-cyan: #0891b2;
+  --neon-pink: #db2777;
+  --neon-green: #16a34a;
+  --neon-yellow: #d97706;
+  --dark-bg: #f1f5f9;
+  --dark-card: #ffffff;
+  --dark-surface: #e8f0f7;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --accent-orange: #ea580c;
+  --gradient-card: linear-gradient(145deg, #ffffff, #f8fafc);
+  --border-glow: 1px solid rgba(8, 145, 178, 0.2);
+  --shadow-cyan: 0 4px 20px rgba(8, 145, 178, 0.12);
+  --shadow-pink: 0 4px 20px rgba(219, 39, 119, 0.12);
+  --gradient-main: linear-gradient(135deg, #0891b2 0%, #db2777 100%);
+}
+
+/* Light theme — override hardcoded dark rgba values */
+[data-theme="light"] .navbar {
+  background: rgba(241, 245, 249, 0.9);
+  border-bottom-color: rgba(8, 145, 178, 0.2);
+}
+
+[data-theme="light"] .navbar.scrolled {
+  background: rgba(248, 250, 252, 0.98);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .grid-bg {
+  background-image:
+    linear-gradient(rgba(8, 145, 178, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(8, 145, 178, 0.06) 1px, transparent 1px);
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background: #ffffff;
+  border-color: rgba(8, 145, 178, 0.25);
+  color: #0f172a;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94a3b8;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+  border-color: var(--neon-cyan);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+}
+
+[data-theme="light"] .glow-divider {
+  box-shadow: 0 0 10px rgba(8, 145, 178, 0.4);
+}
+
+[data-theme="light"] footer {
+  border-top-color: rgba(8, 145, 178, 0.15);
+}
+
+[data-theme="light"] .social-link {
+  background: rgba(8, 145, 178, 0.08);
+  border-color: rgba(8, 145, 178, 0.2);
+}
+
+[data-theme="light"] .social-link:hover {
+  background: rgba(8, 145, 178, 0.15);
+}
+
+[data-theme="light"] .device-option label {
+  background: rgba(8, 145, 178, 0.04);
+  border-color: rgba(8, 145, 178, 0.18);
+}
+
+[data-theme="light"] .device-option input:checked + label {
+  background: rgba(8, 145, 178, 0.1);
+}
+
+[data-theme="light"] .device-option label:hover {
+  border-color: rgba(8, 145, 178, 0.4);
+}
+
+[data-theme="light"] .tracking-result {
+  background: rgba(8, 145, 178, 0.04);
+  border-color: rgba(8, 145, 178, 0.2);
+}
+
+[data-theme="light"] .progress-steps::before {
+  background: rgba(8, 145, 178, 0.15);
+}
+
+[data-theme="light"] .step-dot {
+  border-color: rgba(8, 145, 178, 0.25);
+  background: #ffffff;
+}
+
+[data-theme="light"] .faq-item:hover {
+  border-color: rgba(8, 145, 178, 0.35);
+}
+
+[data-theme="light"] .contact-item:hover {
+  border-color: rgba(8, 145, 178, 0.4);
+}
+
+[data-theme="light"] .testimonial-card:hover {
+  border-color: rgba(8, 145, 178, 0.4);
+}
+
+[data-theme="light"] .btn-price-outline {
+  border-color: rgba(8, 145, 178, 0.35);
+}
+
+[data-theme="light"] .btn-price-outline:hover {
+  background: rgba(8, 145, 178, 0.06);
+}
+
+[data-theme="light"] .theme-toggle {
+  border-color: rgba(8, 145, 178, 0.3);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+  background: rgba(8, 145, 178, 0.1);
+}
+
+@media (max-width: 768px) {
+  [data-theme="light"] .nav-links {
+    background: rgba(248, 250, 252, 0.99);
+  }
+}

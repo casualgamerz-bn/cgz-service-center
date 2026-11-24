@@ -65,8 +65,10 @@ function sheetToObjects(sheet, cols) {
 
 function findRepairRow(sheet, ticketId) {
   const col = sheet.getRange('A:A').getValues();
+  const target = String(ticketId || '').trim();
+  if (!target) return -1;
   for (let i = 1; i < col.length; i++) {
-    if (col[i][0] === ticketId) return i + 1;
+    if (String(col[i][0]).trim() === target) return i + 1;
   }
   return -1;
 }
@@ -139,7 +141,8 @@ function doPost(e) {
     }
 
     if (action === 'updateStatus') {
-      const { ticketId, status, note, tech } = body;
+      const ticketId = body.ticketId || body.ticket;
+      const { status, note, tech } = body;
       const sheet = repairSheet();
       const rowNum = findRepairRow(sheet, ticketId);
       if (rowNum < 0) return corsOutput({ ok: false, error: 'Ticket not found' });
@@ -160,7 +163,8 @@ function doPost(e) {
     }
 
     if (action === 'updateRepair') {
-      const { ticketId, data } = body;
+      const ticketId = body.ticketId || body.ticket;
+      const data = body.data;
       const sheet = repairSheet();
       const rowNum = findRepairRow(sheet, ticketId);
       if (rowNum < 0) return corsOutput({ ok: false, error: 'Ticket not found' });
@@ -176,7 +180,7 @@ function doPost(e) {
     }
 
     if (action === 'deleteRepair') {
-      const { ticketId } = body;
+      const ticketId = body.ticketId || body.ticket;
       const rSheet = repairSheet();
       const rowNum = findRepairRow(rSheet, ticketId);
       if (rowNum < 0) return corsOutput({ ok: false, error: 'Ticket not found' });

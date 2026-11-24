@@ -104,15 +104,15 @@ const CasualGamerzDB = (() => {
 
     /** Update status */
     updateStatus: (ticket, status, note, tech) =>
-      post({ action: 'updateStatus', ticket, status, note, tech }),
+      post({ action: 'updateStatus', ticketId: ticket, status, note, tech }),
 
     /** Update repair fields */
     updateRepair: (ticket, data) =>
-      post({ action: 'updateRepair', ticket, data }),
+      post({ action: 'updateRepair', ticketId: ticket, data }),
 
     /** Delete a repair */
     deleteRepair: (ticket) =>
-      post({ action: 'deleteRepair', ticket }),
+      post({ action: 'deleteRepair', ticketId: ticket }),
 
     // ── Utilities ──────────────────────────────────────────────────────
 

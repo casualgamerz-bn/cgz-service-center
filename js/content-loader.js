@@ -1,5 +1,11 @@
 (function () {
-  var CONTENT_URL  = '/content.json';
+  // Resolve content.json path correctly on GitHub Pages (/cgz-service-center/) and locally
+  var CONTENT_URL = (function() {
+    var h = location.hostname;
+    if (h === 'casualgamerz-bn.github.io') return '/cgz-service-center/content.json';
+    // Local: detect if we're in a pages/ subdirectory
+    return location.pathname.indexOf('/pages/') !== -1 ? '../content.json' : 'content.json';
+  })();
   var FALLBACK_URL = 'https://raw.githubusercontent.com/casualgamerz-bn/cgz-service-center/main/content.json';
 
   var SECTION_COLORS = { pc:'cyan', laptop:'pink', console:'green', sw:'orange', peri:'purple' };

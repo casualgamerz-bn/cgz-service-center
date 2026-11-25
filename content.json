@@ -59,12 +59,12 @@
     "team2_name": "Casual Gamerz 2",
     "team2_role": "Co-Founder & Software Lead",
     "team2_bio": "Expert in software diagnostics, data recovery, and OS optimization. Also the team's resident macOS guru.",
-    "team3_name": "Casual Gamerz 3",
-    "team3_role": "Console & Motherboard Tech",
-    "team3_bio": "BGA rework specialist. If it involves micro-soldering or board-level repair, this is your guy.",
-    "team4_name": "Casual Gamerz 4",
-    "team4_role": "Customer Experience Lead",
-    "team4_bio": "The first face you'll see at our counter. Makes sure every customer leaves with a smile and a working device."
+    "team3_name": "",
+    "team3_role": "",
+    "team3_bio": "",
+    "team4_name": "",
+    "team4_role": "",
+    "team4_bio": ""
   },
   "services": {
     "hero_desc": "Comprehensive repair and upgrade solutions for every gaming device and computer.",

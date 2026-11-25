@@ -311,43 +311,16 @@
           </div>
         </div>
         <div class="field-group">
-          <div class="field-group-title">Service Card Titles (Homepage Preview)</div>
-          <div class="field-row">
-            <div class="field-item"><label class="form-label">Service 1</label><input class="form-input" data-field="home.service1_title" /></div>
-            <div class="field-item"><label class="form-label">Service 2</label><input class="form-input" data-field="home.service2_title" /></div>
-          </div>
-          <div class="field-row">
-            <div class="field-item"><label class="form-label">Service 3</label><input class="form-input" data-field="home.service3_title" /></div>
-            <div class="field-item"><label class="form-label">Service 4</label><input class="form-input" data-field="home.service4_title" /></div>
-          </div>
-          <div class="field-row">
-            <div class="field-item"><label class="form-label">Service 5</label><input class="form-input" data-field="home.service5_title" /></div>
-            <div class="field-item"><label class="form-label">Service 6</label><input class="form-input" data-field="home.service6_title" /></div>
-          </div>
+          <div class="field-group-title">🛠️ Service Preview Cards</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">These are the service cards on the homepage. Toggle, edit, add or delete as needed.</p>
+          <div class="section-cards-wrap" id="cards-home_service"></div>
+          <button class="btn-add" onclick="addCard('home_service')">+ Add Card</button>
         </div>
         <div class="field-group">
-          <div class="field-group-title">Review 1</div>
-          <div class="field-item"><label class="form-label">Review Text</label><textarea class="form-input" data-field="home.review1_text"></textarea></div>
-          <div class="field-row">
-            <div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="home.review1_name" /></div>
-            <div class="field-item"><label class="form-label">Role / Location</label><input class="form-input" data-field="home.review1_role" /></div>
-          </div>
-        </div>
-        <div class="field-group">
-          <div class="field-group-title">Review 2</div>
-          <div class="field-item"><label class="form-label">Review Text</label><textarea class="form-input" data-field="home.review2_text"></textarea></div>
-          <div class="field-row">
-            <div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="home.review2_name" /></div>
-            <div class="field-item"><label class="form-label">Role / Location</label><input class="form-input" data-field="home.review2_role" /></div>
-          </div>
-        </div>
-        <div class="field-group">
-          <div class="field-group-title">Review 3</div>
-          <div class="field-item"><label class="form-label">Review Text</label><textarea class="form-input" data-field="home.review3_text"></textarea></div>
-          <div class="field-row">
-            <div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="home.review3_name" /></div>
-            <div class="field-item"><label class="form-label">Role / Location</label><input class="form-input" data-field="home.review3_role" /></div>
-          </div>
+          <div class="field-group-title">⭐ Customer Reviews</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">Testimonials shown on the homepage. Toggle, edit, add or delete.</p>
+          <div class="section-cards-wrap" id="cards-home_review"></div>
+          <button class="btn-add" onclick="addCard('home_review')">+ Add Card</button>
         </div>
       </div>
 
@@ -371,24 +344,22 @@
           <div class="field-row"><div class="field-item"><label class="form-label">Stat 3 Value</label><input class="form-input" data-field="about.stat3_val" /></div><div class="field-item"><label class="form-label">Stat 3 Label</label><input class="form-input" data-field="about.stat3_label" /></div></div>
         </div>
         <div class="field-group">
-          <div class="field-group-title">Team Member 1</div>
-          <div class="field-row"><div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="about.team1_name" /></div><div class="field-item"><label class="form-label">Role</label><input class="form-input" data-field="about.team1_role" /></div></div>
-          <div class="field-item"><label class="form-label">Bio</label><textarea class="form-input" data-field="about.team1_bio"></textarea></div>
+          <div class="field-group-title">💡 Values Cards</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">The "What We Stand For" cards on the About page.</p>
+          <div class="section-cards-wrap" id="cards-about_values"></div>
+          <button class="btn-add" onclick="addCard('about_values')">+ Add Card</button>
         </div>
         <div class="field-group">
-          <div class="field-group-title">Team Member 2</div>
-          <div class="field-row"><div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="about.team2_name" /></div><div class="field-item"><label class="form-label">Role</label><input class="form-input" data-field="about.team2_role" /></div></div>
-          <div class="field-item"><label class="form-label">Bio</label><textarea class="form-input" data-field="about.team2_bio"></textarea></div>
+          <div class="field-group-title">👤 Team Members</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">Team cards shown on the About page. The Icon field holds the initials shown in the avatar circle.</p>
+          <div class="section-cards-wrap" id="cards-about_team"></div>
+          <button class="btn-add" onclick="addCard('about_team')">+ Add Card</button>
         </div>
         <div class="field-group">
-          <div class="field-group-title">Team Member 3</div>
-          <div class="field-row"><div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="about.team3_name" /></div><div class="field-item"><label class="form-label">Role</label><input class="form-input" data-field="about.team3_role" /></div></div>
-          <div class="field-item"><label class="form-label">Bio</label><textarea class="form-input" data-field="about.team3_bio"></textarea></div>
-        </div>
-        <div class="field-group">
-          <div class="field-group-title">Team Member 4</div>
-          <div class="field-row"><div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="about.team4_name" /></div><div class="field-item"><label class="form-label">Role</label><input class="form-input" data-field="about.team4_role" /></div></div>
-          <div class="field-item"><label class="form-label">Bio</label><textarea class="form-input" data-field="about.team4_bio"></textarea></div>
+          <div class="field-group-title">⭐ Customer Reviews</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">Reviews shown on the About page.</p>
+          <div class="section-cards-wrap" id="cards-about_review"></div>
+          <button class="btn-add" onclick="addCard('about_review')">+ Add Card</button>
         </div>
       </div>
 
@@ -486,7 +457,43 @@
   function b64(str) { return btoa(unescape(encodeURIComponent(str))); }
 
   /* ─── CARD SECTIONS CONFIG ─── */
-  var SECTIONS = ['pc','laptop','console','sw','peri'];
+  // Services page cards
+  var SVC_SECTIONS = ['pc','laptop','console','sw','peri'];
+  // All card sections: key → content.json path
+  var CARD_MAP = {
+    'pc':           'services.pc_cards',
+    'laptop':       'services.laptop_cards',
+    'console':      'services.console_cards',
+    'sw':           'services.sw_cards',
+    'peri':         'services.peri_cards',
+    'home_service': 'home.service_cards',
+    'home_review':  'home.review_cards',
+    'about_values': 'about.values_cards',
+    'about_team':   'about.team_cards',
+    'about_review': 'about.review_cards'
+  };
+  // Blank card templates per section type
+  var CARD_DEFAULTS = {
+    'pc':           { icon:'🔧', title:'New Service',  desc:'Describe this service here.',    visible:true },
+    'laptop':       { icon:'🔧', title:'New Service',  desc:'Describe this service here.',    visible:true },
+    'console':      { icon:'🔧', title:'New Service',  desc:'Describe this service here.',    visible:true },
+    'sw':           { icon:'🔧', title:'New Service',  desc:'Describe this service here.',    visible:true },
+    'peri':         { icon:'🔧', title:'New Service',  desc:'Describe this service here.',    visible:true },
+    'home_service': { icon:'🔧', color:'cyan', title:'New Service',  desc:'Describe this service.',  link:'pages/services.html', tags:[], visible:true },
+    'home_review':  { text:'Customer review goes here.', name:'Customer Name', role:'Service · Location', initials:'??', visible:true },
+    'about_values': { icon:'⭐', color:'cyan', title:'Our Value',    desc:'What we stand for.',       visible:true },
+    'about_team':   { initials:'CG', gradient:'135deg,#00f5ff,#ff0080', name:'Team Member', role:'Role Title', bio:'Bio goes here.', visible:true },
+    'about_review': { text:'Customer review goes here.', name:'Customer Name', role:'Service · Location', initials:'??', visible:true }
+  };
+  // Which extra fields to show per section type
+  var SECTION_TYPE = {
+    'pc':'service','laptop':'service','console':'service','sw':'service','peri':'service',
+    'home_service':'home_service',
+    'home_review':'review','about_review':'review',
+    'about_values':'values',
+    'about_team':'team'
+  };
+  var SECTIONS = Object.keys(CARD_MAP);
 
   /* ─── RENDER CARD ROWS IN ADMIN ─── */
   function renderCardSection(section, cards) {
@@ -501,21 +508,51 @@
 
   function buildCardRow(section, idx, card) {
     var div = document.createElement('div');
+    var type = SECTION_TYPE[section] || 'service';
+    // Use a 2-col layout for review/team (no icon column)
+    var isReview = (type === 'review');
+    var isTeam   = (type === 'team');
     div.className = 'card-row' + (card.visible ? '' : ' hidden-card');
     div.dataset.section = section;
     div.dataset.idx = idx;
-
     var checked = card.visible ? 'checked' : '';
+
+    var iconCol = '';
+    if (!isReview) {
+      var iconVal = isTeam ? esc(card.initials||'') : esc(card.icon||'');
+      var iconLabel = isTeam ? 'Initials' : 'Icon';
+      iconCol = '<div><label class="form-label">' + iconLabel + '</label><input class="form-input" style="text-align:center;font-size:1.2rem;padding:0.4rem;" value="' + iconVal + '" oninput="updateCardField(\'' + section + '\',' + idx + ',\'' + (isTeam?'initials':'icon') + '\',this.value)" /></div>';
+    }
+
+    var col3Label = isReview ? 'Reviewer Name' : (isTeam ? 'Name' : 'Title');
+    var col3Field = (isReview || isTeam) ? 'name' : 'title';
+    var col3Val   = esc(card[col3Field] || '');
+
+    var col4Label, col4Field, col4Val;
+    if (isReview) { col4Label = 'Role / Location'; col4Field = 'role'; col4Val = esc(card.role||''); }
+    else if (isTeam) { col4Label = 'Role'; col4Field = 'role'; col4Val = esc(card.role||''); }
+    else { col4Label = 'Description'; col4Field = 'desc'; col4Val = esc(card.desc||''); }
+
+    var extraRow = '';
+    if (isReview) {
+      extraRow = '<div class="card-row-desc"><label class="form-label">Review Text</label><textarea class="form-input" oninput="updateCardField(\'' + section + '\',' + idx + ',\'text\',this.value)">' + esc(card.text||'') + '</textarea></div>';
+    } else if (isTeam) {
+      extraRow = '<div class="card-row-desc"><label class="form-label">Bio</label><textarea class="form-input" oninput="updateCardField(\'' + section + '\',' + idx + ',\'bio\',this.value)">' + esc(card.bio||'') + '</textarea></div>';
+    }
 
     div.innerHTML =
       '<div class="toggle-wrap">' +
         '<label class="toggle"><input type="checkbox" ' + checked + ' onchange="toggleCard(\'' + section + '\',' + idx + ',this.checked)"><span class="toggle-slider"></span></label>' +
         '<span class="toggle-label">' + (card.visible ? 'ON' : 'OFF') + '</span>' +
       '</div>' +
-      '<div><label class="form-label">Icon</label><input class="form-input" style="text-align:center;font-size:1.2rem;padding:0.4rem;" value="' + esc(card.icon||'') + '" oninput="updateCardField(\'' + section + '\',' + idx + ',\'icon\',this.value)" /></div>' +
-      '<div><label class="form-label">Title</label><input class="form-input" value="' + esc(card.title||'') + '" oninput="updateCardField(\'' + section + '\',' + idx + ',\'title\',this.value)" /></div>' +
-      '<div><label class="form-label">Description</label><textarea class="form-input" oninput="updateCardField(\'' + section + '\',' + idx + ',\'desc\',this.value)">' + esc(card.desc||'') + '</textarea></div>' +
-      '<button class="btn-del" onclick="deleteCard(\'' + section + '\',' + idx + ')" title="Delete card">🗑</button>';
+      iconCol +
+      '<div><label class="form-label">' + col3Label + '</label><input class="form-input" value="' + col3Val + '" oninput="updateCardField(\'' + section + '\',' + idx + ',\'' + col3Field + '\',this.value)" /></div>' +
+      '<div><label class="form-label">' + col4Label + '</label>' +
+        (isTeam || isReview ? '<input class="form-input" value="' + col4Val + '" oninput="updateCardField(\'' + section + '\',' + idx + ',\'' + col4Field + '\',this.value)" />' :
+          '<textarea class="form-input" oninput="updateCardField(\'' + section + '\',' + idx + ',\'' + col4Field + '\',this.value)">' + col4Val + '</textarea>') +
+      '</div>' +
+      '<button class="btn-del" onclick="deleteCard(\'' + section + '\',' + idx + ')" title="Delete card">🗑</button>' +
+      (extraRow ? '<div style="grid-column:1/-1;margin-top:-0.3rem;">' + extraRow + '</div>' : '');
 
     return div;
   }
@@ -551,9 +588,9 @@
 
   function addCard(section) {
     if (!cardData[section]) cardData[section] = [];
-    cardData[section].push({ icon: '🔧', title: 'New Service', desc: 'Describe this service here.', visible: true });
+    var defaults = CARD_DEFAULTS[section] || { icon:'🔧', title:'New Card', desc:'Description here.', visible:true };
+    cardData[section].push(JSON.parse(JSON.stringify(defaults)));
     renderCardSection(section, cardData[section]);
-    // Scroll to new card
     var wrap = document.getElementById('cards-' + section);
     if (wrap && wrap.lastChild) wrap.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -600,10 +637,11 @@
       var val = get(content, el.getAttribute('data-field'));
       if (val !== undefined && val !== null) el.value = val;
     });
-    // Fill card sections
-    SECTIONS.forEach(function(key) {
-      var cards = (content.services && content.services[key + '_cards']) || [];
-      cardData[key] = JSON.parse(JSON.stringify(cards)); // deep copy
+    // Fill all card sections from CARD_MAP
+    Object.keys(CARD_MAP).forEach(function(key) {
+      var path = CARD_MAP[key];
+      var cards = get(content, path) || [];
+      cardData[key] = JSON.parse(JSON.stringify(cards));
       renderCardSection(key, cardData[key]);
     });
   }
@@ -614,10 +652,9 @@
     document.querySelectorAll('[data-field]').forEach(function(el) {
       set(obj, el.getAttribute('data-field'), el.value);
     });
-    // Inject card arrays from cardData
-    if (!obj.services) obj.services = {};
-    SECTIONS.forEach(function(key) {
-      obj.services[key + '_cards'] = cardData[key] || [];
+    // Inject card arrays from cardData using CARD_MAP paths
+    Object.keys(CARD_MAP).forEach(function(key) {
+      set(obj, CARD_MAP[key], cardData[key] || []);
     });
     return obj;
   }

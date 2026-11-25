@@ -409,20 +409,55 @@
           "id": "cs_1795646002719_mfkd0",
           "type": "image",
           "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795646013354-PS5.webp",
-          "alt": "",
+          "alt": "PLAYSTATION 5",
           "caption": ""
         },
         {
           "id": "cs_1795646024144_8v56j",
           "type": "image",
           "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795646030122-XBOX_SERIES_X.png",
-          "alt": "",
+          "alt": "XBOX SERIES X / SERIES S",
           "caption": ""
         },
         {
           "id": "cs_1795646037105_9pz3h",
           "type": "text",
           "content": "Games Download and Updates"
+        }
+      ]
+    },
+    {
+      "id": "cs_1795646892840_61yi5",
+      "slot": "home-top",
+      "title": "BRING YOUR GAMING BACK TO LIFE",
+      "subtitle": "",
+      "visible": true,
+      "items": [
+        {
+          "id": "cs_1795646922745_iqliq",
+          "type": "image",
+          "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795646955654-PlayStation-PNG-Image-PNG.png",
+          "alt": "PS3",
+          "caption": "Deep Dust Cleaning + Thermal Re-paste $35 Upgrade Storage to 1TB $30 (excluding HDD/SSD/NVME) PS3 Jailbreak Service $30 PS3 Games 3 for $10"
+        },
+        {
+          "id": "cs_1795646967755_nim7c",
+          "type": "image",
+          "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795646971983-PlayStation-4-Pro.png",
+          "alt": "PS4",
+          "caption": "Deep Dust Cleaning + Thermal Re-paste $35 Upgrade Storage to 1TB/2TB $30 (excluding HDD/SSD) PS4 System Update/Download depends upon GB Size"
+        },
+        {
+          "id": "cs_1795646988723_ojfrl",
+          "type": "image",
+          "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795647001490-Xbox-360S-Console-Set.png",
+          "alt": "XBOX 360",
+          "caption": "Deep Dust Cleaning + Thermal Re-paste $35 Upgrade Storage to 1TB $30 (excluding HDD/SSD) XBOX 360 Games 3 Games for $10"
+        },
+        {
+          "id": "cs_1795647014451_5gqbf",
+          "type": "text",
+          "content": ""
         }
       ]
     }

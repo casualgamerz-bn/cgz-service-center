@@ -375,19 +375,19 @@
         "icon": "ð®",
         "title": "Joystick Drift Fix",
         "desc": "Fix analog stick drift on PS4/PS5, Xbox, Switch Joycon controllers using Hall effect sensor upgrades.",
-        "visible": true
+        "visible": false
       },
       {
         "icon": "ð±ï¸",
         "title": "Gaming Mouse Repair",
         "desc": "Micro switch replacement, scroll wheel, cable repair, sensor cleaning for Logitech, Razer, SteelSeries and more.",
-        "visible": true
+        "visible": false
       },
       {
         "icon": "â¨ï¸",
         "title": "Mechanical Keyboard",
         "desc": "Switch replacement, PCB repair, stabilizer lubing, keycap restoration, and RGB firmware flashing.",
-        "visible": true
+        "visible": false
       }
     ]
   },

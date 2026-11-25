@@ -207,16 +207,22 @@
             // Collect consecutive image items
             var imgs = [];
             while (idx < items.length && items[idx].type === 'image') { imgs.push(items[idx]); idx++; }
+            function imgStyle(img, fullWidth) {
+              var base = fullWidth ? 'width:100%;' : 'max-width:100%;';
+              var round = 'border-radius:16px;';
+              if (img.boxed) return base + round + 'border:var(--border-glow);box-shadow:var(--shadow-cyan);';
+              return base + round;
+            }
             if (imgs.length === 1) {
               html += '<div style="text-align:center;margin:2rem auto;max-width:680px;">';
-              html += '<img src="' + (imgs[0].url || '') + '" alt="' + (imgs[0].alt || '') + '" style="max-width:100%;border-radius:16px;border:var(--border-glow);box-shadow:var(--shadow-cyan);" />';
+              html += '<img src="' + (imgs[0].url || '') + '" alt="' + (imgs[0].alt || '') + '" style="' + imgStyle(imgs[0], false) + '" />';
               if (imgs[0].caption) html += '<p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.75rem;">' + imgs[0].caption + '</p>';
               html += '</div>';
             } else {
               html += '<div style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;margin:2rem auto;">';
               imgs.forEach(function(img) {
                 html += '<div style="flex:1;min-width:200px;max-width:420px;text-align:center;">';
-                html += '<img src="' + (img.url || '') + '" alt="' + (img.alt || '') + '" style="width:100%;border-radius:16px;border:var(--border-glow);box-shadow:var(--shadow-cyan);" />';
+                html += '<img src="' + (img.url || '') + '" alt="' + (img.alt || '') + '" style="' + imgStyle(img, true) + '" />';
                 if (img.caption) html += '<p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.75rem;">' + img.caption + '</p>';
                 html += '</div>';
               });

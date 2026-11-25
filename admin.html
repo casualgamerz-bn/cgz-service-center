@@ -588,7 +588,7 @@
     if (!customSections[si]) return;
     var item = { id: csUid(), type: type };
     if (type === 'text')  { item.content = ''; }
-    if (type === 'image') { item.url = ''; item.alt = ''; item.caption = ''; }
+    if (type === 'image') { item.url = ''; item.alt = ''; item.caption = ''; item.boxed = false; }
     if (type === 'card')  { item.icon = '📌'; item.color = 'cyan'; item.title = 'Card Title'; item.desc = 'Description here.'; item.visible = true; }
     customSections[si].items.push(item);
     renderCsPanel();
@@ -672,6 +672,10 @@
         '<div style="display:flex;gap:0.75rem;margin-top:0.5rem;flex-wrap:wrap;">' +
         '<div style="flex:1;min-width:140px;"><label class="form-label">Alt Text</label><input class="form-input" value="' + esc(item.alt || '') + '" placeholder="Describe image" oninput="csItemField(' + si + ',' + ii + ',\'alt\',this.value)" /></div>' +
         '<div style="flex:1;min-width:140px;"><label class="form-label">Caption (optional)</label><input class="form-input" value="' + esc(item.caption || '') + '" placeholder="Caption under image" oninput="csItemField(' + si + ',' + ii + ',\'caption\',this.value)" /></div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:0.6rem;margin-top:0.5rem;">' +
+        '<label class="toggle-label"><input type="checkbox"' + (item.boxed ? ' checked' : '') + ' onchange="csItemField(' + si + ',' + ii + ',\'boxed\',this.checked)" /><span>Border &amp; Shadow</span></label>' +
+        '<span style="color:var(--muted);font-size:0.72rem;">(disable for image-only, no box)</span>' +
         '</div>' +
         '<div id="cs-upload-status-' + si + '-' + ii + '" style="font-size:0.78rem;margin-top:0.3rem;"></div>' +
         '</div>';

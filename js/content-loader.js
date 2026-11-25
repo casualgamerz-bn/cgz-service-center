@@ -39,7 +39,7 @@
       var html  = '';
       cards.forEach(function(card) {
         if (!card.visible) return;
-        html += '<a href="repair.html" class="service-card fade-in">' +
+        html += '<a href="repair.html" class="service-card">' +
                   '<div class="service-icon-wrap ' + color + '">' + (card.icon||'🔧') + '</div>' +
                   '<h3>' + (card.title||'') + '</h3>' +
                   '<p>'  + (card.desc ||'') + '</p>' +
@@ -65,7 +65,7 @@
       }
       var link = card.link || 'pages/services.html';
       // links on the homepage are relative from root; on other pages they'd need ../
-      html += '<a href="' + link + '" class="service-card fade-in">' +
+      html += '<a href="' + link + '" class="service-card">' +
                 '<div class="service-icon-wrap ' + (card.color||'cyan') + '">' + (card.icon||'🔧') + '</div>' +
                 '<h3>' + (card.title||'') + '</h3>' +
                 '<p>'  + (card.desc ||'') + '</p>' +
@@ -85,7 +85,7 @@
     var html = '';
     cards.forEach(function(card) {
       if (!card.visible) return;
-      html += '<div class="testimonial-card fade-in">' +
+      html += '<div class="testimonial-card">' +
                 '<div class="stars">★★★★★</div>' +
                 '<blockquote>"' + (card.text||'') + '"</blockquote>' +
                 '<div class="testimonial-author">' +
@@ -109,7 +109,7 @@
     var html = '';
     cards.forEach(function(card) {
       if (!card.visible) return;
-      html += '<div class="service-card fade-in" style="cursor:default;">' +
+      html += '<div class="service-card" style="cursor:default;">' +
                 '<div class="service-icon-wrap ' + (card.color||'cyan') + '">' + (card.icon||'⭐') + '</div>' +
                 '<h3>' + (card.title||'') + '</h3>' +
                 '<p>'  + (card.desc ||'') + '</p>' +
@@ -128,7 +128,7 @@
     cards.forEach(function(card) {
       if (!card.visible) return;
       var gradient = card.gradient || '135deg,#00f5ff,#ff0080';
-      html += '<div class="testimonial-card fade-in" style="text-align:center;">' +
+      html += '<div class="testimonial-card" style="text-align:center;">' +
                 '<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(' + gradient + ');display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--dark-bg);margin:0 auto 1rem;">' + (card.initials||'CG') + '</div>' +
                 '<h3 style="font-size:1rem;margin-bottom:0.25rem;">' + (card.name||'') + '</h3>' +
                 '<p style="color:var(--neon-cyan);font-size:0.8rem;font-family:var(--font-display);letter-spacing:0.05em;margin-bottom:0.75rem;">' + (card.role||'') + '</p>' +
@@ -147,7 +147,7 @@
     var html = '';
     cards.forEach(function(card) {
       if (!card.visible) return;
-      html += '<div class="testimonial-card fade-in">' +
+      html += '<div class="testimonial-card">' +
                 '<div class="stars">★★★★★</div>' +
                 '<blockquote>"' + (card.text||'') + '"</blockquote>' +
                 '<div class="testimonial-author">' +

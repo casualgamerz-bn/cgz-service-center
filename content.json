@@ -515,6 +515,22 @@
           "caption": "4 Switch Games for $10  Games Download and Updates"
         }
       ]
+    },
+    {
+      "id": "cs_1795647303060_dmpfi",
+      "slot": "home-top",
+      "title": "GET YOUR GAMING ON THE GO",
+      "subtitle": "",
+      "visible": true,
+      "items": [
+        {
+          "id": "cs_1795647312460_wr6tm",
+          "type": "image",
+          "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795647323854-STEAMDECK.webp",
+          "alt": "STEAM DECK",
+          "caption": "Games Download and Updates"
+        }
+      ]
     }
   ]
 }

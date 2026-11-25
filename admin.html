@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CGZ Admin — Site Editor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cyan: #00f5ff;
+      --pink: #ff0080;
+      --bg: #05050f;
+      --card: #0d0d1f;
+      --card2: #111128;
+      --border: rgba(0,245,255,0.18);
+      --text: #e0e0f0;
+      --muted: #7070a0;
+      --success: #00ff88;
+      --error: #ff4466;
+      --font-h: 'Orbitron', monospace;
+      --font-b: 'Exo 2', sans-serif;
+      --radius: 12px;
+      --transition: all 0.22s ease;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 60% 40% at 20% 20%, rgba(0,245,255,0.04) 0%, transparent 60%),
+                  radial-gradient(ellipse 50% 35% at 80% 80%, rgba(255,0,128,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ── LOGIN SCREEN ── */
+    #login-screen {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+      padding: 1.5rem;
+    }
+
+    .login-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      width: 100%; max-width: 440px;
+      box-shadow: 0 0 60px rgba(0,245,255,0.07);
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .login-logo .emoji { font-size: 2.4rem; display: block; margin-bottom: 0.5rem; }
+    .login-logo h1 {
+      font-family: var(--font-h);
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      background: linear-gradient(90deg, var(--cyan), var(--pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .login-logo p { color: var(--muted); font-size: 0.82rem; margin-top: 0.3rem; }
+
+    .login-info {
+      background: rgba(0,245,255,0.05);
+      border: 1px solid rgba(0,245,255,0.15);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .login-info a { color: var(--cyan); text-decoration: none; }
+    .login-info a:hover { text-decoration: underline; }
+
+    label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.4rem; letter-spacing: 0.05em; }
+
+    input[type="password"], input[type="text"], textarea, select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-b);
+      font-size: 0.9rem;
+      padding: 0.7rem 1rem;
+      outline: none;
+      transition: var(--transition);
+    }
+    input[type="password"]:focus, input[type="text"]:focus, textarea:focus, select:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(0,245,255,0.12);
+    }
+    textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      font-family: var(--font-b); font-weight: 600;
+      padding: 0.7rem 1.5rem; border-radius: 10px; cursor: pointer;
+      border: none; font-size: 0.9rem; transition: var(--transition);
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), #0088cc);
+      color: #000; box-shadow: 0 4px 20px rgba(0,245,255,0.25);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(0,245,255,0.35); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.07); color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+    .btn-danger {
+      background: rgba(255,68,102,0.15); color: var(--error);
+      border: 1px solid rgba(255,68,102,0.3);
+    }
+    .btn-danger:hover { background: rgba(255,68,102,0.25); }
+
+    /* ── ADMIN SHELL ── */
+    #admin-shell { display: none; min-height: 100vh; position: relative; z-index: 1; }
+
+    .admin-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(13,13,31,0.95);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(12px);
+      flex-wrap: wrap; gap: 0.75rem;
+    }
+
+    .admin-header-left { display: flex; align-items: center; gap: 0.75rem; }
+    .admin-logo {
+      font-family: var(--font-h); font-size: 0.9rem; letter-spacing: 0.15em;
+      background: linear-gradient(90deg, var(--cyan), var(--pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .admin-badge {
+      font-size: 0.65rem; letter-spacing: 0.1em; padding: 0.25rem 0.6rem;
+      background: rgba(255,0,128,0.15); color: var(--pink);
+      border: 1px solid rgba(255,0,128,0.3); border-radius: 20px;
+    }
+
+    .admin-header-right { display: flex; align-items: center; gap: 0.75rem; }
+
+    /* ── STATUS BAR ── */
+    #status-bar {
+      display: none;
+      padding: 0.6rem 1.5rem;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    #status-bar.success { background: rgba(0,255,136,0.1); color: var(--success); display: block; }
+    #status-bar.error   { background: rgba(255,68,102,0.1);  color: var(--error);   display: block; }
+    #status-bar.saving  { background: rgba(0,245,255,0.07);  color: var(--cyan);    display: block; }
+
+    /* ── TABS ── */
+    .admin-body { display: flex; min-height: calc(100vh - 70px); }
+
+    .admin-sidebar {
+      width: 220px; flex-shrink: 0;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 0;
+    }
+
+    .sidebar-label {
+      font-size: 0.65rem; letter-spacing: 0.15em; color: var(--muted);
+      text-transform: uppercase; padding: 0 1.25rem; margin-bottom: 0.5rem;
+    }
+
+    .sidebar-btn {
+      display: flex; align-items: center; gap: 0.6rem;
+      width: 100%; padding: 0.7rem 1.25rem;
+      background: none; border: none; cursor: pointer;
+      font-family: var(--font-b); font-size: 0.88rem; color: var(--muted);
+      text-align: left; transition: var(--transition);
+    }
+    .sidebar-btn:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .sidebar-btn.active {
+      background: rgba(0,245,255,0.08);
+      color: var(--cyan);
+      border-right: 3px solid var(--cyan);
+    }
+    .sidebar-icon { font-size: 1rem; width: 1.2rem; text-align: center; }
+
+    /* ── CONTENT AREA ── */
+    .admin-content {
+      flex: 1; padding: 2rem;
+      max-width: 860px;
+      overflow-y: auto;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .panel-title {
+      font-family: var(--font-h); font-size: 1rem; letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+    }
+    .panel-desc { color: var(--muted); font-size: 0.82rem; margin-bottom: 2rem; line-height: 1.5; }
+
+    /* ── FIELD GROUPS ── */
+    .field-group {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .field-group-title {
+      font-family: var(--font-h); font-size: 0.75rem;
+      letter-spacing: 0.15em; color: var(--cyan);
+      text-transform: uppercase; margin-bottom: 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(0,245,255,0.15);
+    }
+
+    .field-row { margin-bottom: 1.1rem; }
+    .field-row:last-child { margin-bottom: 0; }
+
+    .field-hint { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+
+    .field-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* ── REVIEW CARD ── */
+    .review-card {
+      background: var(--card2);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem;
+    }
+    .review-card-title {
+      font-size: 0.75rem; color: var(--pink); letter-spacing: 0.08em;
+      text-transform: uppercase; margin-bottom: 0.9rem; font-weight: 600;
+    }
+
+    /* ── PREVIEW LINK ── */
+    .preview-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.78rem; color: var(--cyan); text-decoration: none;
+      padding: 0.35rem 0.75rem; border: 1px solid rgba(0,245,255,0.3);
+      border-radius: 8px; transition: var(--transition);
+    }
+    .preview-link:hover { background: rgba(0,245,255,0.07); }
+
+    /* ── SAVE BAR ── */
+    .save-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.1rem 1.5rem;
+      margin-top: 2rem;
+    }
+    .save-bar-left { font-size: 0.82rem; color: var(--muted); }
+    .save-bar-right { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+    /* ── SPINNER ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block; width: 1rem; height: 1rem;
+      border: 2px solid rgba(0,0,0,0.3); border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 680px) {
+      .admin-body { flex-direction: column; }
+      .admin-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 0.75rem 0; display: flex; overflow-x: auto; }
+      .sidebar-btn { padding: 0.6rem 1rem; white-space: nowrap; border-right: none !important; border-bottom: 3px solid transparent; }
+      .sidebar-btn.active { border-bottom-color: var(--cyan); }
+      .sidebar-label { display: none; }
+      .admin-content { padding: 1.25rem; }
+      .field-cols { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     LOGIN SCREEN
+════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span class="emoji">🎮</span>
+      <h1>CASUAL GAMERZ</h1>
+      <p>Site Admin Panel</p>
+    </div>
+
+    <div class="login-info">
+      <strong style="color:var(--text);">How to get your GitHub token:</strong><br>
+      1. Go to <a href="https://github.com/settings/tokens/new" target="_blank" rel="noopener">github.com/settings/tokens/new</a><br>
+      2. Under <em>Scopes</em> check <strong>repo</strong><br>
+      3. Click <strong>Generate token</strong> and paste it below
+    </div>
+
+    <div class="field-row">
+      <label for="pat-input">GITHUB PERSONAL ACCESS TOKEN</label>
+      <input type="password" id="pat-input" placeholder="ghp_xxxxxxxxxxxxxxxx" autocomplete="off" />
+    </div>
+
+    <div style="margin-top:1.25rem; display:flex; gap:0.75rem;">
+      <button class="btn btn-primary" id="login-btn" onclick="doLogin()" style="flex:1;">
+        🔓 Enter Admin Panel
+      </button>
+    </div>
+
+    <div id="login-error" style="color:var(--error);font-size:0.8rem;margin-top:0.75rem;text-align:center;display:none;"></div>
+
+    <p style="text-align:center;color:var(--muted);font-size:0.72rem;margin-top:1.5rem;">
+      Your token is stored only in this browser — never sent anywhere except GitHub.
+    </p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     ADMIN SHELL
+════════════════════════════════════════════════ -->
+<div id="admin-shell">
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <span style="font-size:1.3rem;">🎮</span>
+      <span class="admin-logo">CASUAL GAMERZ</span>
+      <span class="admin-badge">ADMIN</span>
+    </div>
+    <div class="admin-header-right">
+      <a href="index.html" class="preview-link" target="_blank">🌐 Preview Site</a>
+      <button class="btn btn-primary" id="header-save-btn" onclick="saveContent()">💾 Save Changes</button>
+      <button class="btn btn-danger" onclick="doLogout()" title="Sign out">🔒 Sign Out</button>
+    </div>
+  </header>
+
+  <!-- Status bar -->
+  <div id="status-bar"></div>
+
+  <!-- Body -->
+  <div class="admin-body">
+
+    <!-- Sidebar -->
+    <nav class="admin-sidebar">
+      <div class="sidebar-label">Content Sections</div>
+      <button class="sidebar-btn active" onclick="switchTab('general')" id="tab-general">
+        <span class="sidebar-icon">⚙️</span> General
+      </button>
+      <button class="sidebar-btn" onclick="switchTab('hero')" id="tab-hero">
+        <span class="sidebar-icon">🏠</span> Hero
+      </button>
+      <button class="sidebar-btn" onclick="switchTab('contact')" id="tab-contact">
+        <span class="sidebar-icon">📞</span> Contact
+      </button>
+      <button class="sidebar-btn" onclick="switchTab('services')" id="tab-services">
+        <span class="sidebar-icon">🔧</span> Services
+      </button>
+      <button class="sidebar-btn" onclick="switchTab('reviews')" id="tab-reviews">
+        <span class="sidebar-icon">⭐</span> Reviews
+      </button>
+    </nav>
+
+    <!-- Content -->
+    <main class="admin-content">
+
+      <!-- ── GENERAL ── -->
+      <div class="tab-panel active" id="panel-general">
+        <div class="panel-title">General Settings</div>
+        <div class="panel-desc">Site-wide text that appears in multiple places — header badge, footer contact details, and links.</div>
+
+        <div class="field-group">
+          <div class="field-group-title">🏷️ Site Identity</div>
+          <div class="field-row">
+            <label>HERO BADGE / TAGLINE</label>
+            <input type="text" id="f-global.tagline" placeholder="Computer & Gaming Service Center" />
+            <div class="field-hint">Appears in the top banner underneath the logo in the hero section.</div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-group-title">📞 Contact Information</div>
+          <div class="field-row">
+            <label>PHONE (display text)</label>
+            <input type="text" id="f-global.phone" placeholder="📞 +6738698291" />
+            <div class="field-hint">Shown in the footer. Include emoji if you like.</div>
+          </div>
+          <div class="field-row">
+            <label>PHONE (link — tel: format)</label>
+            <input type="text" id="f-global.phone_tel" placeholder="tel:+6738698291" />
+            <div class="field-hint">The clickable href. Must start with <code style="color:var(--cyan)">tel:</code></div>
+          </div>
+          <div class="field-row">
+            <label>EMAIL (display text)</label>
+            <input type="text" id="f-global.email" placeholder="✉️ casualgamerz.co@gmail.com" />
+          </div>
+          <div class="field-row">
+            <label>EMAIL (link — mailto: format)</label>
+            <input type="text" id="f-global.email_mailto" placeholder="mailto:casualgamerz.co@gmail.com" />
+            <div class="field-hint">Must start with <code style="color:var(--cyan)">mailto:</code></div>
+          </div>
+          <div class="field-row">
+            <label>ADDRESS</label>
+            <input type="text" id="f-global.address_short" placeholder="📍 No 143 Jln SG Bakong..." />
+          </div>
+          <div class="field-row">
+            <label>HOURS</label>
+            <input type="text" id="f-global.hours_short" placeholder="🕐 Mon–Sat: 6am–10pm" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── HERO ── -->
+      <div class="tab-panel" id="panel-hero">
+        <div class="panel-title">Hero Section</div>
+        <div class="panel-desc">The first thing visitors see at the top of the homepage.</div>
+
+        <div class="field-group">
+          <div class="field-group-title">🏆 Main Headline</div>
+          <div class="field-cols">
+            <div class="field-row">
+              <label>TITLE — LINE 1</label>
+              <input type="text" id="f-home.hero_title_line1" placeholder="Revive Your" />
+            </div>
+            <div class="field-row">
+              <label>TITLE — LINE 2 (highlighted)</label>
+              <input type="text" id="f-home.hero_title_line2" placeholder="Gaming Setup" />
+            </div>
+          </div>
+          <div class="field-row">
+            <label>DESCRIPTION PARAGRAPH</label>
+            <textarea id="f-home.hero_description" rows="3" placeholder="Expert repair and maintenance..."></textarea>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-group-title">📊 Stats Bar</div>
+          <div class="field-cols">
+            <div class="field-row">
+              <label>STAT 1 — NUMBER</label>
+              <input type="text" id="f-home.stat1_number" placeholder="1000+" />
+            </div>
+            <div class="field-row">
+              <label>STAT 1 — LABEL</label>
+              <input type="text" id="f-home.stat1_label" placeholder="Devices Fixed" />
+            </div>
+          </div>
+          <div class="field-cols">
+            <div class="field-row">
+              <label>STAT 2 — NUMBER</label>
+              <input type="text" id="f-home.stat2_number" placeholder="98%" />
+            </div>
+            <div class="field-row">
+              <label>STAT 2 — LABEL</label>
+              <input type="text" id="f-home.stat2_label" placeholder="Satisfaction" />
+            </div>
+          </div>
+          <div class="field-cols">
+            <div class="field-row">
+              <label>STAT 3 — NUMBER</label>
+              <input type="text" id="f-home.stat3_number" placeholder="24H" />
+            </div>
+            <div class="field-row">
+              <label>STAT 3 — LABEL</label>
+              <input type="text" id="f-home.stat3_label" placeholder="Avg Turnaround" />
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-group-title">🎯 CTA Banner</div>
+          <div class="field-row">
+            <label>CTA HEADLINE</label>
+            <input type="text" id="f-home.cta_title" placeholder="Free Diagnostic Check" />
+            <div class="field-hint">The large heading on the bottom call-to-action strip.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CONTACT ── -->
+      <div class="tab-panel" id="panel-contact">
+        <div class="panel-title">Contact Details</div>
+        <div class="panel-desc">These fields appear in the footer and contact page. Edit them in the <strong>General</strong> tab above. This tab is a quick reminder of what's editable.</div>
+
+        <div class="field-group">
+          <div class="field-group-title">ℹ️ Quick Reference</div>
+          <p style="color:var(--muted);font-size:0.85rem;line-height:1.7;">
+            Your contact info (phone, email, address, hours) is managed in the <strong>General</strong> tab.<br><br>
+            After saving there, the footer on every page will update automatically the next time someone loads the site — no code editing needed.
+          </p>
+          <div style="margin-top:1.25rem;">
+            <button class="btn btn-secondary" onclick="switchTab('general')">→ Go to General Settings</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SERVICES ── -->
+      <div class="tab-panel" id="panel-services">
+        <div class="panel-title">Service Cards</div>
+        <div class="panel-desc">The titles of the six service cards on the homepage. Each card links to the full services page.</div>
+
+        <div class="field-group">
+          <div class="field-group-title">🔧 Service Titles</div>
+          <div class="field-row">
+            <label>SERVICE 1 🖥️</label>
+            <input type="text" id="f-home.service1_title" placeholder="PC & Desktop Repair" />
+          </div>
+          <div class="field-row">
+            <label>SERVICE 2 💻</label>
+            <input type="text" id="f-home.service2_title" placeholder="Laptop Repair" />
+          </div>
+          <div class="field-row">
+            <label>SERVICE 3 🎮</label>
+            <input type="text" id="f-home.service3_title" placeholder="Console Repair" />
+          </div>
+          <div class="field-row">
+            <label>SERVICE 4 ⚙️</label>
+            <input type="text" id="f-home.service4_title" placeholder="Software & OS Services" />
+          </div>
+          <div class="field-row">
+            <label>SERVICE 5 🔨</label>
+            <input type="text" id="f-home.service5_title" placeholder="Custom PC Builds" />
+          </div>
+          <div class="field-row">
+            <label>SERVICE 6 🕹️</label>
+            <input type="text" id="f-home.service6_title" placeholder="Controller & Peripheral Repair" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── REVIEWS ── -->
+      <div class="tab-panel" id="panel-reviews">
+        <div class="panel-title">Customer Reviews</div>
+        <div class="panel-desc">The three testimonial cards displayed on the homepage. Keep them authentic — real reviews build trust.</div>
+
+        <div class="review-card">
+          <div class="review-card-title">⭐ Review 1</div>
+          <div class="field-row">
+            <label>REVIEW TEXT</label>
+            <textarea id="f-home.review1_text" rows="3" placeholder="My PS5 had the infamous disc drive error..."></textarea>
+          </div>
+          <div class="field-cols">
+            <div class="field-row">
+              <label>CUSTOMER NAME</label>
+              <input type="text" id="f-home.review1_name" placeholder="Ahmad Razif" />
+            </div>
+            <div class="field-row">
+              <label>LABEL (service · location)</label>
+              <input type="text" id="f-home.review1_role" placeholder="PS5 Repair · Brunei" />
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-card-title">⭐ Review 2</div>
+          <div class="field-row">
+            <label>REVIEW TEXT</label>
+            <textarea id="f-home.review2_text" rows="3" placeholder="Got my gaming laptop screen replaced here..."></textarea>
+          </div>
+          <div class="field-cols">
+            <div class="field-row">
+              <label>CUSTOMER NAME</label>
+              <input type="text" id="f-home.review2_name" placeholder="Sarah Lim" />
+            </div>
+            <div class="field-row">
+              <label>LABEL (service · location)</label>
+              <input type="text" id="f-home.review2_role" placeholder="Laptop Repair · Bandar" />
+            </div>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <div class="review-card-title">⭐ Review 3</div>
+          <div class="field-row">
+            <label>REVIEW TEXT</label>
+            <textarea id="f-home.review3_text" rows="3" placeholder="They built my entire gaming PC from scratch..."></textarea>
+          </div>
+          <div class="field-cols">
+            <div class="field-row">
+              <label>CUSTOMER NAME</label>
+              <input type="text" id="f-home.review3_name" placeholder="Daniel Jayden" />
+            </div>
+            <div class="field-row">
+              <label>LABEL (service · location)</label>
+              <input type="text" id="f-home.review3_role" placeholder="Custom PC Build · Seria" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Save bar -->
+      <div class="save-bar">
+        <div class="save-bar-left">
+          Changes are saved directly to GitHub and appear on the live site in seconds.
+        </div>
+        <div class="save-bar-right">
+          <button class="btn btn-secondary" onclick="loadContent()">↺ Reload from Site</button>
+          <button class="btn btn-primary" onclick="saveContent()" id="save-btn">💾 Save Changes</button>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- end admin-body -->
+</div><!-- end admin-shell -->
+
+
+<script>
+/* ════════════════════════════════════════════════
+   CONFIG
+════════════════════════════════════════════════ */
+var OWNER  = 'casualgamerz-bn';
+var REPO   = 'cgz-service-center';
+var BRANCH = 'main';
+var FILE   = 'content.json';
+var PAT_KEY = 'cgz_admin_pat';
+
+/* ════════════════════════════════════════════════
+   ALL FIELD IDs (key → field id prefix "f-")
+════════════════════════════════════════════════ */
+var ALL_FIELDS = [
+  'global.tagline',
+  'global.phone', 'global.phone_tel',
+  'global.email', 'global.email_mailto',
+  'global.address_short', 'global.hours_short',
+  'home.hero_title_line1', 'home.hero_title_line2', 'home.hero_description',
+  'home.stat1_number', 'home.stat1_label',
+  'home.stat2_number', 'home.stat2_label',
+  'home.stat3_number', 'home.stat3_label',
+  'home.service1_title', 'home.service2_title', 'home.service3_title',
+  'home.service4_title', 'home.service5_title', 'home.service6_title',
+  'home.review1_text', 'home.review1_name', 'home.review1_role',
+  'home.review2_text', 'home.review2_name', 'home.review2_role',
+  'home.review3_text', 'home.review3_name', 'home.review3_role',
+  'home.cta_title'
+];
+
+/* ════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════ */
+function getPat() { return localStorage.getItem(PAT_KEY) || ''; }
+
+function ghHeaders(pat) {
+  return {
+    'Authorization': 'token ' + (pat || getPat()),
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+}
+
+function setStatus(msg, type) {
+  var bar = document.getElementById('status-bar');
+  bar.textContent = msg;
+  bar.className = type || '';
+  if (type === 'success') {
+    setTimeout(function () { bar.className = ''; bar.textContent = ''; }, 4000);
+  }
+}
+
+function getFieldValue(key) {
+  var el = document.getElementById('f-' + key);
+  return el ? el.value.trim() : '';
+}
+
+function setFieldValue(key, val) {
+  var el = document.getElementById('f-' + key);
+  if (el) el.value = val || '';
+}
+
+/** Build nested object from flat key list */
+function buildContentObj() {
+  var out = {};
+  ALL_FIELDS.forEach(function (key) {
+    var parts = key.split('.');
+    var section = parts[0], field = parts[1];
+    if (!out[section]) out[section] = {};
+    out[section][field] = getFieldValue(key);
+  });
+  return out;
+}
+
+/** Fill form from nested object */
+function fillForm(content) {
+  ALL_FIELDS.forEach(function (key) {
+    var parts = key.split('.');
+    var val = (content[parts[0]] || {})[parts[1]] || '';
+    setFieldValue(key, val);
+  });
+}
+
+/* ════════════════════════════════════════════════
+   GITHUB API
+════════════════════════════════════════════════ */
+var currentSha = null;
+
+function ghUrl() {
+  return 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + FILE + '?ref=' + BRANCH;
+}
+
+function loadContent() {
+  setStatus('Loading content from GitHub…', 'saving');
+  return fetch(ghUrl(), { headers: ghHeaders() })
+    .then(function (r) {
+      if (r.status === 401) throw new Error('auth');
+      if (!r.ok) throw new Error('fetch');
+      return r.json();
+    })
+    .then(function (data) {
+      currentSha = data.sha;
+      var json = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      fillForm(json);
+      setStatus('✅ Content loaded from GitHub.', 'success');
+    })
+    .catch(function (err) {
+      if (err.message === 'auth') {
+        setStatus('❌ GitHub token is invalid or expired. Sign out and re-enter it.', 'error');
+      } else {
+        setStatus('⚠️ Could not load from GitHub. Check your connection.', 'error');
+      }
+    });
+}
+
+function saveContent() {
+  var saveBtns = document.querySelectorAll('#save-btn, #header-save-btn');
+  saveBtns.forEach(function (b) { b.disabled = true; b.innerHTML = '<span class="spinner"></span> Saving…'; });
+  setStatus('Saving to GitHub…', 'saving');
+
+  var newContent = buildContentObj();
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(newContent, null, 2))));
+
+  // If we don't have SHA yet, fetch it first
+  var shaPromise = currentSha
+    ? Promise.resolve(currentSha)
+    : fetch(ghUrl(), { headers: ghHeaders() })
+        .then(function (r) { return r.json(); })
+        .then(function (d) { currentSha = d.sha; return d.sha; });
+
+  shaPromise
+    .then(function (sha) {
+      return fetch('https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + FILE, {
+        method: 'PUT',
+        headers: ghHeaders(),
+        body: JSON.stringify({
+          message: 'Admin panel: update site content',
+          content: encoded,
+          sha: sha,
+          branch: BRANCH
+        })
+      });
+    })
+    .then(function (r) {
+      if (r.status === 401) throw new Error('auth');
+      if (!r.ok) throw new Error('put');
+      return r.json();
+    })
+    .then(function (data) {
+      currentSha = data.content.sha;
+      setStatus('✅ Saved! Changes will appear on the live site within seconds.', 'success');
+    })
+    .catch(function (err) {
+      if (err.message === 'auth') {
+        setStatus('❌ GitHub token is invalid. Sign out and re-enter it.', 'error');
+      } else {
+        setStatus('❌ Save failed. Check your GitHub token has repo write access.', 'error');
+      }
+    })
+    .finally(function () {
+      saveBtns.forEach(function (b) { b.disabled = false; b.innerHTML = '💾 Save Changes'; });
+    });
+}
+
+/* ════════════════════════════════════════════════
+   TAB SWITCHING
+════════════════════════════════════════════════ */
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-btn').forEach(function (b) { b.classList.remove('active'); });
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+/* ════════════════════════════════════════════════
+   LOGIN / LOGOUT
+════════════════════════════════════════════════ */
+function doLogin() {
+  var pat = document.getElementById('pat-input').value.trim();
+  if (!pat) { showLoginError('Please enter a GitHub token.'); return; }
+
+  var btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="border-top-color:#000"></span> Verifying…';
+
+  // Validate by fetching the file
+  fetch(ghUrl(), { headers: ghHeaders(pat) })
+    .then(function (r) {
+      if (r.status === 401) throw new Error('Invalid token — make sure it has the repo scope.');
+      if (r.status === 404) throw new Error('Repository not found. Check the token scope.');
+      if (!r.ok) throw new Error('GitHub error ' + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      localStorage.setItem(PAT_KEY, pat);
+      currentSha = data.sha;
+      var json = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      fillForm(json);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-shell').style.display = 'block';
+    })
+    .catch(function (err) {
+      showLoginError(err.message);
+    })
+    .finally(function () {
+      btn.disabled = false;
+      btn.innerHTML = '🔓 Enter Admin Panel';
+    });
+}
+
+function showLoginError(msg) {
+  var el = document.getElementById('login-error');
+  el.textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+}
+
+function doLogout() {
+  if (!confirm('Sign out? Your token will be removed from this browser.')) return;
+  localStorage.removeItem(PAT_KEY);
+  document.getElementById('admin-shell').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pat-input').value = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+/* ════════════════════════════════════════════════
+   AUTO-LOGIN (if token already saved)
+════════════════════════════════════════════════ */
+(function () {
+  var saved = getPat();
+  if (!saved) return;
+
+  document.getElementById('pat-input').value = saved;
+
+  fetch(ghUrl(), { headers: ghHeaders(saved) })
+    .then(function (r) {
+      if (!r.ok) throw new Error('stale');
+      return r.json();
+    })
+    .then(function (data) {
+      currentSha = data.sha;
+      var json = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      fillForm(json);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-shell').style.display = 'block';
+    })
+    .catch(function () {
+      localStorage.removeItem(PAT_KEY);
+      // Stay on login screen
+    });
+})();
+
+/* Enter key on PAT field */
+document.getElementById('pat-input').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+
+</body>
+</html>

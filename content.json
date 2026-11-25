@@ -1,0 +1,38 @@
+{
+  "global": {
+    "tagline": "Computer & Gaming Service Center",
+    "phone": "📞 +6738698291",
+    "phone_tel": "tel:+6738698291",
+    "email": "✉️ casualgamerz.co@gmail.com",
+    "email_mailto": "mailto:casualgamerz.co@gmail.com",
+    "address_short": "📍 No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam",
+    "hours_short": "🕐 Mon–Sat: 6am–10pm"
+  },
+  "home": {
+    "hero_title_line1": "Revive Your",
+    "hero_title_line2": "Gaming Setup",
+    "hero_description": "Expert repair and maintenance for computers, laptops, and all gaming consoles. Fast turnaround, genuine parts, and warranty on every fix.",
+    "stat1_number": "1000+",
+    "stat1_label": "Devices Fixed",
+    "stat2_number": "98%",
+    "stat2_label": "Satisfaction",
+    "stat3_number": "24H",
+    "stat3_label": "Avg Turnaround",
+    "service1_title": "PC & Desktop Repair",
+    "service2_title": "Laptop Repair",
+    "service3_title": "Console Repair",
+    "service4_title": "Software & OS Services",
+    "service5_title": "Custom PC Builds",
+    "service6_title": "Controller & Peripheral Repair",
+    "review1_text": "My PS5 had the infamous disc drive error. Brought it in and they had it sorted within the same day. Incredibly fast and the staff actually knew what they were talking about!",
+    "review1_name": "Ahmad Razif",
+    "review1_role": "PS5 Repair · Brunei",
+    "review2_text": "Got my gaming laptop screen replaced here after a nasty drop. The screen looks perfect — you'd never know it was replaced. Pricing was fair and they finished ahead of schedule.",
+    "review2_name": "Sarah Lim",
+    "review2_role": "Laptop Repair · Bandar",
+    "review3_text": "They built my entire gaming PC from scratch. The cable management is immaculate and they walked me through every part choice.",
+    "review3_name": "Daniel Jayden",
+    "review3_role": "Custom PC Build · Seria",
+    "cta_title": "Free Diagnostic Check"
+  }
+}

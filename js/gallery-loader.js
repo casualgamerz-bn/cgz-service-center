@@ -206,8 +206,9 @@
     var sorted = order.filter(function (n) { return map[n]; }).map(function (n) { return map[n]; });
     var seen = {};
     order.forEach(function (n) { seen[n] = true; });
-    images.forEach(function (f) { if (!seen[f.name]) sorted.push(f); });
-    return sorted;
+    // new images go to the TOP
+    var newImages = images.filter(function (f) { return !seen[f.name]; });
+    return newImages.concat(sorted);
   }
 
   /* ── drag-to-reorder ──────────────────────────────────── */
@@ -223,7 +224,14 @@
     writeOrder(folder, names);
   }
 
+  function isTouchDevice() {
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  }
+
   function makeSortable(container, folder) {
+    // drag-to-reorder is desktop-only; on touch devices click/tap opens lightbox directly
+    if (isTouchDevice()) return;
+
     var dragged = null;
 
     container.querySelectorAll('[data-lightbox]').forEach(function (card) {

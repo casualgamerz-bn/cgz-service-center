@@ -47,6 +47,9 @@
                 '</a>';
       });
       grid.innerHTML = html;
+      // Hide the entire section (header + grid) when no cards are visible
+      var section = grid.closest('section');
+      if (section) section.style.display = html === '' ? 'none' : '';
     });
   }
 

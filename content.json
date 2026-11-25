@@ -1,19 +1,19 @@
 {
   "global": {
     "tagline": "Computer & Gaming Service Center",
-    "phone": "ð +6738698291",
+    "phone": "Ã°ÂÂÂ +6738698291",
     "phone_tel": "tel:+6738698291",
-    "email": "âï¸ casualgamerz.co@gmail.com",
+    "email": "Ã¢ÂÂÃ¯Â¸Â casualgamerz.co@gmail.com",
     "email_mailto": "mailto:casualgamerz.co@gmail.com",
-    "address_short": "ð No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam",
+    "address_short": "Ã°ÂÂÂ No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam",
     "address": "No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam",
     "address_map1": "No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam",
     "address_map2": "Brunei Darussalam",
-    "hours_short": "ð MonâSat: 6amâ10pm",
-    "hours_weekday_label": "Monday â Saturday",
-    "hours_weekday_time": "6:00 AM â 10:00 PM",
+    "hours_short": "Ã°ÂÂÂ MonÃ¢ÂÂSat: 6amÃ¢ÂÂ10pm",
+    "hours_weekday_label": "Monday Ã¢ÂÂ Saturday",
+    "hours_weekday_time": "6:00 AM Ã¢ÂÂ 10:00 PM",
     "hours_weekend_label": "Sunday",
-    "hours_weekend_time": "12:00 PM â 10:00 PM"
+    "hours_weekend_time": "12:00 PM Ã¢ÂÂ 10:00 PM"
   },
   "home": {
     "hero_title_line1": "Revive Your",
@@ -32,21 +32,21 @@
     "service4_title": "Software & OS Services",
     "service5_title": "Custom PC Builds",
     "service6_title": "",
-    "review1_text": "My PS5 had the infamous disc drive error â took it to Casual Gamerz and they had it fixed in under 24 hours. Incredible service, genuine parts, and fair pricing.",
+    "review1_text": "My PS5 had the infamous disc drive error Ã¢ÂÂ took it to Casual Gamerz and they had it fixed in under 24 hours. Incredible service, genuine parts, and fair pricing.",
     "review1_name": "Ahmad Razif",
-    "review1_role": "PS5 Repair Â· Brunei",
+    "review1_role": "PS5 Repair ÃÂ· Brunei",
     "review2_text": "Got my gaming laptop screen replaced here. They sourced an exact OEM replacement and it looks brand new. Quick turnaround, very professional team.",
     "review2_name": "Sarah Lim",
-    "review2_role": "Laptop Repair Â· Bandar",
+    "review2_role": "Laptop Repair ÃÂ· Bandar",
     "review3_text": "They built my entire gaming PC from scratch within budget. The cable management is beautiful and performance blew me away. 10/10 recommend.",
     "review3_name": "Daniel Jayden",
-    "review3_role": "Custom PC Build Â· Seria"
+    "review3_role": "Custom PC Build ÃÂ· Seria"
   },
   "about": {
-    "hero_desc": "We're gamers, tech enthusiasts, and repair specialists â dedicated to keep your computer and gaming devices powered up.",
-    "story_p1": "Casual Gamerz started as a passion project in 2012 â who loved gaming and hated seeing perfectly good devices thrown away over fixable faults. We started repairing computer peripherals and gaming consoles.",
-    "story_p2": "By 2016 we had a proper workshop, a team of certified technicians, and a reputation for fixing things others said couldn't be fixed. We've since serviced over 1,000 devices â from vintage game consoles to the latest PS5 and high-end gaming rigs.",
-    "story_p3": "Today, Casual Gamerz is Brunei's go-to tech repair center. We also provide genuine parts, offer warranties on every repair, and treat every device like it's our own. Gaming is our culture â fixing it is our craft.",
+    "hero_desc": "We're gamers, tech enthusiasts, and repair specialists Ã¢ÂÂ dedicated to keep your computer and gaming devices powered up.",
+    "story_p1": "Casual Gamerz started as a passion project in 2012 Ã¢ÂÂ who loved gaming and hated seeing perfectly good devices thrown away over fixable faults. We started repairing computer peripherals and gaming consoles.",
+    "story_p2": "By 2016 we had a proper workshop, a team of certified technicians, and a reputation for fixing things others said couldn't be fixed. We've since serviced over 1,000 devices Ã¢ÂÂ from vintage game consoles to the latest PS5 and high-end gaming rigs.",
+    "story_p3": "Today, Casual Gamerz is Brunei's go-to tech repair center. We also provide genuine parts, offer warranties on every repair, and treat every device like it's our own. Gaming is our culture Ã¢ÂÂ fixing it is our craft.",
     "stat1_val": "12+",
     "stat1_label": "Years in Business",
     "stat2_val": "1000+",
@@ -68,48 +68,36 @@
   },
   "services": {
     "hero_desc": "Comprehensive repair and upgrade solutions for every gaming device and computer.",
-    "pc1_title": "Overheating & Cooling",
-    "pc1_desc": "Thermal paste replacement, fan cleaning, heatsink upgrades, and custom liquid cooling installations.",
-    "pc2_title": "Power Supply Repair",
-    "pc2_desc": "PSU diagnostics, replacement with certified units, cable management, and surge protection setup.",
-    "pc3_title": "GPU Upgrade & Repair",
-    "pc3_desc": "Graphics card installation, bios reflash, VRAM repair, and performance benchmarking after service.",
-    "pc4_title": "Motherboard Repair",
-    "pc4_desc": "Trace repair, capacitor replacement, POST diagnostics, BIOS recovery, and chipset troubleshooting.",
-    "laptop1_title": "Screen Replacement",
-    "laptop1_desc": "IPS, OLED, and 144Hz screen replacement for all brands â Asus, HP, Lenovo, Dell, MacBook, Acer and more.",
-    "laptop2_title": "Battery Replacement",
-    "laptop2_desc": "Genuine replacement batteries for all laptop models. We test capacity before and after replacement.",
-    "laptop3_title": "Water Damage Recovery",
-    "laptop3_desc": "Ultrasonic cleaning, component-level corrosion removal, and full board rehabilitation for liquid damage.",
-    "laptop4_title": "Keyboard & Trackpad",
-    "laptop4_desc": "Full keyboard replacement, individual key fixes, trackpad calibration, and palm rest repairs.",
-    "console1_title": "PlayStation Repair",
-    "console1_desc": "PS3, PS4, PS4 Pro, PS5 â HDMI port replacement, disc drive repair, overheating fixes, and BLOD/YLOD repair.",
-    "console2_title": "Xbox Repair",
-    "console2_desc": "Xbox One, Series S/X â disc drive, HDMI, power brick, controller repair, and system software recovery.",
-    "console3_title": "Nintendo Switch Repair",
-    "console3_desc": "Joycon drift, screen cracks, charging port, dock issues, USB-C replacement, and banned account recovery.",
-    "console4_title": "Steam Deck & Handheld",
-    "console4_desc": "Steam Deck screen, joystick, and SSD upgrades. Also servicing ROG Ally, Lenovo Legion Go, and more.",
-    "sw1_title": "Virus & Malware Removal",
-    "sw1_desc": "Deep scan, complete malware/ransomware removal, browser cleanup, and preventive security setup.",
-    "sw2_title": "OS Installation",
-    "sw2_desc": "Clean install of Windows 10/11 or macOS, driver setup, and essential software configuration.",
-    "sw3_title": "Data Recovery",
-    "sw3_desc": "Recovery from failing HDDs, SSDs, corrupted partitions, accidental deletions, and formatted drives.",
-    "sw4_title": "Performance Tuning",
-    "sw4_desc": "FPS optimization, startup speed boost, driver updates, background process cleanup, and gaming mode setup.",
-    "peri1_title": "",
-    "peri1_desc": "",
-    "peri2_title": "",
-    "peri2_desc": "",
-    "peri3_title": "",
-    "peri3_desc": ""
+    "pc_cards": [],
+    "laptop_cards": [],
+    "console_cards": [
+      {
+        "icon": "🔧",
+        "title": "New Service",
+        "desc": "Describe this service here.",
+        "visible": true
+      }
+    ],
+    "sw_cards": [
+      {
+        "icon": "🔧",
+        "title": "New Service",
+        "desc": "Describe this service here.",
+        "visible": true
+      }
+    ],
+    "peri_cards": [
+      {
+        "icon": "🔧",
+        "title": "New Service",
+        "desc": "Describe this service here.",
+        "visible": false
+      }
+    ]
   },
   "contact": {
     "hero_title": "Get In",
-    "hero_desc": "Have a question? Need a quote? We're here to help â reach out through any channel below.",
+    "hero_desc": "Have a question? Need a quote? We're here to help Ã¢ÂÂ reach out through any channel below.",
     "walkin_text": "Walk-in welcome during opening hours. No appointment needed for drop-offs.",
     "parking_info": "Free street parking available in front of the shop. Drive-through drop-off available."
   }

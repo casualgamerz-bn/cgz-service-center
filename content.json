@@ -460,6 +460,29 @@
           "content": ""
         }
       ]
+    },
+    {
+      "id": "cs_1795647091126_qo3n4",
+      "slot": "home-top",
+      "title": "GET YOUR GAMING ON THE GO",
+      "subtitle": "",
+      "visible": true,
+      "items": [
+        {
+          "id": "cs_1795647114878_uj2y2",
+          "type": "image",
+          "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795647125996-NicePng_psp-png_1143029.png",
+          "alt": "PSP",
+          "caption": "4 PSP Games for $10"
+        },
+        {
+          "id": "cs_1795647147295_hkmlu",
+          "type": "image",
+          "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795647150629-pchj10017_front_ss.png",
+          "alt": "PSVITA",
+          "caption": "4 PSVITA Games for $10"
+        }
+      ]
     }
   ]
 }

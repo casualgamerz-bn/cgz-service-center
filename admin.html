@@ -186,6 +186,10 @@
       <button class="tab-btn" onclick="showTab('contact')" id="tab-contact">
         <span>📞</span> <span class="tab-label">Contact</span>
       </button>
+      <div class="sidebar-section">Custom</div>
+      <button class="tab-btn" onclick="showTab('sections')" id="tab-sections">
+        <span>🧩</span> <span class="tab-label">Sections</span>
+      </button>
     </nav>
 
     <!-- EDITOR -->
@@ -433,6 +437,14 @@
         </div>
       </div>
 
+      <!-- CUSTOM SECTIONS -->
+      <div class="tab-panel" id="panel-sections">
+        <div class="panel-title">🧩 Custom Sections</div>
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem;line-height:1.6;">Add custom sections with text, images, or cards to any page. Hit <strong style="color:var(--cyan)">Save All Changes</strong> when done.</p>
+        <button class="btn-add" onclick="addCustomSection()" style="font-size:0.78rem;padding:0.6rem 1.2rem;">+ Add New Section</button>
+        <div id="cs-list" style="margin-top:1.5rem;"></div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -494,6 +506,173 @@
     'about_team':'team'
   };
   var SECTIONS = Object.keys(CARD_MAP);
+
+  /* ─── CUSTOM SECTIONS STATE ─── */
+  var customSections = [];
+
+  function csUid() { return 'cs_' + Date.now() + '_' + Math.random().toString(36).substr(2,5); }
+
+  function addCustomSection() {
+    customSections.push({ id: csUid(), page: 'home', title: 'New Section', subtitle: '', visible: true, items: [] });
+    renderCsPanel();
+  }
+
+  function deleteSection(si) {
+    if (!confirm('Delete this section and all its items?')) return;
+    customSections.splice(si, 1);
+    renderCsPanel();
+  }
+
+  function csField(si, field, val) {
+    if (customSections[si]) customSections[si][field] = val;
+  }
+
+  function addCsItem(si, type) {
+    if (!customSections[si]) return;
+    var item = { id: csUid(), type: type };
+    if (type === 'text')  { item.content = ''; }
+    if (type === 'image') { item.url = ''; item.alt = ''; item.caption = ''; }
+    if (type === 'card')  { item.icon = '📌'; item.color = 'cyan'; item.title = 'Card Title'; item.desc = 'Description here.'; item.visible = true; }
+    customSections[si].items.push(item);
+    renderCsPanel();
+  }
+
+  function deleteCsItem(si, ii) {
+    if (customSections[si]) { customSections[si].items.splice(ii, 1); renderCsPanel(); }
+  }
+
+  function csItemField(si, ii, field, val) {
+    if (customSections[si] && customSections[si].items[ii]) customSections[si].items[ii][field] = val;
+  }
+
+  function uploadCsImage(si, ii, input) {
+    var file = input.files[0];
+    if (!file) return;
+    var token = localStorage.getItem(PAT_KEY);
+    if (!token) { alert('Please log in first.'); return; }
+    var statusEl = document.getElementById('cs-upload-status-' + si + '-' + ii);
+    if (statusEl) { statusEl.textContent = 'Uploading…'; statusEl.style.color = 'var(--muted)'; }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var b64data = e.target.result.split(',')[1];
+      var safeName = Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      var filePath = 'images/uploads/' + safeName;
+      var apiPath = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + filePath;
+      fetch(apiPath, { headers: hdrs(token) })
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(existing) {
+          var body = { message: 'Upload image: ' + safeName, content: b64data, branch: BRANCH };
+          if (existing && existing.sha) body.sha = existing.sha;
+          return fetch(apiPath, { method: 'PUT', headers: hdrs(token), body: JSON.stringify(body) });
+        })
+        .then(function(r) {
+          if (!r.ok) return r.json().then(function(e) { throw new Error(e.message || 'Upload failed'); });
+          return r.json();
+        })
+        .then(function() {
+          var pageUrl = 'https://casualgamerz-bn.github.io/cgz-service-center/' + filePath;
+          csItemField(si, ii, 'url', pageUrl);
+          var urlInput = document.getElementById('cs-img-url-' + si + '-' + ii);
+          if (urlInput) urlInput.value = pageUrl;
+          var previewDiv = document.getElementById('cs-img-preview-' + si + '-' + ii);
+          if (previewDiv) previewDiv.innerHTML = '<img src="' + pageUrl + '" style="max-height:80px;border-radius:6px;border:1px solid var(--border);margin-top:0.5rem;" />';
+          if (statusEl) { statusEl.textContent = '✅ Uploaded! Site rebuilds in ~1 min.'; statusEl.style.color = 'var(--success)'; }
+        })
+        .catch(function(err) {
+          if (statusEl) { statusEl.textContent = '❌ ' + err.message; statusEl.style.color = 'var(--error)'; }
+        });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function buildCsItemHtml(si, item, ii) {
+    var COLORS = ['cyan','pink','green','orange','purple'];
+    if (item.type === 'text') {
+      return '<div class="card-row" style="margin-bottom:0.75rem;">' +
+        '<div style="display:flex;align-items:center;margin-bottom:0.35rem;">' +
+        '<span style="color:var(--cyan);font-size:0.68rem;font-family:var(--font-h);letter-spacing:0.1em;">📝 TEXT BLOCK</span>' +
+        '<button onclick="deleteCsItem(' + si + ',' + ii + ')" style="margin-left:auto;background:rgba(255,68,102,0.08);color:#ff4466;border:1px solid rgba(255,68,102,0.15);border-radius:5px;padding:0.15rem 0.5rem;cursor:pointer;font-size:0.78rem;" title="Delete">🗑</button>' +
+        '</div>' +
+        '<textarea class="form-input" rows="3" oninput="csItemField(' + si + ',' + ii + ',\'content\',this.value)">' + esc(item.content || '') + '</textarea>' +
+        '<p style="color:var(--muted);font-size:0.7rem;margin-top:0.25rem;">Basic HTML allowed: &lt;b&gt;, &lt;i&gt;, &lt;br&gt;, &lt;a href=""&gt;</p>' +
+        '</div>';
+    }
+    if (item.type === 'image') {
+      var preview = item.url ? '<img src="' + esc(item.url) + '" style="max-height:80px;border-radius:6px;border:1px solid var(--border);margin-top:0.5rem;" onerror="this.style.display=\'none\'" />' : '';
+      return '<div class="card-row" style="margin-bottom:0.75rem;">' +
+        '<div style="display:flex;align-items:center;margin-bottom:0.5rem;">' +
+        '<span style="color:var(--cyan);font-size:0.68rem;font-family:var(--font-h);letter-spacing:0.1em;">🖼️ IMAGE</span>' +
+        '<button onclick="deleteCsItem(' + si + ',' + ii + ')" style="margin-left:auto;background:rgba(255,68,102,0.08);color:#ff4466;border:1px solid rgba(255,68,102,0.15);border-radius:5px;padding:0.15rem 0.5rem;cursor:pointer;font-size:0.78rem;" title="Delete">🗑</button>' +
+        '</div>' +
+        '<div style="display:flex;gap:0.75rem;align-items:flex-end;flex-wrap:wrap;">' +
+        '<div style="flex:1;min-width:180px;"><label class="form-label">Image URL</label>' +
+        '<input class="form-input" id="cs-img-url-' + si + '-' + ii + '" value="' + esc(item.url || '') + '" placeholder="https://... or upload below" oninput="csItemField(' + si + ',' + ii + ',\'url\',this.value)" /></div>' +
+        '<div><label class="form-label">Upload Photo</label>' +
+        '<input type="file" accept="image/*" style="display:none;" id="cs-file-' + si + '-' + ii + '" onchange="uploadCsImage(' + si + ',' + ii + ',this)" />' +
+        '<button class="btn-add" style="margin-top:0;" onclick="document.getElementById(\'cs-file-' + si + '-' + ii + '\').click()">📁 Choose File</button>' +
+        '</div></div>' +
+        '<div id="cs-img-preview-' + si + '-' + ii + '">' + preview + '</div>' +
+        '<div style="display:flex;gap:0.75rem;margin-top:0.5rem;flex-wrap:wrap;">' +
+        '<div style="flex:1;min-width:140px;"><label class="form-label">Alt Text</label><input class="form-input" value="' + esc(item.alt || '') + '" placeholder="Describe image" oninput="csItemField(' + si + ',' + ii + ',\'alt\',this.value)" /></div>' +
+        '<div style="flex:1;min-width:140px;"><label class="form-label">Caption (optional)</label><input class="form-input" value="' + esc(item.caption || '') + '" placeholder="Caption under image" oninput="csItemField(' + si + ',' + ii + ',\'caption\',this.value)" /></div>' +
+        '</div>' +
+        '<div id="cs-upload-status-' + si + '-' + ii + '" style="font-size:0.78rem;margin-top:0.3rem;"></div>' +
+        '</div>';
+    }
+    if (item.type === 'card') {
+      var colorOpts = COLORS.map(function(c) { return '<option value="' + c + '"' + (item.color === c ? ' selected' : '') + '>' + c + '</option>'; }).join('');
+      return '<div class="card-row' + (item.visible === false ? ' hidden-card' : '') + '" style="margin-bottom:0.75rem;">' +
+        '<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">' +
+        '<span style="color:var(--cyan);font-size:0.68rem;font-family:var(--font-h);letter-spacing:0.1em;">🃏 CARD</span>' +
+        '<label class="toggle-label" style="margin-left:auto;"><input type="checkbox"' + (item.visible !== false ? ' checked' : '') + ' onchange="csItemField(' + si + ',' + ii + ',\'visible\',this.checked)" /><span>Visible</span></label>' +
+        '<button onclick="deleteCsItem(' + si + ',' + ii + ')" style="background:rgba(255,68,102,0.08);color:#ff4466;border:1px solid rgba(255,68,102,0.15);border-radius:5px;padding:0.15rem 0.5rem;cursor:pointer;font-size:0.78rem;" title="Delete">🗑</button>' +
+        '</div>' +
+        '<div style="display:flex;gap:0.75rem;flex-wrap:wrap;">' +
+        '<div style="width:76px;"><label class="form-label">Icon</label><input class="form-input" style="text-align:center;font-size:1.3rem;padding:0.4rem;" value="' + esc(item.icon || '📌') + '" oninput="csItemField(' + si + ',' + ii + ',\'icon\',this.value)" /></div>' +
+        '<div style="width:100px;"><label class="form-label">Color</label><select class="form-input" onchange="csItemField(' + si + ',' + ii + ',\'color\',this.value)">' + colorOpts + '</select></div>' +
+        '<div style="flex:1;min-width:140px;"><label class="form-label">Title</label><input class="form-input" value="' + esc(item.title || '') + '" oninput="csItemField(' + si + ',' + ii + ',\'title\',this.value)" /></div>' +
+        '</div>' +
+        '<div style="margin-top:0.5rem;"><label class="form-label">Description</label>' +
+        '<textarea class="form-input" rows="2" oninput="csItemField(' + si + ',' + ii + ',\'desc\',this.value)">' + esc(item.desc || '') + '</textarea>' +
+        '</div></div>';
+    }
+    return '';
+  }
+
+  function renderCsPanel() {
+    var container = document.getElementById('cs-list');
+    if (!container) return;
+    if (!customSections.length) {
+      container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:3rem 1rem;font-size:0.88rem;">No custom sections yet. Click <strong style="color:var(--cyan)">+ Add New Section</strong> to get started.</p>';
+      return;
+    }
+    var html = '';
+    customSections.forEach(function(section, si) {
+      var pageOpts = ['home','services','about','contact','repair'].map(function(p) {
+        return '<option value="' + p + '"' + (section.page === p ? ' selected' : '') + '>' + p.charAt(0).toUpperCase() + p.slice(1) + '</option>';
+      }).join('');
+      var itemsHtml = '';
+      (section.items || []).forEach(function(item, ii) { itemsHtml += buildCsItemHtml(si, item, ii); });
+      html += '<div class="field-group" style="margin-bottom:1.5rem;">';
+      html += '<div style="display:flex;align-items:flex-end;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">';
+      html += '<div style="flex:1;min-width:160px;"><label class="form-label">Section Title</label><input class="form-input" value="' + esc(section.title || '') + '" oninput="csField(' + si + ',\'title\',this.value)" /></div>';
+      html += '<div style="min-width:160px;"><label class="form-label">Subtitle (optional)</label><input class="form-input" value="' + esc(section.subtitle || '') + '" oninput="csField(' + si + ',\'subtitle\',this.value)" /></div>';
+      html += '<div style="width:120px;"><label class="form-label">Page</label><select class="form-input" onchange="csField(' + si + ',\'page\',this.value)">' + pageOpts + '</select></div>';
+      html += '<div style="display:flex;align-items:center;gap:0.5rem;">';
+      html += '<label class="toggle-label"><input type="checkbox"' + (section.visible ? ' checked' : '') + ' onchange="csField(' + si + ',\'visible\',this.checked)" /><span>Visible</span></label>';
+      html += '<button onclick="deleteSection(' + si + ')" style="background:rgba(255,68,102,0.1);color:#ff4466;border:1px solid rgba(255,68,102,0.2);border-radius:6px;padding:0.4rem 0.7rem;cursor:pointer;" title="Delete section">🗑</button>';
+      html += '</div></div>';
+      html += '<div style="border-top:1px solid rgba(0,245,255,0.08);padding-top:1rem;">';
+      html += '<div class="field-group-title">Section Items</div>';
+      html += itemsHtml || '<p style="color:var(--muted);font-size:0.8rem;padding:0.5rem 0 0.75rem;">No items yet — add text, an image, or a card below.</p>';
+      html += '<div style="display:flex;gap:0.5rem;margin-top:0.5rem;flex-wrap:wrap;">';
+      html += '<button class="btn-add" onclick="addCsItem(' + si + ',\'text\')">📝 Add Text</button>';
+      html += '<button class="btn-add" onclick="addCsItem(' + si + ',\'image\')">🖼️ Add Image</button>';
+      html += '<button class="btn-add" onclick="addCsItem(' + si + ',\'card\')">🃏 Add Card</button>';
+      html += '</div></div></div>';
+    });
+    container.innerHTML = html;
+  }
 
   /* ─── RENDER CARD ROWS IN ADMIN ─── */
   function renderCardSection(section, cards) {
@@ -644,6 +823,9 @@
       cardData[key] = JSON.parse(JSON.stringify(cards));
       renderCardSection(key, cardData[key]);
     });
+    // Fill custom sections
+    customSections = JSON.parse(JSON.stringify(content.custom_sections || []));
+    renderCsPanel();
   }
 
   /* ─── BUILD CONTENT OBJECT ─── */
@@ -656,6 +838,8 @@
     Object.keys(CARD_MAP).forEach(function(key) {
       set(obj, CARD_MAP[key], cardData[key] || []);
     });
+    // Inject custom sections
+    obj.custom_sections = customSections;
     return obj;
   }
 

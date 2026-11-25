@@ -326,6 +326,11 @@
           <div class="section-cards-wrap" id="cards-home_review"></div>
           <button class="btn-add" onclick="addCard('home_review')">+ Add Card</button>
         </div>
+        <div class="field-group">
+          <div class="field-group-title">🧩 Custom Sections on Home Page</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">Sections added via the <strong style="color:var(--cyan)">🧩 Sections</strong> tab that appear on the Home page, in page order.</p>
+          <div id="cs-summary-home"></div>
+        </div>
       </div>
 
       <!-- ABOUT -->
@@ -364,6 +369,11 @@
           <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">Reviews shown on the About page.</p>
           <div class="section-cards-wrap" id="cards-about_review"></div>
           <button class="btn-add" onclick="addCard('about_review')">+ Add Card</button>
+        </div>
+        <div class="field-group">
+          <div class="field-group-title">🧩 Custom Sections on About Page</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">Sections added via the <strong style="color:var(--cyan)">🧩 Sections</strong> tab that appear on the About page, in page order.</p>
+          <div id="cs-summary-about"></div>
         </div>
       </div>
 
@@ -414,6 +424,11 @@
           <div class="section-cards-wrap" id="cards-peri"></div>
           <button class="btn-add" onclick="addCard('peri')">+ Add Card</button>
         </div>
+        <div class="field-group">
+          <div class="field-group-title">🧩 Custom Sections on Services Page</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">Sections added via the <strong style="color:var(--cyan)">🧩 Sections</strong> tab that appear on the Services page, in page order.</p>
+          <div id="cs-summary-services"></div>
+        </div>
       </div>
 
       <!-- CONTACT -->
@@ -434,6 +449,11 @@
         <div class="field-group" style="border-color:rgba(0,245,255,0.08);background:rgba(0,245,255,0.02);">
           <div class="field-group-title" style="color:var(--muted);">📌 Hours & Address</div>
           <p style="font-size:0.8rem;color:var(--muted);">Opening hours and address are managed in the <strong style="color:var(--cyan)">General</strong> tab.</p>
+        </div>
+        <div class="field-group">
+          <div class="field-group-title">🧩 Custom Sections on Contact Page</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">Sections added via the <strong style="color:var(--cyan)">🧩 Sections</strong> tab that appear on the Contact page, in page order.</p>
+          <div id="cs-summary-contact"></div>
         </div>
       </div>
 
@@ -510,10 +530,47 @@
   /* ─── CUSTOM SECTIONS STATE ─── */
   var customSections = [];
 
+  var SLOT_INFO = {
+    'home-top':               { page:'home',     label:'🏠 Home — Top (before Services)',      order:0 },
+    'home-after-services':    { page:'home',     label:'🏠 Home — After Services Section',     order:1 },
+    'home-after-reviews':     { page:'home',     label:'🏠 Home — After Testimonials',         order:2 },
+    'home-bottom':            { page:'home',     label:'🏠 Home — Bottom (before footer)',     order:3 },
+    'services-top':           { page:'services', label:'🔧 Services — Top',                    order:0 },
+    'services-after-pc':      { page:'services', label:'🔧 Services — After PC Repair',        order:1 },
+    'services-after-laptop':  { page:'services', label:'🔧 Services — After Laptop Repair',    order:2 },
+    'services-after-console': { page:'services', label:'🔧 Services — After Console Repair',   order:3 },
+    'services-after-sw':      { page:'services', label:'🔧 Services — After Software',         order:4 },
+    'services-after-builds':  { page:'services', label:'🔧 Services — After Custom Builds',    order:5 },
+    'services-after-peri':    { page:'services', label:'🔧 Services — After Accessories',      order:6 },
+    'services-bottom':        { page:'services', label:'🔧 Services — Bottom (before footer)', order:7 },
+    'about-top':              { page:'about',    label:'👥 About — Top (after Our Story)',      order:0 },
+    'about-after-values':     { page:'about',    label:'👥 About — After Values',              order:1 },
+    'about-after-team':       { page:'about',    label:'👥 About — After Team',                order:2 },
+    'about-after-reviews':    { page:'about',    label:'👥 About — After Reviews (bottom)',    order:3 },
+    'contact-top':            { page:'contact',  label:'📞 Contact — Top (after form)',        order:0 },
+    'contact-bottom':         { page:'contact',  label:'📞 Contact — Bottom (after map)',      order:1 },
+    'repair-top':             { page:'repair',   label:'🔨 Repair — Top',                     order:0 },
+    'repair-bottom':          { page:'repair',   label:'🔨 Repair — Bottom',                  order:1 },
+  };
+
+  var PAGE_SLOT_ORDER = {
+    'home':     ['home-top','home-after-services','home-after-reviews','home-bottom'],
+    'services': ['services-top','services-after-pc','services-after-laptop','services-after-console','services-after-sw','services-after-builds','services-after-peri','services-bottom'],
+    'about':    ['about-top','about-after-values','about-after-team','about-after-reviews'],
+    'contact':  ['contact-top','contact-bottom'],
+  };
+
   function csUid() { return 'cs_' + Date.now() + '_' + Math.random().toString(36).substr(2,5); }
 
   function addCustomSection() {
-    customSections.push({ id: csUid(), page: 'home', title: 'New Section', subtitle: '', visible: true, items: [] });
+    customSections.push({ id: csUid(), slot: 'home-top', title: 'New Section', subtitle: '', visible: true, items: [] });
+    renderCsPanel();
+  }
+
+  function moveSection(si, dir) {
+    var j = si + dir;
+    if (j < 0 || j >= customSections.length) return;
+    var tmp = customSections[si]; customSections[si] = customSections[j]; customSections[j] = tmp;
     renderCsPanel();
   }
 
@@ -644,22 +701,44 @@
     if (!container) return;
     if (!customSections.length) {
       container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:3rem 1rem;font-size:0.88rem;">No custom sections yet. Click <strong style="color:var(--cyan)">+ Add New Section</strong> to get started.</p>';
+      renderCsSummaries();
       return;
     }
+    // Build grouped slot options once
+    var grouped = {};
+    Object.keys(SLOT_INFO).forEach(function(sk) {
+      var pg = SLOT_INFO[sk].page;
+      if (!grouped[pg]) grouped[pg] = [];
+      grouped[pg].push({ key: sk, label: SLOT_INFO[sk].label, order: SLOT_INFO[sk].order });
+    });
+    ['home','services','about','contact','repair'].forEach(function(pg) {
+      if (grouped[pg]) grouped[pg].sort(function(a,b){ return a.order - b.order; });
+    });
+
     var html = '';
     customSections.forEach(function(section, si) {
-      var pageOpts = ['home','services','about','contact','repair'].map(function(p) {
-        return '<option value="' + p + '"' + (section.page === p ? ' selected' : '') + '>' + p.charAt(0).toUpperCase() + p.slice(1) + '</option>';
-      }).join('');
+      var slotOpts = '';
+      ['home','services','about','contact','repair'].forEach(function(pg) {
+        slotOpts += '<optgroup label="' + pg.charAt(0).toUpperCase() + pg.slice(1) + '">';
+        (grouped[pg] || []).forEach(function(s) {
+          slotOpts += '<option value="' + s.key + '"' + (section.slot === s.key ? ' selected' : '') + '>' + s.label + '</option>';
+        });
+        slotOpts += '</optgroup>';
+      });
       var itemsHtml = '';
       (section.items || []).forEach(function(item, ii) { itemsHtml += buildCsItemHtml(si, item, ii); });
+
       html += '<div class="field-group" style="margin-bottom:1.5rem;">';
       html += '<div style="display:flex;align-items:flex-end;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">';
       html += '<div style="flex:1;min-width:160px;"><label class="form-label">Section Title</label><input class="form-input" value="' + esc(section.title || '') + '" oninput="csField(' + si + ',\'title\',this.value)" /></div>';
       html += '<div style="min-width:160px;"><label class="form-label">Subtitle (optional)</label><input class="form-input" value="' + esc(section.subtitle || '') + '" oninput="csField(' + si + ',\'subtitle\',this.value)" /></div>';
-      html += '<div style="width:120px;"><label class="form-label">Page</label><select class="form-input" onchange="csField(' + si + ',\'page\',this.value)">' + pageOpts + '</select></div>';
-      html += '<div style="display:flex;align-items:center;gap:0.5rem;">';
-      html += '<label class="toggle-label"><input type="checkbox"' + (section.visible ? ' checked' : '') + ' onchange="csField(' + si + ',\'visible\',this.checked)" /><span>Visible</span></label>';
+      html += '<div style="min-width:220px;"><label class="form-label">Position on Page</label><select class="form-input" onchange="csField(' + si + ',\'slot\',this.value);renderCsSummaries()">' + slotOpts + '</select></div>';
+      html += '<div style="display:flex;align-items:center;gap:0.4rem;">';
+      html += '<div style="display:flex;flex-direction:column;gap:0.15rem;">';
+      html += '<button onclick="moveSection(' + si + ',-1)" title="Move up" style="background:rgba(0,245,255,0.08);color:var(--cyan);border:1px solid rgba(0,245,255,0.2);border-radius:5px;padding:0.15rem 0.5rem;cursor:pointer;font-size:0.8rem;line-height:1.2;">▲</button>';
+      html += '<button onclick="moveSection(' + si + ',1)" title="Move down" style="background:rgba(0,245,255,0.08);color:var(--cyan);border:1px solid rgba(0,245,255,0.2);border-radius:5px;padding:0.15rem 0.5rem;cursor:pointer;font-size:0.8rem;line-height:1.2;">▼</button>';
+      html += '</div>';
+      html += '<label class="toggle-label" style="margin-left:0.25rem;"><input type="checkbox"' + (section.visible ? ' checked' : '') + ' onchange="csField(' + si + ',\'visible\',this.checked);renderCsSummaries()" /><span>Visible</span></label>';
       html += '<button onclick="deleteSection(' + si + ')" style="background:rgba(255,68,102,0.1);color:#ff4466;border:1px solid rgba(255,68,102,0.2);border-radius:6px;padding:0.4rem 0.7rem;cursor:pointer;" title="Delete section">🗑</button>';
       html += '</div></div>';
       html += '<div style="border-top:1px solid rgba(0,245,255,0.08);padding-top:1rem;">';
@@ -672,6 +751,40 @@
       html += '</div></div></div>';
     });
     container.innerHTML = html;
+    renderCsSummaries();
+  }
+
+  function renderCsSummaries() {
+    Object.keys(PAGE_SLOT_ORDER).forEach(function(page) {
+      var el = document.getElementById('cs-summary-' + page);
+      if (!el) return;
+      var slotOrder = PAGE_SLOT_ORDER[page];
+      var pageSections = [];
+      slotOrder.forEach(function(slotId) {
+        customSections.forEach(function(s, si) {
+          if (s.slot === slotId) pageSections.push({ section:s, si:si, slot:slotId });
+        });
+      });
+      if (!pageSections.length) {
+        el.innerHTML = '<p style="color:var(--muted);font-size:0.82rem;font-style:italic;padding:0.25rem 0;">No custom sections on this page yet. Use the <strong style="color:var(--cyan)">🧩 Sections</strong> tab to add one.</p>';
+        return;
+      }
+      var html = '<div style="display:flex;flex-direction:column;gap:0.5rem;">';
+      pageSections.forEach(function(item) {
+        var slotLabel = SLOT_INFO[item.slot] ? SLOT_INFO[item.slot].label : item.slot;
+        var visIcon = item.section.visible ? '👁️' : '🚫';
+        html += '<div style="display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0.75rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:8px;">';
+        html += '<span style="font-size:0.95rem;">' + visIcon + '</span>';
+        html += '<div style="flex:1;">';
+        html += '<div style="font-size:0.85rem;font-weight:600;color:var(--text);">' + esc(item.section.title || '(untitled)') + '</div>';
+        html += '<div style="font-size:0.72rem;color:var(--muted);">' + slotLabel + '</div>';
+        html += '</div>';
+        html += '<button onclick="showTab(\'sections\')" style="background:rgba(0,245,255,0.1);color:var(--cyan);border:1px solid rgba(0,245,255,0.2);border-radius:5px;padding:0.2rem 0.6rem;cursor:pointer;font-size:0.72rem;font-family:var(--font-h);letter-spacing:0.05em;">EDIT</button>';
+        html += '</div>';
+      });
+      html += '</div>';
+      el.innerHTML = html;
+    });
   }
 
   /* ─── RENDER CARD ROWS IN ADMIN ─── */
@@ -823,8 +936,12 @@
       cardData[key] = JSON.parse(JSON.stringify(cards));
       renderCardSection(key, cardData[key]);
     });
-    // Fill custom sections
+    // Fill custom sections (migrate old page→slot if needed)
     customSections = JSON.parse(JSON.stringify(content.custom_sections || []));
+    var pageBottomMap = { home:'home-bottom', services:'services-bottom', about:'about-after-reviews', contact:'contact-bottom', repair:'repair-bottom' };
+    customSections.forEach(function(s) {
+      if (!s.slot && s.page) { s.slot = pageBottomMap[s.page] || (s.page + '-bottom'); delete s.page; }
+    });
     renderCsPanel();
   }
 

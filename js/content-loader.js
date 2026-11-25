@@ -165,61 +165,63 @@
     grid.innerHTML = html;
   }
 
-  /* ── CUSTOM SECTIONS — dynamic sections across all pages ── */
+  /* ── CUSTOM SECTIONS — slot-based rendering across all pages ── */
   function renderCustomSections(content) {
-    var container = document.getElementById('cgz-custom-sections');
-    if (!container) return;
     var sections = content.custom_sections;
-    if (!Array.isArray(sections) || sections.length === 0) return;
+    if (!Array.isArray(sections)) return;
 
-    var path = location.pathname.toLowerCase();
-    var page = 'home';
-    if (path.match(/\/about\.html/)) page = 'about';
-    else if (path.match(/\/services\.html/)) page = 'services';
-    else if (path.match(/\/contact\.html/)) page = 'contact';
-    else if (path.match(/\/repair\.html/)) page = 'repair';
-
-    var html = '';
-    sections.forEach(function(section) {
-      if (!section.visible) return;
-      if (section.page !== page) return;
-      var items = section.items || [];
-      var hasCards = items.some(function(i) { return i.type === 'card' && i.visible !== false; });
-
-      html += '<section class="section"><div class="container">';
-      if (section.title) {
-        html += '<div class="section-header">';
-        html += '<h2 class="section-title">' + section.title + '</h2>';
-        if (section.subtitle) {
-          html += '<p style="color:var(--text-secondary);max-width:600px;margin:0.5rem auto 0;">' + section.subtitle + '</p>';
-        }
-        html += '<div class="glow-divider"></div></div>';
-      }
-      items.forEach(function(item) {
-        if (item.type === 'text') {
-          html += '<div style="max-width:720px;margin:0 auto 2rem;line-height:1.8;color:var(--text-secondary);">' + (item.content || '') + '</div>';
-        } else if (item.type === 'image') {
-          html += '<div style="text-align:center;margin:2rem auto;">';
-          html += '<img src="' + (item.url || '') + '" alt="' + (item.alt || '') + '" style="max-width:100%;border-radius:16px;border:var(--border-glow);box-shadow:var(--shadow-cyan);" />';
-          if (item.caption) html += '<p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.75rem;">' + item.caption + '</p>';
-          html += '</div>';
-        }
-      });
-      if (hasCards) {
-        html += '<div class="services-grid">';
-        items.forEach(function(item) {
-          if (item.type !== 'card' || item.visible === false) return;
-          html += '<div class="service-card" style="cursor:default;">';
-          html += '<div class="service-icon-wrap ' + (item.color || 'cyan') + '">' + (item.icon || '📌') + '</div>';
-          html += '<h3>' + (item.title || '') + '</h3>';
-          html += '<p>' + (item.desc || '') + '</p>';
-          html += '</div>';
-        });
-        html += '</div>';
-      }
-      html += '</div></section>';
+    // Backward compat: migrate old page→slot if needed
+    var pageBottomMap = { home:'home-bottom', services:'services-bottom', about:'about-after-reviews', contact:'contact-bottom', repair:'repair-bottom' };
+    sections.forEach(function(s) {
+      if (!s.slot && s.page) { s.slot = pageBottomMap[s.page] || (s.page + '-bottom'); }
     });
-    container.innerHTML = html;
+
+    // Find every slot container on this page and fill it
+    var slotEls = document.querySelectorAll('[id^="cgz-slot-"]');
+    slotEls.forEach(function(container) {
+      var slotId = container.id.replace('cgz-slot-', '');
+      var html = '';
+      sections.forEach(function(section) {
+        if (!section.visible) return;
+        if (section.slot !== slotId) return;
+        var items = section.items || [];
+        var hasCards = items.some(function(i) { return i.type === 'card' && i.visible !== false; });
+
+        html += '<section class="section"><div class="container">';
+        if (section.title) {
+          html += '<div class="section-header">';
+          html += '<h2 class="section-title">' + section.title + '</h2>';
+          if (section.subtitle) {
+            html += '<p style="color:var(--text-secondary);max-width:600px;margin:0.5rem auto 0;">' + section.subtitle + '</p>';
+          }
+          html += '<div class="glow-divider"></div></div>';
+        }
+        items.forEach(function(item) {
+          if (item.type === 'text') {
+            html += '<div style="max-width:720px;margin:0 auto 2rem;line-height:1.8;color:var(--text-secondary);">' + (item.content || '') + '</div>';
+          } else if (item.type === 'image') {
+            html += '<div style="text-align:center;margin:2rem auto;">';
+            html += '<img src="' + (item.url || '') + '" alt="' + (item.alt || '') + '" style="max-width:100%;border-radius:16px;border:var(--border-glow);box-shadow:var(--shadow-cyan);" />';
+            if (item.caption) html += '<p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.75rem;">' + item.caption + '</p>';
+            html += '</div>';
+          }
+        });
+        if (hasCards) {
+          html += '<div class="services-grid">';
+          items.forEach(function(item) {
+            if (item.type !== 'card' || item.visible === false) return;
+            html += '<div class="service-card" style="cursor:default;">';
+            html += '<div class="service-icon-wrap ' + (item.color || 'cyan') + '">' + (item.icon || '📌') + '</div>';
+            html += '<h3>' + (item.title || '') + '</h3>';
+            html += '<p>' + (item.desc || '') + '</p>';
+            html += '</div>';
+          });
+          html += '</div>';
+        }
+        html += '</div></section>';
+      });
+      container.innerHTML = html;
+    });
   }
 
   /* ── master apply ── */

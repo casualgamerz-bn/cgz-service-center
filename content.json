@@ -483,6 +483,22 @@
           "caption": "4 PSVITA Games for $10"
         }
       ]
+    },
+    {
+      "id": "cs_1795647201393_2wrc3",
+      "slot": "home-top",
+      "title": "IT'S TIME TO UPGRADE",
+      "subtitle": "",
+      "visible": true,
+      "items": [
+        {
+          "id": "cs_1795647208481_bhp6q",
+          "type": "image",
+          "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795647218000-msi_pd.png",
+          "alt": "DESKTOP PC / LAPTOP",
+          "caption": "Windows OS Upgrades $20 Full Backup and Reformat $20 Software Installation $10 each General Inspection/Troubleshooting $10 Deep Cleaning + Thermal Re-Paste $35 PC Games 3 for $10 (<50GB/Game)  Games Download and Updates  Upgrade Storage $30  (Excluding HDD/SSD/NVME)"
+        }
+      ]
     }
   ]
 }

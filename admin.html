@@ -7,134 +7,131 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --cyan: #00f5ff;
-      --pink: #ff0080;
-      --bg: #05050f;
-      --card: #0d0d1f;
-      --card2: #111128;
-      --border: rgba(0,245,255,0.18);
-      --text: #e0e0f0;
-      --muted: #7070a0;
-      --success: #00ff88;
-      --error: #ff4466;
-      --font-h: 'Orbitron', monospace;
-      --font-b: 'Exo 2', sans-serif;
+      --cyan: #00f5ff; --pink: #ff0080;
+      --bg: #05050f; --card: #0d0d1f; --card2: #111128;
+      --border: rgba(0,245,255,0.18); --text: #e0e0f0; --muted: #7070a0;
+      --success: #00ff88; --error: #ff4466;
+      --font-h: 'Orbitron', monospace; --font-b: 'Exo 2', sans-serif;
       --radius: 12px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: var(--font-b); background: var(--bg); color: var(--text); min-height: 100vh; }
     body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0;
+      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background: radial-gradient(ellipse 60% 40% at 20% 20%, rgba(0,245,255,0.04) 0%, transparent 60%),
                   radial-gradient(ellipse 50% 35% at 80% 80%, rgba(255,0,128,0.04) 0%, transparent 60%);
-      pointer-events: none;
     }
 
-    /* LOGIN */
-    #login-screen {
-      position: fixed; inset: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--bg); padding: 1.5rem;
-    }
-    .login-box {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 20px; padding: 2.5rem 2rem;
-      width: 100%; max-width: 440px;
-      box-shadow: 0 0 60px rgba(0,245,255,0.07);
-    }
+    /* ── LOGIN ── */
+    #login-screen { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: var(--bg); padding: 1.5rem; }
+    .login-box { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem 2rem; width: 100%; max-width: 440px; box-shadow: 0 0 60px rgba(0,245,255,0.07); }
     .login-logo { text-align: center; margin-bottom: 2rem; }
     .login-logo .emoji { font-size: 2.4rem; display: block; margin-bottom: 0.5rem; }
-    .login-logo h1 {
-      font-family: var(--font-h); font-size: 1.1rem; letter-spacing: 0.15em;
-      background: linear-gradient(90deg, var(--cyan), var(--pink));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
+    .login-logo h1 { font-family: var(--font-h); font-size: 1.1rem; letter-spacing: 0.15em; background: linear-gradient(90deg, var(--cyan), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .login-logo p { color: var(--muted); font-size: 0.82rem; margin-top: 0.3rem; }
-    .login-info {
-      background: rgba(0,245,255,0.05); border: 1px solid rgba(0,245,255,0.15);
-      border-radius: 10px; padding: 1rem 1.1rem; margin-bottom: 1.5rem; font-size: 0.82rem; color: var(--muted); line-height: 1.6;
-    }
+    .login-info { background: rgba(0,245,255,0.05); border: 1px solid rgba(0,245,255,0.15); border-radius: 10px; padding: 1rem 1.1rem; margin-bottom: 1.5rem; font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
     .login-info a { color: var(--cyan); text-decoration: none; }
+
+    /* ── FORM ELEMENTS ── */
     .form-label { display: block; font-size: 0.78rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
-    .form-input {
-      width: 100%; background: var(--card2); border: 1px solid var(--border);
-      border-radius: 8px; padding: 0.7rem 1rem; color: var(--text);
-      font-family: var(--font-b); font-size: 0.9rem; outline: none;
-      transition: border-color 0.2s;
-    }
+    .form-input { width: 100%; background: var(--card2); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 0.9rem; color: var(--text); font-family: var(--font-b); font-size: 0.88rem; outline: none; transition: border-color 0.2s; }
     .form-input:focus { border-color: var(--cyan); }
-    textarea.form-input { resize: vertical; min-height: 70px; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.75rem 1.5rem; border-radius: 8px; border: none;
-      font-family: var(--font-h); font-size: 0.75rem; letter-spacing: 0.08em;
-      cursor: pointer; transition: all 0.2s; text-transform: uppercase;
-    }
+    textarea.form-input { resize: vertical; min-height: 68px; }
+
+    /* ── BUTTONS ── */
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.4rem; border-radius: 8px; border: none; font-family: var(--font-h); font-size: 0.72rem; letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
     .btn-primary { background: linear-gradient(90deg, var(--cyan), #0088aa); color: #000; width: 100%; justify-content: center; margin-top: 1rem; }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
     .btn-save { background: linear-gradient(90deg, var(--cyan), #0088aa); color: #000; }
-    .btn-save:hover { opacity: 0.9; }
+    .btn-save:hover { opacity: 0.88; }
     .btn-logout { background: rgba(255,0,128,0.1); color: var(--pink); border: 1px solid rgba(255,0,128,0.2); }
     .btn-logout:hover { background: rgba(255,0,128,0.2); }
+    .btn-add { background: rgba(0,245,255,0.08); color: var(--cyan); border: 1px dashed rgba(0,245,255,0.35); padding: 0.55rem 1.1rem; font-size: 0.7rem; border-radius: 8px; cursor: pointer; font-family: var(--font-h); letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.75rem; }
+    .btn-add:hover { background: rgba(0,245,255,0.14); }
+    .btn-del { background: rgba(255,68,102,0.1); border: 1px solid rgba(255,68,102,0.25); color: var(--error); border-radius: 6px; padding: 0.4rem 0.65rem; cursor: pointer; font-size: 0.8rem; line-height: 1; flex-shrink: 0; transition: background 0.15s; }
+    .btn-del:hover { background: rgba(255,68,102,0.22); }
     #login-msg { margin-top: 0.75rem; text-align: center; font-size: 0.82rem; min-height: 1.2em; }
     #login-msg.ok { color: var(--success); }
     #login-msg.err { color: var(--error); }
 
-    /* MAIN LAYOUT */
+    /* ── MAIN ── */
     #main { display: none; min-height: 100vh; position: relative; z-index: 1; }
-    .topbar {
-      background: var(--card); border-bottom: 1px solid var(--border);
-      padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 50;
-    }
-    .topbar-title { font-family: var(--font-h); font-size: 0.9rem; letter-spacing: 0.12em; }
+    .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+    .topbar-title { font-family: var(--font-h); font-size: 0.85rem; letter-spacing: 0.12em; }
     .topbar-title span { color: var(--cyan); }
     .topbar-actions { display: flex; align-items: center; gap: 0.75rem; }
-    #save-btn { padding: 0.55rem 1.4rem; }
     #save-status { font-size: 0.8rem; }
     #save-status.ok { color: var(--success); }
     #save-status.err { color: var(--error); }
 
-    .content-wrap { display: flex; height: calc(100vh - 60px); }
+    .content-wrap { display: flex; height: calc(100vh - 58px); }
 
-    /* SIDEBAR */
-    .sidebar {
-      width: 220px; min-width: 220px; background: var(--card);
-      border-right: 1px solid var(--border); overflow-y: auto; padding: 1rem 0;
-    }
-    .sidebar-section { padding: 0.4rem 1rem 0.2rem; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
-    .tab-btn {
-      display: flex; align-items: center; gap: 0.6rem;
-      width: 100%; padding: 0.65rem 1.2rem; background: none; border: none;
-      color: var(--text); font-family: var(--font-b); font-size: 0.85rem;
-      cursor: pointer; text-align: left; transition: all 0.15s;
-    }
+    /* ── SIDEBAR ── */
+    .sidebar { width: 210px; min-width: 210px; background: var(--card); border-right: 1px solid var(--border); overflow-y: auto; padding: 1rem 0; }
+    .sidebar-section { padding: 0.5rem 1rem 0.2rem; font-size: 0.63rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    .tab-btn { display: flex; align-items: center; gap: 0.6rem; width: 100%; padding: 0.6rem 1.2rem; background: none; border: none; border-left: 3px solid transparent; color: var(--text); font-family: var(--font-b); font-size: 0.84rem; cursor: pointer; text-align: left; transition: all 0.15s; }
     .tab-btn:hover { background: rgba(0,245,255,0.05); color: var(--cyan); }
-    .tab-btn.active { background: rgba(0,245,255,0.1); color: var(--cyan); border-left: 3px solid var(--cyan); }
-    .tab-btn .tab-icon { font-size: 1rem; }
+    .tab-btn.active { background: rgba(0,245,255,0.1); color: var(--cyan); border-left-color: var(--cyan); }
 
-    /* EDITOR */
-    .editor-area { flex: 1; overflow-y: auto; padding: 1.5rem 2rem; }
+    /* ── EDITOR ── */
+    .editor-area { flex: 1; overflow-y: auto; padding: 1.5rem 2rem 3rem; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    .panel-title {
-      font-family: var(--font-h); font-size: 1rem; letter-spacing: 0.1em;
-      margin-bottom: 1.5rem; padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .field-group {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1rem;
-    }
-    .field-group-title {
-      font-size: 0.72rem; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase;
-      margin-bottom: 1rem; font-weight: 600;
-    }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .field-row.single { grid-template-columns: 1fr; }
-    .field-item { margin-bottom: 0.9rem; }
+    .panel-title { font-family: var(--font-h); font-size: 0.95rem; letter-spacing: 0.1em; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+    .field-group { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.4rem; margin-bottom: 1rem; }
+    .field-group-title { font-size: 0.7rem; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.9rem; font-weight: 600; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+    .field-item { margin-bottom: 0.85rem; }
     .field-item:last-child { margin-bottom: 0; }
+
+    /* ── CARD MANAGEMENT ── */
+    .card-row {
+      display: grid;
+      grid-template-columns: auto 60px 1fr 1fr auto;
+      gap: 0.6rem;
+      align-items: start;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      margin-bottom: 0.6rem;
+      transition: border-color 0.2s;
+    }
+    .card-row.hidden-card { opacity: 0.45; }
+    .card-row:hover { border-color: rgba(0,245,255,0.3); }
+    .card-row-desc { grid-column: 2 / -2; }
+
+    /* Toggle switch */
+    .toggle-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; padding-top: 0.1rem; }
+    .toggle-label { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+    .toggle { position: relative; width: 38px; height: 20px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: rgba(255,255,255,0.1);
+      border-radius: 20px; cursor: pointer; transition: background 0.2s;
+    }
+    .toggle-slider:before {
+      content: ''; position: absolute; left: 3px; top: 3px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--muted); transition: all 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: rgba(0,245,255,0.3); }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(18px); background: var(--cyan); }
+
+    .drag-handle { cursor: grab; color: var(--muted); font-size: 1rem; padding-top: 0.2rem; user-select: none; }
+    .drag-handle:active { cursor: grabbing; }
+
+    .section-cards-wrap { margin-bottom: 0; }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .sidebar { width: 56px; min-width: 56px; }
+      .tab-btn .tab-label { display: none; }
+      .editor-area { padding: 1rem; }
+      .field-row { grid-template-columns: 1fr; }
+      .card-row { grid-template-columns: auto 50px 1fr auto; }
+      .card-row-desc { grid-column: 1 / -1; }
+    }
   </style>
 </head>
 <body>
@@ -149,7 +146,7 @@
     </div>
     <div class="login-info">
       Enter your GitHub Personal Access Token (Classic) with <strong>repo</strong> scope.<br>
-      <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Generate token at github.com/settings/tokens →</a>
+      <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Generate at github.com/settings/tokens →</a>
     </div>
     <label class="form-label" for="pat-input">GitHub Token</label>
     <input class="form-input" type="password" id="pat-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
@@ -172,61 +169,58 @@
   <div class="content-wrap">
     <!-- SIDEBAR -->
     <nav class="sidebar">
-      <div class="sidebar-section">Site Settings</div>
+      <div class="sidebar-section">Settings</div>
       <button class="tab-btn active" onclick="showTab('general')" id="tab-general">
-        <span class="tab-icon">⚙️</span> General
+        <span>⚙️</span> <span class="tab-label">General</span>
       </button>
-
       <div class="sidebar-section">Pages</div>
       <button class="tab-btn" onclick="showTab('home')" id="tab-home">
-        <span class="tab-icon">🏠</span> Homepage
+        <span>🏠</span> <span class="tab-label">Homepage</span>
       </button>
       <button class="tab-btn" onclick="showTab('about')" id="tab-about">
-        <span class="tab-icon">👥</span> About
+        <span>👥</span> <span class="tab-label">About</span>
       </button>
       <button class="tab-btn" onclick="showTab('services')" id="tab-services">
-        <span class="tab-icon">🔧</span> Services
+        <span>🔧</span> <span class="tab-label">Services</span>
       </button>
       <button class="tab-btn" onclick="showTab('contact')" id="tab-contact">
-        <span class="tab-icon">📞</span> Contact
+        <span>📞</span> <span class="tab-label">Contact</span>
       </button>
     </nav>
 
-    <!-- EDITOR AREA -->
+    <!-- EDITOR -->
     <main class="editor-area">
 
-      <!-- GENERAL TAB -->
+      <!-- GENERAL -->
       <div class="tab-panel active" id="panel-general">
         <div class="panel-title">⚙️ General Settings</div>
-
         <div class="field-group">
           <div class="field-group-title">Business Info</div>
           <div class="field-item">
             <label class="form-label">Site Tagline</label>
-            <input class="form-input" data-field="global.tagline" placeholder="Computer & Gaming Service Center" />
+            <input class="form-input" data-field="global.tagline" />
           </div>
           <div class="field-row">
             <div class="field-item">
               <label class="form-label">Phone (displayed)</label>
-              <input class="form-input" data-field="global.phone" placeholder="📞 +6738698291" />
+              <input class="form-input" data-field="global.phone" />
             </div>
             <div class="field-item">
               <label class="form-label">Phone (tel: link)</label>
-              <input class="form-input" data-field="global.phone_tel" placeholder="tel:+6738698291" />
+              <input class="form-input" data-field="global.phone_tel" />
             </div>
           </div>
           <div class="field-row">
             <div class="field-item">
               <label class="form-label">Email (displayed)</label>
-              <input class="form-input" data-field="global.email" placeholder="✉️ casualgamerz.co@gmail.com" />
+              <input class="form-input" data-field="global.email" />
             </div>
             <div class="field-item">
               <label class="form-label">Email (mailto: link)</label>
-              <input class="form-input" data-field="global.email_mailto" placeholder="mailto:casualgamerz.co@gmail.com" />
+              <input class="form-input" data-field="global.email_mailto" />
             </div>
           </div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Address</div>
           <div class="field-item">
@@ -248,50 +242,48 @@
             </div>
           </div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Opening Hours</div>
           <div class="field-item">
             <label class="form-label">Short Hours (navbar/footer)</label>
-            <input class="form-input" data-field="global.hours_short" placeholder="🕐 Mon–Sat: 6am–10pm" />
+            <input class="form-input" data-field="global.hours_short" />
           </div>
           <div class="field-row">
             <div class="field-item">
               <label class="form-label">Weekday Label</label>
-              <input class="form-input" data-field="global.hours_weekday_label" placeholder="Monday – Saturday" />
+              <input class="form-input" data-field="global.hours_weekday_label" />
             </div>
             <div class="field-item">
               <label class="form-label">Weekday Hours</label>
-              <input class="form-input" data-field="global.hours_weekday_time" placeholder="6:00 AM – 10:00 PM" />
+              <input class="form-input" data-field="global.hours_weekday_time" />
             </div>
           </div>
           <div class="field-row">
             <div class="field-item">
               <label class="form-label">Weekend Label</label>
-              <input class="form-input" data-field="global.hours_weekend_label" placeholder="Sunday" />
+              <input class="form-input" data-field="global.hours_weekend_label" />
             </div>
             <div class="field-item">
               <label class="form-label">Weekend Hours</label>
-              <input class="form-input" data-field="global.hours_weekend_time" placeholder="12:00 PM – 10:00 PM" />
+              <input class="form-input" data-field="global.hours_weekend_time" />
             </div>
           </div>
         </div>
       </div>
 
-      <!-- HOMEPAGE TAB -->
+      <!-- HOMEPAGE -->
       <div class="tab-panel" id="panel-home">
         <div class="panel-title">🏠 Homepage Content</div>
-
         <div class="field-group">
           <div class="field-group-title">Hero Section</div>
           <div class="field-row">
             <div class="field-item">
               <label class="form-label">Title Line 1</label>
-              <input class="form-input" data-field="home.hero_title_line1" placeholder="Revive Your" />
+              <input class="form-input" data-field="home.hero_title_line1" />
             </div>
             <div class="field-item">
               <label class="form-label">Title Line 2</label>
-              <input class="form-input" data-field="home.hero_title_line2" placeholder="Gaming Setup" />
+              <input class="form-input" data-field="home.hero_title_line2" />
             </div>
           </div>
           <div class="field-item">
@@ -300,524 +292,173 @@
           </div>
           <div class="field-item">
             <label class="form-label">CTA Button Text</label>
-            <input class="form-input" data-field="home.cta_title" placeholder="Free Diagnostic Check" />
+            <input class="form-input" data-field="home.cta_title" />
           </div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Stats Bar</div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Stat 1 Number</label>
-              <input class="form-input" data-field="home.stat1_number" placeholder="1000+" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Stat 1 Label</label>
-              <input class="form-input" data-field="home.stat1_label" placeholder="Devices Fixed" />
-            </div>
+            <div class="field-item"><label class="form-label">Stat 1 Number</label><input class="form-input" data-field="home.stat1_number" /></div>
+            <div class="field-item"><label class="form-label">Stat 1 Label</label><input class="form-input" data-field="home.stat1_label" /></div>
           </div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Stat 2 Number</label>
-              <input class="form-input" data-field="home.stat2_number" placeholder="98%" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Stat 2 Label</label>
-              <input class="form-input" data-field="home.stat2_label" placeholder="Satisfaction" />
-            </div>
+            <div class="field-item"><label class="form-label">Stat 2 Number</label><input class="form-input" data-field="home.stat2_number" /></div>
+            <div class="field-item"><label class="form-label">Stat 2 Label</label><input class="form-input" data-field="home.stat2_label" /></div>
           </div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Stat 3 Number</label>
-              <input class="form-input" data-field="home.stat3_number" placeholder="24H" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Stat 3 Label</label>
-              <input class="form-input" data-field="home.stat3_label" placeholder="Avg Turnaround" />
-            </div>
+            <div class="field-item"><label class="form-label">Stat 3 Number</label><input class="form-input" data-field="home.stat3_number" /></div>
+            <div class="field-item"><label class="form-label">Stat 3 Label</label><input class="form-input" data-field="home.stat3_label" /></div>
           </div>
         </div>
-
         <div class="field-group">
-          <div class="field-group-title">Service Cards (Homepage)</div>
+          <div class="field-group-title">Service Card Titles (Homepage Preview)</div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Service 1</label>
-              <input class="form-input" data-field="home.service1_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Service 2</label>
-              <input class="form-input" data-field="home.service2_title" />
-            </div>
+            <div class="field-item"><label class="form-label">Service 1</label><input class="form-input" data-field="home.service1_title" /></div>
+            <div class="field-item"><label class="form-label">Service 2</label><input class="form-input" data-field="home.service2_title" /></div>
           </div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Service 3</label>
-              <input class="form-input" data-field="home.service3_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Service 4</label>
-              <input class="form-input" data-field="home.service4_title" />
-            </div>
+            <div class="field-item"><label class="form-label">Service 3</label><input class="form-input" data-field="home.service3_title" /></div>
+            <div class="field-item"><label class="form-label">Service 4</label><input class="form-input" data-field="home.service4_title" /></div>
           </div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Service 5</label>
-              <input class="form-input" data-field="home.service5_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Service 6</label>
-              <input class="form-input" data-field="home.service6_title" />
-            </div>
+            <div class="field-item"><label class="form-label">Service 5</label><input class="form-input" data-field="home.service5_title" /></div>
+            <div class="field-item"><label class="form-label">Service 6</label><input class="form-input" data-field="home.service6_title" /></div>
           </div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Review 1</div>
-          <div class="field-item">
-            <label class="form-label">Review Text</label>
-            <textarea class="form-input" data-field="home.review1_text"></textarea>
-          </div>
+          <div class="field-item"><label class="form-label">Review Text</label><textarea class="form-input" data-field="home.review1_text"></textarea></div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Name</label>
-              <input class="form-input" data-field="home.review1_name" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Role / Location</label>
-              <input class="form-input" data-field="home.review1_role" />
-            </div>
+            <div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="home.review1_name" /></div>
+            <div class="field-item"><label class="form-label">Role / Location</label><input class="form-input" data-field="home.review1_role" /></div>
           </div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Review 2</div>
-          <div class="field-item">
-            <label class="form-label">Review Text</label>
-            <textarea class="form-input" data-field="home.review2_text"></textarea>
-          </div>
+          <div class="field-item"><label class="form-label">Review Text</label><textarea class="form-input" data-field="home.review2_text"></textarea></div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Name</label>
-              <input class="form-input" data-field="home.review2_name" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Role / Location</label>
-              <input class="form-input" data-field="home.review2_role" />
-            </div>
+            <div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="home.review2_name" /></div>
+            <div class="field-item"><label class="form-label">Role / Location</label><input class="form-input" data-field="home.review2_role" /></div>
           </div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Review 3</div>
-          <div class="field-item">
-            <label class="form-label">Review Text</label>
-            <textarea class="form-input" data-field="home.review3_text"></textarea>
-          </div>
+          <div class="field-item"><label class="form-label">Review Text</label><textarea class="form-input" data-field="home.review3_text"></textarea></div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Name</label>
-              <input class="form-input" data-field="home.review3_name" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Role / Location</label>
-              <input class="form-input" data-field="home.review3_role" />
-            </div>
+            <div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="home.review3_name" /></div>
+            <div class="field-item"><label class="form-label">Role / Location</label><input class="form-input" data-field="home.review3_role" /></div>
           </div>
         </div>
       </div>
 
-      <!-- ABOUT TAB -->
+      <!-- ABOUT -->
       <div class="tab-panel" id="panel-about">
         <div class="panel-title">👥 About Page</div>
-
         <div class="field-group">
           <div class="field-group-title">Hero</div>
-          <div class="field-item">
-            <label class="form-label">Hero Description</label>
-            <textarea class="form-input" data-field="about.hero_desc"></textarea>
-          </div>
+          <div class="field-item"><label class="form-label">Hero Description</label><textarea class="form-input" data-field="about.hero_desc"></textarea></div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Our Story</div>
-          <div class="field-item">
-            <label class="form-label">Story Paragraph 1</label>
-            <textarea class="form-input" data-field="about.story_p1"></textarea>
-          </div>
-          <div class="field-item">
-            <label class="form-label">Story Paragraph 2</label>
-            <textarea class="form-input" data-field="about.story_p2"></textarea>
-          </div>
-          <div class="field-item">
-            <label class="form-label">Story Paragraph 3</label>
-            <textarea class="form-input" data-field="about.story_p3"></textarea>
-          </div>
+          <div class="field-item"><label class="form-label">Paragraph 1</label><textarea class="form-input" data-field="about.story_p1"></textarea></div>
+          <div class="field-item"><label class="form-label">Paragraph 2</label><textarea class="form-input" data-field="about.story_p2"></textarea></div>
+          <div class="field-item"><label class="form-label">Paragraph 3</label><textarea class="form-input" data-field="about.story_p3"></textarea></div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Stats</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Stat 1 Value</label>
-              <input class="form-input" data-field="about.stat1_val" placeholder="12+" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Stat 1 Label</label>
-              <input class="form-input" data-field="about.stat1_label" placeholder="Years in Business" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Stat 2 Value</label>
-              <input class="form-input" data-field="about.stat2_val" placeholder="1000+" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Stat 2 Label</label>
-              <input class="form-input" data-field="about.stat2_label" placeholder="Devices Repaired" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Stat 3 Value</label>
-              <input class="form-input" data-field="about.stat3_val" placeholder="98%" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Stat 3 Label</label>
-              <input class="form-input" data-field="about.stat3_label" placeholder="Customer Satisfaction" />
-            </div>
-          </div>
+          <div class="field-row"><div class="field-item"><label class="form-label">Stat 1 Value</label><input class="form-input" data-field="about.stat1_val" /></div><div class="field-item"><label class="form-label">Stat 1 Label</label><input class="form-input" data-field="about.stat1_label" /></div></div>
+          <div class="field-row"><div class="field-item"><label class="form-label">Stat 2 Value</label><input class="form-input" data-field="about.stat2_val" /></div><div class="field-item"><label class="form-label">Stat 2 Label</label><input class="form-input" data-field="about.stat2_label" /></div></div>
+          <div class="field-row"><div class="field-item"><label class="form-label">Stat 3 Value</label><input class="form-input" data-field="about.stat3_val" /></div><div class="field-item"><label class="form-label">Stat 3 Label</label><input class="form-input" data-field="about.stat3_label" /></div></div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Team Member 1</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Name</label>
-              <input class="form-input" data-field="about.team1_name" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Role / Title</label>
-              <input class="form-input" data-field="about.team1_role" />
-            </div>
-          </div>
-          <div class="field-item">
-            <label class="form-label">Bio</label>
-            <textarea class="form-input" data-field="about.team1_bio"></textarea>
-          </div>
+          <div class="field-row"><div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="about.team1_name" /></div><div class="field-item"><label class="form-label">Role</label><input class="form-input" data-field="about.team1_role" /></div></div>
+          <div class="field-item"><label class="form-label">Bio</label><textarea class="form-input" data-field="about.team1_bio"></textarea></div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Team Member 2</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Name</label>
-              <input class="form-input" data-field="about.team2_name" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Role / Title</label>
-              <input class="form-input" data-field="about.team2_role" />
-            </div>
-          </div>
-          <div class="field-item">
-            <label class="form-label">Bio</label>
-            <textarea class="form-input" data-field="about.team2_bio"></textarea>
-          </div>
+          <div class="field-row"><div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="about.team2_name" /></div><div class="field-item"><label class="form-label">Role</label><input class="form-input" data-field="about.team2_role" /></div></div>
+          <div class="field-item"><label class="form-label">Bio</label><textarea class="form-input" data-field="about.team2_bio"></textarea></div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Team Member 3</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Name</label>
-              <input class="form-input" data-field="about.team3_name" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Role / Title</label>
-              <input class="form-input" data-field="about.team3_role" />
-            </div>
-          </div>
-          <div class="field-item">
-            <label class="form-label">Bio</label>
-            <textarea class="form-input" data-field="about.team3_bio"></textarea>
-          </div>
+          <div class="field-row"><div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="about.team3_name" /></div><div class="field-item"><label class="form-label">Role</label><input class="form-input" data-field="about.team3_role" /></div></div>
+          <div class="field-item"><label class="form-label">Bio</label><textarea class="form-input" data-field="about.team3_bio"></textarea></div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Team Member 4</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Name</label>
-              <input class="form-input" data-field="about.team4_name" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Role / Title</label>
-              <input class="form-input" data-field="about.team4_role" />
-            </div>
-          </div>
-          <div class="field-item">
-            <label class="form-label">Bio</label>
-            <textarea class="form-input" data-field="about.team4_bio"></textarea>
-          </div>
+          <div class="field-row"><div class="field-item"><label class="form-label">Name</label><input class="form-input" data-field="about.team4_name" /></div><div class="field-item"><label class="form-label">Role</label><input class="form-input" data-field="about.team4_role" /></div></div>
+          <div class="field-item"><label class="form-label">Bio</label><textarea class="form-input" data-field="about.team4_bio"></textarea></div>
         </div>
       </div>
 
-      <!-- SERVICES TAB -->
+      <!-- SERVICES -->
       <div class="tab-panel" id="panel-services">
-        <div class="panel-title">🔧 Services Page</div>
+        <div class="panel-title">🔧 Services Page — Card Manager</div>
 
-        <div class="field-group">
+        <div class="field-group" style="margin-bottom:0.5rem;">
           <div class="field-group-title">Hero</div>
-          <div class="field-item">
-            <label class="form-label">Hero Description</label>
-            <textarea class="form-input" data-field="services.hero_desc"></textarea>
-          </div>
+          <div class="field-item"><label class="form-label">Hero Description</label><textarea class="form-input" data-field="services.hero_desc"></textarea></div>
         </div>
 
+        <p style="font-size:0.78rem;color:var(--muted);margin:0.75rem 0 1rem;">
+          Use the toggles to show/hide cards on the site. Click <strong style="color:var(--cyan)">+ Add Card</strong> to create a new one. Changes only apply after saving.
+        </p>
+
+        <!-- PC REPAIR CARDS -->
         <div class="field-group">
           <div class="field-group-title">🖥️ PC & Desktop Repair</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 1 Title</label>
-              <input class="form-input" data-field="services.pc1_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 1 Description</label>
-              <input class="form-input" data-field="services.pc1_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 2 Title</label>
-              <input class="form-input" data-field="services.pc2_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 2 Description</label>
-              <input class="form-input" data-field="services.pc2_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 3 Title</label>
-              <input class="form-input" data-field="services.pc3_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 3 Description</label>
-              <input class="form-input" data-field="services.pc3_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 4 Title</label>
-              <input class="form-input" data-field="services.pc4_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 4 Description</label>
-              <input class="form-input" data-field="services.pc4_desc" />
-            </div>
-          </div>
+          <div class="section-cards-wrap" id="cards-pc"></div>
+          <button class="btn-add" onclick="addCard('pc')">+ Add Card</button>
         </div>
 
+        <!-- LAPTOP CARDS -->
         <div class="field-group">
           <div class="field-group-title">💻 Laptop Repair</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 1 Title</label>
-              <input class="form-input" data-field="services.laptop1_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 1 Description</label>
-              <input class="form-input" data-field="services.laptop1_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 2 Title</label>
-              <input class="form-input" data-field="services.laptop2_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 2 Description</label>
-              <input class="form-input" data-field="services.laptop2_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 3 Title</label>
-              <input class="form-input" data-field="services.laptop3_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 3 Description</label>
-              <input class="form-input" data-field="services.laptop3_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 4 Title</label>
-              <input class="form-input" data-field="services.laptop4_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 4 Description</label>
-              <input class="form-input" data-field="services.laptop4_desc" />
-            </div>
-          </div>
+          <div class="section-cards-wrap" id="cards-laptop"></div>
+          <button class="btn-add" onclick="addCard('laptop')">+ Add Card</button>
         </div>
 
+        <!-- CONSOLE CARDS -->
         <div class="field-group">
           <div class="field-group-title">🎮 Console Repair</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 1 Title</label>
-              <input class="form-input" data-field="services.console1_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 1 Description</label>
-              <input class="form-input" data-field="services.console1_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 2 Title</label>
-              <input class="form-input" data-field="services.console2_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 2 Description</label>
-              <input class="form-input" data-field="services.console2_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 3 Title</label>
-              <input class="form-input" data-field="services.console3_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 3 Description</label>
-              <input class="form-input" data-field="services.console3_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 4 Title</label>
-              <input class="form-input" data-field="services.console4_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 4 Description</label>
-              <input class="form-input" data-field="services.console4_desc" />
-            </div>
-          </div>
+          <div class="section-cards-wrap" id="cards-console"></div>
+          <button class="btn-add" onclick="addCard('console')">+ Add Card</button>
         </div>
 
+        <!-- SOFTWARE CARDS -->
         <div class="field-group">
           <div class="field-group-title">⚙️ Software Services</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 1 Title</label>
-              <input class="form-input" data-field="services.sw1_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 1 Description</label>
-              <input class="form-input" data-field="services.sw1_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 2 Title</label>
-              <input class="form-input" data-field="services.sw2_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 2 Description</label>
-              <input class="form-input" data-field="services.sw2_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 3 Title</label>
-              <input class="form-input" data-field="services.sw3_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 3 Description</label>
-              <input class="form-input" data-field="services.sw3_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 4 Title</label>
-              <input class="form-input" data-field="services.sw4_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 4 Description</label>
-              <input class="form-input" data-field="services.sw4_desc" />
-            </div>
-          </div>
+          <div class="section-cards-wrap" id="cards-sw"></div>
+          <button class="btn-add" onclick="addCard('sw')">+ Add Card</button>
         </div>
 
+        <!-- PERIPHERAL CARDS -->
         <div class="field-group">
           <div class="field-group-title">🕹️ Controller & Peripheral Repair</div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 1 Title</label>
-              <input class="form-input" data-field="services.peri1_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 1 Description</label>
-              <input class="form-input" data-field="services.peri1_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 2 Title</label>
-              <input class="form-input" data-field="services.peri2_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 2 Description</label>
-              <input class="form-input" data-field="services.peri2_desc" />
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Card 3 Title</label>
-              <input class="form-input" data-field="services.peri3_title" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Card 3 Description</label>
-              <input class="form-input" data-field="services.peri3_desc" />
-            </div>
-          </div>
+          <div class="section-cards-wrap" id="cards-peri"></div>
+          <button class="btn-add" onclick="addCard('peri')">+ Add Card</button>
         </div>
       </div>
 
-      <!-- CONTACT TAB -->
+      <!-- CONTACT -->
       <div class="tab-panel" id="panel-contact">
         <div class="panel-title">📞 Contact Page</div>
-
         <div class="field-group">
           <div class="field-group-title">Hero</div>
           <div class="field-row">
-            <div class="field-item">
-              <label class="form-label">Hero Title (before "Touch")</label>
-              <input class="form-input" data-field="contact.hero_title" placeholder="Get In" />
-            </div>
-            <div class="field-item">
-              <label class="form-label">Hero Description</label>
-              <input class="form-input" data-field="contact.hero_desc" />
-            </div>
+            <div class="field-item"><label class="form-label">Hero Title (before "Touch")</label><input class="form-input" data-field="contact.hero_title" /></div>
+            <div class="field-item"><label class="form-label">Hero Description</label><input class="form-input" data-field="contact.hero_desc" /></div>
           </div>
         </div>
-
         <div class="field-group">
           <div class="field-group-title">Visit Info</div>
-          <div class="field-item">
-            <label class="form-label">Walk-in Text</label>
-            <textarea class="form-input" data-field="contact.walkin_text"></textarea>
-          </div>
-          <div class="field-item">
-            <label class="form-label">Parking Info</label>
-            <textarea class="form-input" data-field="contact.parking_info"></textarea>
-          </div>
+          <div class="field-item"><label class="form-label">Walk-in Text</label><textarea class="form-input" data-field="contact.walkin_text"></textarea></div>
+          <div class="field-item"><label class="form-label">Parking Info</label><textarea class="form-input" data-field="contact.parking_info"></textarea></div>
         </div>
-
-        <div class="field-group" style="border-color: rgba(0,245,255,0.1); background: rgba(0,245,255,0.03);">
-          <div class="field-group-title" style="color: var(--muted);">📌 Hours & Address</div>
-          <p style="font-size:0.8rem; color: var(--muted); margin-bottom: 0.75rem;">Opening hours and address are managed in the <strong style="color:var(--cyan)">General</strong> tab.</p>
+        <div class="field-group" style="border-color:rgba(0,245,255,0.08);background:rgba(0,245,255,0.02);">
+          <div class="field-group-title" style="color:var(--muted);">📌 Hours & Address</div>
+          <p style="font-size:0.8rem;color:var(--muted);">Opening hours and address are managed in the <strong style="color:var(--cyan)">General</strong> tab.</p>
         </div>
       </div>
 
@@ -826,69 +467,121 @@
 </div>
 
 <script>
-  var OWNER = 'casualgamerz-bn';
-  var REPO  = 'cgz-service-center';
+  var OWNER  = 'casualgamerz-bn';
+  var REPO   = 'cgz-service-center';
   var BRANCH = 'main';
-  var FILE  = 'content.json';
+  var FILE   = 'content.json';
   var PAT_KEY = 'cgz_admin_pat';
   var currentSha = null;
 
-  /* ── HELPERS ── */
-  function apiUrl() {
-    return 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + FILE;
+  /* ─── HELPERS ─── */
+  function apiUrl() { return 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/' + FILE; }
+  function hdrs(tok) { return { Authorization: 'token ' + tok, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' }; }
+  function get(obj, path) { return path.split('.').reduce(function(o,k){ return o!=null?o[k]:undefined; }, obj); }
+  function set(obj, path, val) {
+    var keys = path.split('.'), cur = obj;
+    for (var i = 0; i < keys.length - 1; i++) { if (!cur[keys[i]]) cur[keys[i]] = {}; cur = cur[keys[i]]; }
+    cur[keys[keys.length-1]] = val;
   }
-  function headers(token) {
-    return { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' };
-  }
-  function get(obj, path) {
-    return path.split('.').reduce(function(o, k) { return o != null ? o[k] : undefined; }, obj);
-  }
-  function set(obj, path, value) {
-    var keys = path.split('.');
-    var cur = obj;
-    for (var i = 0; i < keys.length - 1; i++) {
-      if (!cur[keys[i]]) cur[keys[i]] = {};
-      cur = cur[keys[i]];
-    }
-    cur[keys[keys.length - 1]] = value;
-  }
-  function b64encode(str) {
-    return btoa(unescape(encodeURIComponent(str)));
+  function b64(str) { return btoa(unescape(encodeURIComponent(str))); }
+
+  /* ─── CARD SECTIONS CONFIG ─── */
+  var SECTIONS = ['pc','laptop','console','sw','peri'];
+
+  /* ─── RENDER CARD ROWS IN ADMIN ─── */
+  function renderCardSection(section, cards) {
+    var wrap = document.getElementById('cards-' + section);
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    if (!Array.isArray(cards)) cards = [];
+    cards.forEach(function(card, idx) {
+      wrap.appendChild(buildCardRow(section, idx, card));
+    });
   }
 
-  /* ── LOGIN ── */
-  document.getElementById('pat-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doLogin();
-  });
+  function buildCardRow(section, idx, card) {
+    var div = document.createElement('div');
+    div.className = 'card-row' + (card.visible ? '' : ' hidden-card');
+    div.dataset.section = section;
+    div.dataset.idx = idx;
+
+    var checked = card.visible ? 'checked' : '';
+
+    div.innerHTML =
+      '<div class="toggle-wrap">' +
+        '<label class="toggle"><input type="checkbox" ' + checked + ' onchange="toggleCard(\'' + section + '\',' + idx + ',this.checked)"><span class="toggle-slider"></span></label>' +
+        '<span class="toggle-label">' + (card.visible ? 'ON' : 'OFF') + '</span>' +
+      '</div>' +
+      '<div><label class="form-label">Icon</label><input class="form-input" style="text-align:center;font-size:1.2rem;padding:0.4rem;" value="' + esc(card.icon||'') + '" oninput="updateCardField(\'' + section + '\',' + idx + ',\'icon\',this.value)" /></div>' +
+      '<div><label class="form-label">Title</label><input class="form-input" value="' + esc(card.title||'') + '" oninput="updateCardField(\'' + section + '\',' + idx + ',\'title\',this.value)" /></div>' +
+      '<div><label class="form-label">Description</label><textarea class="form-input" oninput="updateCardField(\'' + section + '\',' + idx + ',\'desc\',this.value)">' + esc(card.desc||'') + '</textarea></div>' +
+      '<button class="btn-del" onclick="deleteCard(\'' + section + '\',' + idx + ')" title="Delete card">🗑</button>';
+
+    return div;
+  }
+
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ─── CARD DATA STORE (in-memory) ─── */
+  var cardData = {}; // { pc: [...], laptop: [...], ... }
+
+  function toggleCard(section, idx, visible) {
+    cardData[section][idx].visible = visible;
+    var row = document.querySelector('[data-section="' + section + '"][data-idx="' + idx + '"]');
+    if (row) {
+      row.classList.toggle('hidden-card', !visible);
+      var label = row.querySelector('.toggle-label');
+      if (label) label.textContent = visible ? 'ON' : 'OFF';
+    }
+  }
+
+  function updateCardField(section, idx, field, value) {
+    if (cardData[section] && cardData[section][idx]) {
+      cardData[section][idx][field] = value;
+    }
+  }
+
+  function deleteCard(section, idx) {
+    if (!confirm('Delete this card? It will be removed from the website after saving.')) return;
+    cardData[section].splice(idx, 1);
+    renderCardSection(section, cardData[section]);
+  }
+
+  function addCard(section) {
+    if (!cardData[section]) cardData[section] = [];
+    cardData[section].push({ icon: '🔧', title: 'New Service', desc: 'Describe this service here.', visible: true });
+    renderCardSection(section, cardData[section]);
+    // Scroll to new card
+    var wrap = document.getElementById('cards-' + section);
+    if (wrap && wrap.lastChild) wrap.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ─── LOGIN ─── */
+  document.getElementById('pat-input').addEventListener('keydown', function(e) { if (e.key==='Enter') doLogin(); });
 
   function doLogin() {
     var token = document.getElementById('pat-input').value.trim();
     if (!token) { showLoginMsg('Please enter your GitHub token.', false); return; }
     var btn = document.getElementById('login-btn');
     btn.textContent = 'Verifying…';
-    fetch(apiUrl(), { headers: headers(token) })
-      .then(function(r) {
-        if (!r.ok) throw new Error('Invalid token or repo not found (HTTP ' + r.status + ')');
-        return r.json();
-      })
+    fetch(apiUrl(), { headers: hdrs(token) })
+      .then(function(r) { if (!r.ok) throw new Error('Invalid token or repo not found (HTTP ' + r.status + ')'); return r.json(); })
       .then(function(data) {
         localStorage.setItem(PAT_KEY, token);
         currentSha = data.sha;
-        var content = JSON.parse(atob(data.content.replace(/\n/g, '')));
-        fillForm(content);
+        var content = JSON.parse(atob(data.content.replace(/\n/g,'')));
+        fillAll(content);
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main').style.display = 'block';
       })
-      .catch(function(err) {
-        showLoginMsg('❌ ' + err.message, false);
-        btn.textContent = '🔑 Sign In';
-      });
+      .catch(function(err) { showLoginMsg('❌ ' + err.message, false); btn.textContent = '🔑 Sign In'; });
   }
 
   function showLoginMsg(msg, ok) {
     var el = document.getElementById('login-msg');
-    el.textContent = msg;
-    el.className = ok ? 'ok' : 'err';
+    el.textContent = msg; el.className = ok ? 'ok' : 'err';
   }
 
   function doLogout() {
@@ -900,83 +593,77 @@
     document.getElementById('login-btn').textContent = '🔑 Sign In';
   }
 
-  /* ── FILL FORM ── */
-  function fillForm(content) {
+  /* ─── FILL FORM ─── */
+  function fillAll(content) {
+    // Fill standard data-field inputs
     document.querySelectorAll('[data-field]').forEach(function(el) {
       var val = get(content, el.getAttribute('data-field'));
       if (val !== undefined && val !== null) el.value = val;
     });
+    // Fill card sections
+    SECTIONS.forEach(function(key) {
+      var cards = (content.services && content.services[key + '_cards']) || [];
+      cardData[key] = JSON.parse(JSON.stringify(cards)); // deep copy
+      renderCardSection(key, cardData[key]);
+    });
   }
 
-  /* ── BUILD CONTENT OBJ ── */
+  /* ─── BUILD CONTENT OBJECT ─── */
   function buildContentObj() {
     var obj = {};
     document.querySelectorAll('[data-field]').forEach(function(el) {
       set(obj, el.getAttribute('data-field'), el.value);
     });
+    // Inject card arrays from cardData
+    if (!obj.services) obj.services = {};
+    SECTIONS.forEach(function(key) {
+      obj.services[key + '_cards'] = cardData[key] || [];
+    });
     return obj;
   }
 
-  /* ── SAVE ── */
+  /* ─── SAVE ─── */
   function saveContent() {
     var token = localStorage.getItem(PAT_KEY);
     if (!token) { alert('Please log in first.'); return; }
     var statusEl = document.getElementById('save-status');
-    var saveBtn = document.getElementById('save-btn');
-    statusEl.textContent = 'Saving…';
-    statusEl.className = '';
+    var saveBtn  = document.getElementById('save-btn');
+    statusEl.textContent = 'Saving…'; statusEl.className = '';
     saveBtn.disabled = true;
 
-    // Get latest SHA first
-    fetch(apiUrl(), { headers: headers(token) })
+    // Always fetch latest SHA before writing
+    fetch(apiUrl(), { headers: hdrs(token) })
       .then(function(r) { return r.json(); })
       .then(function(data) {
         currentSha = data.sha;
-        var content = buildContentObj();
-        var encoded = b64encode(JSON.stringify(content, null, 2));
+        var encoded = b64(JSON.stringify(buildContentObj(), null, 2));
         return fetch(apiUrl(), {
-          method: 'PUT',
-          headers: headers(token),
-          body: JSON.stringify({
-            message: 'Admin panel: update site content',
-            content: encoded,
-            sha: currentSha,
-            branch: BRANCH
-          })
+          method: 'PUT', headers: hdrs(token),
+          body: JSON.stringify({ message: 'Admin panel: update site content', content: encoded, sha: currentSha, branch: BRANCH })
         });
       })
-      .then(function(r) {
-        if (!r.ok) return r.json().then(function(e) { throw new Error(e.message || 'Save failed'); });
-        return r.json();
-      })
+      .then(function(r) { if (!r.ok) return r.json().then(function(e){ throw new Error(e.message||'Save failed'); }); return r.json(); })
       .then(function(data) {
         currentSha = data.content.sha;
-        statusEl.textContent = '✅ Saved!';
-        statusEl.className = 'ok';
-        setTimeout(function() { statusEl.textContent = ''; }, 3000);
+        statusEl.textContent = '✅ Saved! Site will update in ~1 min.'; statusEl.className = 'ok';
+        setTimeout(function(){ statusEl.textContent = ''; }, 4000);
       })
-      .catch(function(err) {
-        statusEl.textContent = '❌ ' + err.message;
-        statusEl.className = 'err';
-      })
-      .finally(function() { saveBtn.disabled = false; });
+      .catch(function(err) { statusEl.textContent = '❌ ' + err.message; statusEl.className = 'err'; })
+      .finally(function(){ saveBtn.disabled = false; });
   }
 
-  /* ── TABS ── */
+  /* ─── TABS ─── */
   function showTab(name) {
-    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
-    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
     document.getElementById('panel-' + name).classList.add('active');
     document.getElementById('tab-' + name).classList.add('active');
   }
 
-  /* ── AUTO LOGIN ── */
+  /* ─── AUTO LOGIN ─── */
   (function() {
     var saved = localStorage.getItem(PAT_KEY);
-    if (saved) {
-      document.getElementById('pat-input').value = saved;
-      doLogin();
-    }
+    if (saved) { document.getElementById('pat-input').value = saved; doLogin(); }
   })();
 </script>
 </body>

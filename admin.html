@@ -608,7 +608,7 @@
       .then(function(data) {
         localStorage.setItem(PAT_KEY, token);
         currentSha = data.sha;
-        var content = JSON.parse(atob(data.content.replace(/\n/g,'')));
+        var content = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
         fillAll(content);
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('main').style.display = 'block';

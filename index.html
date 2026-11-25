@@ -373,16 +373,17 @@
     </div>
   </section>
 
-    <!-- GAME HIGHLIGHTS — auto-loads from images/latest-games/ -->
+    <!-- GAME HIGHLIGHTS — live feed from PlayStation YouTube channel -->
   <section class="section" style="background: rgba(0,245,255,0.02);" id="game-highlights">
     <div class="container">
       <div class="section-header fade-in">
-        <div class="section-tag">Staff Picks</div>
+        <div class="section-tag">PlayStation Official</div>
         <h2 class="section-title">Game <span class="highlight">Highlights</span></h2>
-        <p class="section-desc">Hand-picked by our techs — upload banner images to <strong>images/latest-games/</strong> on GitHub.</p>
+        <p class="section-desc">Latest videos direct from PlayStation's official YouTube channel — updated automatically.</p>
         <div class="glow-divider"></div>
       </div>
-      <div class="auto-gallery fade-in" data-folder="images/latest-games" data-type="grid"></div>
+      <!-- data-channel = PlayStation YouTube channel ID | data-max = how many videos to show -->
+      <div class="auto-gallery fade-in" data-type="youtube" data-channel="UC-2Y8dQb0S6DtpxNgAKoJKA" data-max="8"></div>
     </div>
   </section>
 

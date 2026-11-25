@@ -1786,6 +1786,66 @@ footer {
   gap: 1rem;
 }
 
+/* ===== YOUTUBE HIGHLIGHTS GRID ===== */
+.yt-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+.yt-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--gradient-card);
+  border: var(--border-glow);
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: var(--transition);
+}
+.yt-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 0, 128, 0.5);
+  box-shadow: var(--shadow-pink);
+}
+.yt-thumb-wrap {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #0a0a1a;
+}
+.yt-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+.yt-card:hover .yt-thumb-wrap img { transform: scale(1.04); }
+.yt-play-btn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.yt-card:hover .yt-play-btn { opacity: 1; }
+.yt-card-title {
+  padding: 0.65rem 0.9rem 0.9rem;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  font-family: var(--font-body);
+}
+@media (max-width: 480px) {
+  .yt-highlights-grid { grid-template-columns: 1fr; }
+}
+
 /* ===== AUTO GALLERY (dynamic loader) ===== */
 .gallery-skeleton {
   background: linear-gradient(90deg, var(--dark-surface) 25%, var(--dark-card) 50%, var(--dark-surface) 75%);

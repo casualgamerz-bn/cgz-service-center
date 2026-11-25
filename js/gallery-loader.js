@@ -168,13 +168,14 @@
   /* ── skeleton / empty states ──────────────────────────── */
 
   function skeleton(type) {
-    var cls = type === 'game' ? 'games-scroll' :
-              type === 'logo' ? 'logo-gallery-grid' :
-              type === 'app'  ? 'app-gallery-grid' :
+    var cls = type === 'game'    ? 'games-scroll' :
+              type === 'logo'    ? 'logo-gallery-grid' :
+              type === 'app'     ? 'app-gallery-grid' :
+              type === 'youtube' ? 'yt-highlights-grid' :
               'repair-gallery-grid';
     return '<div class="' + cls + ' gallery-loading">' +
       [1,2,3,4].map(function () {
-        return '<div class="gallery-skeleton"></div>';
+        return '<div class="gallery-skeleton" style="aspect-ratio:16/9;min-height:140px;"></div>';
       }).join('') +
       '</div>';
   }
@@ -317,11 +318,53 @@
     }
   }
 
+  /* ── youtube live feed ───────────────────────────────── */
+
+  function loadYouTube(el) {
+    var channelId = el.getAttribute('data-channel') || 'UC-2Y8dQb0S6DtpxNgAKoJKA';
+    var maxVids   = parseInt(el.getAttribute('data-max') || '8', 10);
+
+    el.innerHTML = skeleton('youtube');
+
+    var rssUrl = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + channelId;
+    var apiUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rssUrl);
+
+    fetch(apiUrl)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data.items || !data.items.length) throw new Error('empty');
+        var videos = data.items.slice(0, maxVids);
+        var html = '<div class="yt-highlights-grid">';
+        videos.forEach(function (v) {
+          var vidId = (v.link.match(/[?&]v=([^&]+)/) || ['', ''])[1];
+          if (!vidId) { vidId = v.guid.split('v=')[1] || ''; }
+          var thumb = vidId
+            ? 'https://img.youtube.com/vi/' + vidId + '/mqdefault.jpg'
+            : (v.thumbnail || '');
+          var title = v.title || '';
+          html += '<a class="yt-card" href="' + v.link + '" target="_blank" rel="noopener noreferrer">' +
+            '<div class="yt-thumb-wrap">' +
+              '<img src="' + thumb + '" alt="' + title.replace(/"/g, '&quot;') + '" loading="lazy">' +
+              '<div class="yt-play-btn">▶</div>' +
+            '</div>' +
+            '<div class="yt-card-title">' + title + '</div>' +
+          '</a>';
+        });
+        html += '</div>';
+        el.innerHTML = html;
+        el.classList.add('loaded');
+      })
+      .catch(function () { el.innerHTML = emptyState(); });
+  }
+
   /* ── fetch ────────────────────────────────────────────── */
 
   function loadFolder(el) {
     var folder = el.getAttribute('data-folder');
     var type   = el.getAttribute('data-type') || 'grid';
+
+    // YouTube live feed — different path, no GitHub API
+    if (type === 'youtube') { loadYouTube(el); return; }
 
     if (!folder) return;
 

@@ -499,6 +499,22 @@
           "caption": "Windows OS Upgrades $20 Full Backup and Reformat $20 Software Installation $10 each General Inspection/Troubleshooting $10 Deep Cleaning + Thermal Re-Paste $35 PC Games 3 for $10 (<50GB/Game)  Games Download and Updates  Upgrade Storage $30  (Excluding HDD/SSD/NVME)"
         }
       ]
+    },
+    {
+      "id": "cs_1795647259203_utqjs",
+      "slot": "home-top",
+      "title": "GET YOUR GAMING ON THE GO",
+      "subtitle": "",
+      "visible": true,
+      "items": [
+        {
+          "id": "cs_1795647272211_gns2b",
+          "type": "image",
+          "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795647277192-silide01.png",
+          "alt": "NINTENDO SWITCH",
+          "caption": "4 Switch Games for $10  Games Download and Updates"
+        }
+      ]
     }
   ]
 }

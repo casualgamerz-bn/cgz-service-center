@@ -1,19 +1,19 @@
 {
   "global": {
     "tagline": "Computer & Gaming Service Center",
-    "phone": "ð +6738698291",
+    "phone": "Ã°ÂÂÂ +6738698291",
     "phone_tel": "tel:+6738698291",
-    "email": "âï¸ casualgamerz.co@gmail.com",
+    "email": "Ã¢ÂÂÃ¯Â¸Â casualgamerz.co@gmail.com",
     "email_mailto": "mailto:casualgamerz.co@gmail.com",
-    "address_short": "ð No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam",
+    "address_short": "Ã°ÂÂÂ No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam",
     "address": "No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam",
     "address_map1": "No 143 Jln SG Bakong Selatan, RPN Teres Lumut KC5335, Brunei Darussalam",
     "address_map2": "Brunei Darussalam",
-    "hours_short": "ð MonâSat: 6amâ10pm",
-    "hours_weekday_label": "Monday â Saturday",
-    "hours_weekday_time": "6:00 AM â 10:00 PM",
+    "hours_short": "Ã°ÂÂÂ MonÃ¢ÂÂSat: 6amÃ¢ÂÂ10pm",
+    "hours_weekday_label": "Monday Ã¢ÂÂ Saturday",
+    "hours_weekday_time": "6:00 AM Ã¢ÂÂ 10:00 PM",
     "hours_weekend_label": "Sunday",
-    "hours_weekend_time": "12:00 PM â 10:00 PM"
+    "hours_weekend_time": "12:00 PM Ã¢ÂÂ 10:00 PM"
   },
   "home": {
     "hero_title_line1": "Revive Your",
@@ -28,7 +28,7 @@
     "stat3_label": "Avg Turnaround",
     "service_cards": [
       {
-        "icon": "ð¥ï¸",
+        "icon": "Ã°ÂÂÂ¥Ã¯Â¸Â",
         "color": "cyan",
         "title": "PC & Desktop Repair",
         "desc": "Hardware diagnostics, GPU upgrades, RAM installation, power supply replacement, overheating fixes, and full system builds.",
@@ -41,7 +41,7 @@
         "visible": true
       },
       {
-        "icon": "ð»",
+        "icon": "Ã°ÂÂÂ»",
         "color": "pink",
         "title": "Laptop Repair",
         "desc": "Screen replacements, keyboard fixes, battery swaps, motherboard repairs, and water damage recovery for all brands.",
@@ -54,10 +54,10 @@
         "visible": true
       },
       {
-        "icon": "ð®",
+        "icon": "Ã°ÂÂÂ®",
         "color": "green",
         "title": "Console Repair",
-        "desc": "PS4/PS5, Xbox, Nintendo Switch, Steam Deck â disc drive issues, HDMI ports, overheating, and controller fixes.",
+        "desc": "PS4/PS5, Xbox, Nintendo Switch, Steam Deck Ã¢ÂÂ disc drive issues, HDMI ports, overheating, and controller fixes.",
         "link": "pages/services.html#console-repair",
         "tags": [
           "PlayStation",
@@ -67,7 +67,7 @@
         "visible": true
       },
       {
-        "icon": "âï¸",
+        "icon": "Ã¢ÂÂÃ¯Â¸Â",
         "color": "orange",
         "title": "Software & OS Services",
         "desc": "Windows/macOS reinstallation, virus/malware removal, driver updates, data recovery, and performance optimization.",
@@ -80,10 +80,10 @@
         "visible": true
       },
       {
-        "icon": "ð¨",
+        "icon": "Ã°ÂÂÂ¨",
         "color": "yellow",
         "title": "Custom PC Builds",
-        "desc": "We build your dream gaming rig â from budget-friendly entry setups to full RGB high-performance beasts. You pick, we build.",
+        "desc": "We build your dream gaming rig Ã¢ÂÂ from budget-friendly entry setups to full RGB high-performance beasts. You pick, we build.",
         "link": "pages/services.html#custom-build",
         "tags": [
           "Gaming Rig",
@@ -93,7 +93,7 @@
         "visible": true
       },
       {
-        "icon": "ð¹ï¸",
+        "icon": "Ã°ÂÂÂ¹Ã¯Â¸Â",
         "color": "purple",
         "title": "Controller & Peripheral Repair",
         "desc": "Joystick drift repair, trigger fixes, button replacements, and cleaning for controllers, keyboards, and mice.",
@@ -110,31 +110,31 @@
       {
         "text": "My PS5 had the infamous disc drive error. Brought it in and they had it sorted within the same day. Incredibly fast and the staff actually knew what they were talking about!",
         "name": "Ahmad Razif",
-        "role": "PS5 Repair Â· Brunei",
+        "role": "PS5 Repair ÃÂ· Brunei",
         "initials": "AR",
         "visible": true
       },
       {
-        "text": "Got my gaming laptop screen replaced here after a nasty drop. The screen looks perfect â you'd never know it was replaced. Pricing was fair and they finished ahead of schedule.",
+        "text": "Got my gaming laptop screen replaced here after a nasty drop. The screen looks perfect Ã¢ÂÂ you'd never know it was replaced. Pricing was fair and they finished ahead of schedule.",
         "name": "Sarah Lim",
-        "role": "Laptop Repair Â· Bandar",
+        "role": "Laptop Repair ÃÂ· Bandar",
         "initials": "SL",
         "visible": true
       },
       {
         "text": "They built my entire gaming PC from scratch. The cable management is immaculate and they walked me through every part choice. Best 1.2k BND I've ever spent on gaming gear.",
         "name": "Daniel Jayden",
-        "role": "Custom PC Build Â· Seria",
+        "role": "Custom PC Build ÃÂ· Seria",
         "initials": "DJ",
         "visible": true
       }
     ]
   },
   "about": {
-    "hero_desc": "We're gamers, tech enthusiasts, and repair specialists â dedicated to keeping Brunei's gaming community powered up.",
-    "story_p1": "Casual Gamerz started as a passion project in 2012 â two friends who loved gaming and hated seeing perfectly good devices thrown away over fixable faults. We started repairing controllers and consoles for friends, and word spread fast.",
-    "story_p2": "By 2016 we had a proper workshop, a team of certified technicians, and a reputation for fixing things others said couldn't be fixed. We've since serviced over 1,000 devices â from vintage game consoles to the latest PS5 and high-end gaming rigs.",
-    "story_p3": "Today, Casual Gamerz is Brunei's go-to tech repair center. We stock genuine parts, offer warranties on every repair, and treat every device like it's our own. Gaming is our culture â fixing it is our craft.",
+    "hero_desc": "We're gamers, tech enthusiasts, and repair specialists Ã¢ÂÂ dedicated to keeping Brunei's gaming community powered up.",
+    "story_p1": "Casual Gamerz started as a passion project in 2012 Ã¢ÂÂ two friends who loved gaming and hated seeing perfectly good devices thrown away over fixable faults. We started repairing controllers and consoles for friends, and word spread fast.",
+    "story_p2": "By 2016 we had a proper workshop, a team of certified technicians, and a reputation for fixing things others said couldn't be fixed. We've since serviced over 1,000 devices Ã¢ÂÂ from vintage game consoles to the latest PS5 and high-end gaming rigs.",
+    "story_p3": "Today, Casual Gamerz is Brunei's go-to tech repair center. We stock genuine parts, offer warranties on every repair, and treat every device like it's our own. Gaming is our culture Ã¢ÂÂ fixing it is our craft.",
     "stat1_val": "12+",
     "stat1_label": "Years in Business",
     "stat2_val": "1000+",
@@ -143,42 +143,42 @@
     "stat3_label": "Customer Satisfaction",
     "values_cards": [
       {
-        "icon": "â¡",
+        "icon": "Ã¢ÂÂ¡",
         "color": "cyan",
         "title": "Speed Without Compromise",
-        "desc": "We know every hour without your setup matters. Our 24â48 hour turnaround is a promise, not a goal â and we back it with our on-time guarantee.",
+        "desc": "We know every hour without your setup matters. Our 24Ã¢ÂÂ48 hour turnaround is a promise, not a goal Ã¢ÂÂ and we back it with our on-time guarantee.",
         "visible": true
       },
       {
-        "icon": "ð",
+        "icon": "Ã°ÂÂÂ",
         "color": "pink",
         "title": "Genuine Parts Only",
         "desc": "We source only genuine OEM or certified-equivalent parts. No grey market components, ever. Your device deserves parts that last.",
         "visible": true
       },
       {
-        "icon": "ð®",
+        "icon": "Ã°ÂÂÂ®",
         "color": "green",
         "title": "Gamers Who Get It",
         "desc": "Every technician on our team is an active gamer. We speak your language and we understand exactly what's at stake when your rig goes down.",
         "visible": true
       },
       {
-        "icon": "ð",
+        "icon": "Ã°ÂÂÂ",
         "color": "orange",
         "title": "Transparent Pricing",
         "desc": "We quote before we repair. No surprise charges, no hidden fees. You'll always know exactly what you're paying for before we start.",
         "visible": true
       },
       {
-        "icon": "ð¡ï¸",
+        "icon": "Ã°ÂÂÂ¡Ã¯Â¸Â",
         "color": "yellow",
         "title": "90-Day Guarantee",
         "desc": "All repairs are guaranteed for 90 days. If the same issue comes back, we fix it at no charge. That's our commitment to quality.",
         "visible": true
       },
       {
-        "icon": "ð",
+        "icon": "Ã°ÂÂÂ",
         "color": "purple",
         "title": "Community First",
         "desc": "We give back to the Brunei gaming community through sponsorships, tournaments, and free workshops for young tech enthusiasts.",
@@ -200,7 +200,7 @@
         "name": "Casual Gamerz 2",
         "role": "Co-Founder & Software Lead",
         "bio": "Expert in software diagnostics, data recovery, and OS optimization. Also the team's resident macOS guru.",
-        "visible": true
+        "visible": false
       },
       {
         "initials": "CG",
@@ -208,7 +208,7 @@
         "name": "Casual Gamerz 3",
         "role": "Console & Motherboard Tech",
         "bio": "BGA rework specialist. If it involves micro-soldering or board-level repair, this is your guy.",
-        "visible": true
+        "visible": false
       },
       {
         "initials": "CG",
@@ -216,49 +216,49 @@
         "name": "Casual Gamerz 4",
         "role": "Customer Experience Lead",
         "bio": "The first face you'll see at our counter. Makes sure every customer leaves with a smile and a working device.",
-        "visible": true
+        "visible": false
       }
     ],
     "review_cards": [
       {
         "text": "My PS5 had the infamous disc drive error. Brought it in and they had it sorted within the same day.",
         "name": "Ahmad Razif",
-        "role": "PS5 Repair Â· BSB",
+        "role": "PS5 Repair ÃÂ· BSB",
         "initials": "AR",
         "visible": true
       },
       {
-        "text": "Got my gaming laptop screen replaced. The screen looks perfect â you'd never know it was replaced. Great pricing too!",
+        "text": "Got my gaming laptop screen replaced. The screen looks perfect Ã¢ÂÂ you'd never know it was replaced. Great pricing too!",
         "name": "Sarah Lim",
-        "role": "Laptop Screen Â· Bandar",
+        "role": "Laptop Screen ÃÂ· Bandar",
         "initials": "SL",
         "visible": true
       },
       {
         "text": "They built my entire gaming PC from scratch. Immaculate cable management and walked me through every part choice.",
         "name": "Daniel Jayden",
-        "role": "Custom Build Â· Seria",
+        "role": "Custom Build ÃÂ· Seria",
         "initials": "DJ",
         "visible": true
       },
       {
-        "text": "Fixed my Switch Joycon drift for good with Hall effect sensors. No more drift issues after 6 months â absolutely worth it!",
+        "text": "Fixed my Switch Joycon drift for good with Hall effect sensors. No more drift issues after 6 months Ã¢ÂÂ absolutely worth it!",
         "name": "Muhd Bukhari",
-        "role": "Switch Joycon Â· Tutong",
+        "role": "Switch Joycon ÃÂ· Tutong",
         "initials": "MB",
         "visible": true
       },
       {
         "text": "Recovered 5 years of photos from a water-damaged laptop. I was in tears. These guys are miracle workers!",
         "name": "Linda Tan",
-        "role": "Data Recovery Â· BSB",
+        "role": "Data Recovery ÃÂ· BSB",
         "initials": "LT",
         "visible": true
       },
       {
         "text": "Had an Xbox Series X with HDMI issues. Fixed within 24 hours and it's been working perfectly ever since. Highly recommend!",
         "name": "Khairul Rizal",
-        "role": "Xbox Repair Â· Gadong",
+        "role": "Xbox Repair ÃÂ· Gadong",
         "initials": "KR",
         "visible": true
       }
@@ -268,25 +268,25 @@
     "hero_desc": "Comprehensive repair and upgrade solutions for every gaming device and computer.",
     "pc_cards": [
       {
-        "icon": "ð¥",
+        "icon": "Ã°ÂÂÂ¥",
         "title": "Overheating & Cooling",
         "desc": "Thermal paste replacement, fan cleaning, heatsink upgrades, and custom liquid cooling installations.",
         "visible": true
       },
       {
-        "icon": "â¡",
+        "icon": "Ã¢ÂÂ¡",
         "title": "Power Supply Repair",
         "desc": "PSU diagnostics, replacement with certified units, cable management, and surge protection setup.",
         "visible": true
       },
       {
-        "icon": "ð®",
+        "icon": "Ã°ÂÂÂ®",
         "title": "GPU Upgrade & Repair",
         "desc": "Graphics card installation, bios reflash, VRAM repair, and performance benchmarking after service.",
         "visible": true
       },
       {
-        "icon": "ð§±",
+        "icon": "Ã°ÂÂ§Â±",
         "title": "Motherboard Repair",
         "desc": "Trace repair, capacitor replacement, POST diagnostics, BIOS recovery, and chipset troubleshooting.",
         "visible": true
@@ -294,25 +294,25 @@
     ],
     "laptop_cards": [
       {
-        "icon": "ð¥ï¸",
+        "icon": "Ã°ÂÂÂ¥Ã¯Â¸Â",
         "title": "Screen Replacement",
-        "desc": "IPS, OLED, and 144Hz screen replacement for all brands â Asus, HP, Lenovo, Dell, MacBook, Acer and more.",
+        "desc": "IPS, OLED, and 144Hz screen replacement for all brands Ã¢ÂÂ Asus, HP, Lenovo, Dell, MacBook, Acer and more.",
         "visible": true
       },
       {
-        "icon": "ð",
+        "icon": "Ã°ÂÂÂ",
         "title": "Battery Replacement",
         "desc": "Genuine replacement batteries for all laptop models. We test capacity before and after replacement.",
         "visible": true
       },
       {
-        "icon": "ð§",
+        "icon": "Ã°ÂÂÂ§",
         "title": "Water Damage Recovery",
         "desc": "Ultrasonic cleaning, component-level corrosion removal, and full board rehabilitation for liquid damage.",
         "visible": true
       },
       {
-        "icon": "â¨ï¸",
+        "icon": "Ã¢ÂÂ¨Ã¯Â¸Â",
         "title": "Keyboard & Trackpad",
         "desc": "Full keyboard replacement, individual key fixes, trackpad calibration, and palm rest repairs.",
         "visible": true
@@ -320,25 +320,25 @@
     ],
     "console_cards": [
       {
-        "icon": "ð¦",
+        "icon": "Ã°ÂÂÂ¦",
         "title": "PlayStation Repair",
-        "desc": "PS3, PS4, PS4 Pro, PS5 â HDMI port replacement, disc drive repair, overheating fixes, and BLOD/YLOD repair.",
+        "desc": "PS3, PS4, PS4 Pro, PS5 Ã¢ÂÂ HDMI port replacement, disc drive repair, overheating fixes, and BLOD/YLOD repair.",
         "visible": true
       },
       {
-        "icon": "ð©",
+        "icon": "Ã°ÂÂÂ©",
         "title": "Xbox Repair",
-        "desc": "Xbox One, Series S/X â disc drive, HDMI, power brick, controller repair, and system software recovery.",
+        "desc": "Xbox One, Series S/X Ã¢ÂÂ disc drive, HDMI, power brick, controller repair, and system software recovery.",
         "visible": true
       },
       {
-        "icon": "ð´",
+        "icon": "Ã°ÂÂÂ´",
         "title": "Nintendo Switch Repair",
         "desc": "Joycon drift, screen cracks, charging port, dock issues, USB-C replacement, and banned account recovery.",
         "visible": true
       },
       {
-        "icon": "ð¤",
+        "icon": "Ã°ÂÂÂ¤",
         "title": "Steam Deck & Handheld",
         "desc": "Steam Deck screen, joystick, and SSD upgrades. Also servicing ROG Ally, Lenovo Legion Go, and more.",
         "visible": true
@@ -346,25 +346,25 @@
     ],
     "sw_cards": [
       {
-        "icon": "ð¡ï¸",
+        "icon": "Ã°ÂÂÂ¡Ã¯Â¸Â",
         "title": "Virus & Malware Removal",
         "desc": "Deep scan, complete malware/ransomware removal, browser cleanup, and preventive security setup.",
         "visible": true
       },
       {
-        "icon": "ð¿",
+        "icon": "Ã°ÂÂÂ¿",
         "title": "OS Installation",
         "desc": "Clean install of Windows 10/11 or macOS, driver setup, and essential software configuration.",
         "visible": true
       },
       {
-        "icon": "ð¾",
+        "icon": "Ã°ÂÂÂ¾",
         "title": "Data Recovery",
         "desc": "Recovery from failing HDDs, SSDs, corrupted partitions, accidental deletions, and formatted drives.",
         "visible": true
       },
       {
-        "icon": "ð",
+        "icon": "Ã°ÂÂÂ",
         "title": "Performance Tuning",
         "desc": "FPS optimization, startup speed boost, driver updates, background process cleanup, and gaming mode setup.",
         "visible": true
@@ -372,19 +372,19 @@
     ],
     "peri_cards": [
       {
-        "icon": "ð®",
+        "icon": "Ã°ÂÂÂ®",
         "title": "Joystick Drift Fix",
         "desc": "Fix analog stick drift on PS4/PS5, Xbox, Switch Joycon controllers using Hall effect sensor upgrades.",
         "visible": false
       },
       {
-        "icon": "ð±ï¸",
+        "icon": "Ã°ÂÂÂ±Ã¯Â¸Â",
         "title": "Gaming Mouse Repair",
         "desc": "Micro switch replacement, scroll wheel, cable repair, sensor cleaning for Logitech, Razer, SteelSeries and more.",
         "visible": false
       },
       {
-        "icon": "â¨ï¸",
+        "icon": "Ã¢ÂÂ¨Ã¯Â¸Â",
         "title": "Mechanical Keyboard",
         "desc": "Switch replacement, PCB repair, stabilizer lubing, keycap restoration, and RGB firmware flashing.",
         "visible": false
@@ -393,7 +393,7 @@
   },
   "contact": {
     "hero_title": "Get In",
-    "hero_desc": "Have a question? Need a quote? We're here to help â reach out through any channel below.",
+    "hero_desc": "Have a question? Need a quote? We're here to help Ã¢ÂÂ reach out through any channel below.",
     "walkin_text": "Walk-in welcome during opening hours. No appointment needed for drop-offs.",
     "parking_info": "Free street parking available in front of the shop. Drive-through drop-off available."
   }

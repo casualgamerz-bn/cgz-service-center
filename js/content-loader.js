@@ -196,16 +196,36 @@
           }
           html += '<div class="glow-divider"></div></div>';
         }
-        items.forEach(function(item) {
-          if (item.type === 'text') {
-            html += '<div style="max-width:720px;margin:0 auto 2rem;line-height:1.8;color:var(--text-secondary);">' + (item.content || '') + '</div>';
-          } else if (item.type === 'image') {
-            html += '<div style="text-align:center;margin:2rem auto;">';
-            html += '<img src="' + (item.url || '') + '" alt="' + (item.alt || '') + '" style="max-width:100%;border-radius:16px;border:var(--border-glow);box-shadow:var(--shadow-cyan);" />';
-            if (item.caption) html += '<p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.75rem;">' + item.caption + '</p>';
-            html += '</div>';
+        // Render text and images in order, grouping consecutive images side-by-side
+        var idx = 0;
+        while (idx < items.length) {
+          var it = items[idx];
+          if (it.type === 'text') {
+            html += '<div style="max-width:720px;margin:0 auto 2rem;line-height:1.8;color:var(--text-secondary);text-align:center;">' + (it.content || '') + '</div>';
+            idx++;
+          } else if (it.type === 'image') {
+            // Collect consecutive image items
+            var imgs = [];
+            while (idx < items.length && items[idx].type === 'image') { imgs.push(items[idx]); idx++; }
+            if (imgs.length === 1) {
+              html += '<div style="text-align:center;margin:2rem auto;max-width:680px;">';
+              html += '<img src="' + (imgs[0].url || '') + '" alt="' + (imgs[0].alt || '') + '" style="max-width:100%;border-radius:16px;border:var(--border-glow);box-shadow:var(--shadow-cyan);" />';
+              if (imgs[0].caption) html += '<p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.75rem;">' + imgs[0].caption + '</p>';
+              html += '</div>';
+            } else {
+              html += '<div style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;margin:2rem auto;">';
+              imgs.forEach(function(img) {
+                html += '<div style="flex:1;min-width:200px;max-width:420px;text-align:center;">';
+                html += '<img src="' + (img.url || '') + '" alt="' + (img.alt || '') + '" style="width:100%;border-radius:16px;border:var(--border-glow);box-shadow:var(--shadow-cyan);" />';
+                if (img.caption) html += '<p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.75rem;">' + img.caption + '</p>';
+                html += '</div>';
+              });
+              html += '</div>';
+            }
+          } else {
+            idx++; // skip card items here — rendered below
           }
-        });
+        }
         if (hasCards) {
           html += '<div class="services-grid">';
           items.forEach(function(item) {

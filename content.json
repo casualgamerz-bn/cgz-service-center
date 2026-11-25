@@ -397,5 +397,27 @@
     "walkin_text": "Walk-in welcome during opening hours. No appointment needed for drop-offs.",
     "parking_info": "Free street parking available in front of the shop. Drive-through drop-off available."
   },
-  "custom_sections": []
+  "custom_sections": [
+    {
+      "id": "cs_1795644475565_orrkw",
+      "page": "home",
+      "title": "BRING YOUR GAMING BACK TO LIFE",
+      "subtitle": "",
+      "visible": true,
+      "items": [
+        {
+          "id": "cs_1795644515814_bxjts",
+          "type": "image",
+          "url": "https://casualgamerz-bn.github.io/cgz-service-center/images/uploads/1795644597939-PS5.webp",
+          "alt": "",
+          "caption": ""
+        },
+        {
+          "id": "cs_1795644618162_k9o7d",
+          "type": "text",
+          "content": "Games Download and Updates"
+        }
+      ]
+    }
+  ]
 }

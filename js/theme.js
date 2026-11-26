@@ -1,15 +1,19 @@
 /**
- * CGZ Theme Toggle — v1
- * Persists user's light/dark preference in localStorage.
+ * CGZ Theme Toggle — v2
+ * Cycles: dark → light → white → dark
+ * Persists user's preference in localStorage.
  * Sets data-theme on <html> and updates the toggle button icon.
  */
 (function () {
   var KEY = 'cgz-theme';
 
+  var ICONS = { dark: '☀️', light: '⬜', white: '🌙' };
+  var NEXT  = { dark: 'light', light: 'white', white: 'dark' };
+
   function apply(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     var btn = document.getElementById('themeToggle');
-    if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+    if (btn) btn.textContent = ICONS[theme] || '☀️';
     try { localStorage.setItem(KEY, theme); } catch (e) {}
   }
 
@@ -24,8 +28,8 @@
     var btn = document.getElementById('themeToggle');
     if (btn) {
       btn.addEventListener('click', function () {
-        var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        apply(next);
+        var current = document.documentElement.getAttribute('data-theme') || 'dark';
+        apply(NEXT[current] || 'dark');
       });
     }
   });

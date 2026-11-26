@@ -2177,3 +2177,128 @@ footer {
     background: rgba(248, 250, 252, 0.99);
   }
 }
+
+/* ===== WHITE THEME (super white — pure clean background) ===== */
+[data-theme="white"] {
+  --neon-cyan: #2563eb;
+  --neon-pink: #7c3aed;
+  --neon-green: #16a34a;
+  --neon-yellow: #d97706;
+  --dark-bg: #ffffff;
+  --dark-card: #ffffff;
+  --dark-surface: #f8fafc;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --accent-orange: #ea580c;
+  --gradient-card: linear-gradient(145deg, #ffffff, #f8fafc);
+  --border-glow: 1px solid rgba(0, 0, 0, 0.09);
+  --shadow-cyan: 0 2px 14px rgba(0, 0, 0, 0.07);
+  --shadow-pink: 0 2px 14px rgba(0, 0, 0, 0.07);
+  --gradient-main: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+}
+
+[data-theme="white"] .navbar {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="white"] .navbar.scrolled {
+  background: rgba(255, 255, 255, 0.99);
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.07);
+}
+
+[data-theme="white"] .grid-bg {
+  background-image: none;
+}
+
+[data-theme="white"] .glow-divider {
+  background: linear-gradient(90deg, transparent, #2563eb, #7c3aed, transparent);
+  box-shadow: none;
+}
+
+[data-theme="white"] footer {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="white"] .social-link {
+  background: rgba(37, 99, 235, 0.06);
+  border-color: rgba(37, 99, 235, 0.15);
+}
+
+[data-theme="white"] .social-link:hover {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+[data-theme="white"] input,
+[data-theme="white"] select,
+[data-theme="white"] textarea {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #111827;
+}
+
+[data-theme="white"] input::placeholder,
+[data-theme="white"] textarea::placeholder {
+  color: #9ca3af;
+}
+
+[data-theme="white"] input:focus,
+[data-theme="white"] select:focus,
+[data-theme="white"] textarea:focus {
+  border-color: #2563eb;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+[data-theme="white"] .game-card-title { color: #111827; }
+[data-theme="white"] .highlight-title { color: #111827; }
+[data-theme="white"] .ps-tier-tab { border-color: rgba(0, 0, 0, 0.12); color: #374151; }
+[data-theme="white"] .gallery-card.add-slot { border-color: rgba(0, 0, 0, 0.1); }
+
+[data-theme="white"] .device-option label {
+  background: rgba(37, 99, 235, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="white"] .device-option input:checked + label {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+[data-theme="white"] .device-option label:hover {
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+[data-theme="white"] .tracking-result {
+  background: rgba(37, 99, 235, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="white"] .progress-steps::before {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="white"] .step-dot {
+  border-color: rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+}
+
+[data-theme="white"] .faq-item:hover      { border-color: rgba(37, 99, 235, 0.25); }
+[data-theme="white"] .contact-item:hover  { border-color: rgba(37, 99, 235, 0.3); }
+[data-theme="white"] .testimonial-card:hover { border-color: rgba(37, 99, 235, 0.3); }
+[data-theme="white"] .btn-price-outline   { border-color: rgba(0, 0, 0, 0.15); }
+[data-theme="white"] .btn-price-outline:hover { background: rgba(37, 99, 235, 0.05); }
+
+[data-theme="white"] .theme-toggle {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="white"] .theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  [data-theme="white"] .nav-links {
+    background: rgba(255, 255, 255, 0.99);
+  }
+}

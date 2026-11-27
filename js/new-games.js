@@ -69,12 +69,13 @@
              (img
                ? '<img src="' + img + '" alt="' + name + '" loading="lazy" title="Tap to enlarge" ' +
                  'onclick="window._cgzLightbox(\'' + safeImg + '\',\'' + safeName + '\')" ' +
-                 'style="width:100px;height:67px;object-fit:cover;border-radius:10px;flex-shrink:0;' +
+                 'ontouchend="event.preventDefault();window._cgzLightbox(\'' + safeImg + '\',\'' + safeName + '\')" ' +
+                 'style="width:110px;height:73px;object-fit:cover;border-radius:10px;flex-shrink:0;' +
                  'cursor:zoom-in;touch-action:manipulation;-webkit-tap-highlight-color:transparent;' +
                  'transition:transform 0.2s,box-shadow 0.2s;" ' +
                  'onmouseover="this.style.transform=\'scale(1.08)\';this.style.boxShadow=\'0 4px 20px rgba(255,0,128,0.4)\'" ' +
                  'onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'" />'
-               : '<div style="width:100px;height:67px;border-radius:10px;flex-shrink:0;' +
+               : '<div style="width:110px;height:73px;border-radius:10px;flex-shrink:0;' +
                  'background:linear-gradient(135deg,rgba(255,0,128,0.15),rgba(0,245,255,0.15));' +
                  'display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🆕</div>') +
              '<div style="flex:1;min-width:0;">' +

@@ -273,6 +273,9 @@
     ]
   },
   "services": {
+    "section_visibility": {
+      "custom_build": true
+    },
     "hero_desc": "Comprehensive repair and upgrade solutions for every gaming device and computer.",
     "pc_cards": [
       {

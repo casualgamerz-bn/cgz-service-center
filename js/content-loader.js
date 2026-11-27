@@ -165,6 +165,21 @@
     grid.innerHTML = html;
   }
 
+  /* ── SERVICES — static section show/hide ── */
+  function applyServicesSectionVisibility(content) {
+    var vis = get(content, 'services.section_visibility');
+    if (!vis) return;
+    var map = {
+      custom_build: 'custom-build'
+    };
+    Object.keys(map).forEach(function(key) {
+      var el = document.getElementById(map[key]);
+      if (!el) return;
+      var show = vis[key] !== false;
+      el.style.display = show ? '' : 'none';
+    });
+  }
+
   /* ── HOME — static section show/hide ── */
   function applyHomeSectionVisibility(content) {
     var vis = get(content, 'home.section_visibility');
@@ -274,6 +289,7 @@
     window.cgzContent = content; // expose for other scripts (e.g. top-games.js)
     applyText(content);
     applyHomeSectionVisibility(content);
+    applyServicesSectionVisibility(content);
     renderServiceCards(content);
     renderHomeServiceCards(content);
     renderHomeReviewCards(content);

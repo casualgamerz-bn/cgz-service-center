@@ -173,7 +173,8 @@
       consoles_gallery: 'consoles-gallery',
       creative_apps:    'creative-apps',
       brands_logos:     'brands-logos',
-      home_reviews:     'home-reviews'
+      home_reviews:     'home-reviews',
+      pc_games:         'pc-games'
     };
     Object.keys(map).forEach(function(key) {
       var el = document.getElementById(map[key]);

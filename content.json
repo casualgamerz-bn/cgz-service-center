@@ -31,7 +31,8 @@
       "consoles_gallery": false,
       "creative_apps": false,
       "brands_logos": false,
-      "home_reviews": false
+      "home_reviews": false,
+      "pc_games": true
     },
     "service_cards": [
       {

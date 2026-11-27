@@ -128,15 +128,17 @@ function doPost(e) {
       const d = body.data || {};
       const ticketId = generateTicketId();
       const now = new Date().toISOString();
+      // Allow backdated entries: if data.createdAt supplied, use it; else use now
+      const entryTime = (d.createdAt && d.createdAt.trim()) ? d.createdAt.trim() : now;
       const row = REPAIR_COLS.map(k => {
         if (k === 'ticketId')  return ticketId;
-        if (k === 'createdAt') return now;
-        if (k === 'status')    return 'Received';
+        if (k === 'createdAt') return entryTime;
+        if (k === 'status')    return d.status || 'Received';
         if (k === 'updatedAt') return now;
         return d[k] || '';
       });
       repairSheet().appendRow(row);
-      logSheet().appendRow([ticketId, now, 'Received', 'Repair submitted', '']);
+      logSheet().appendRow([ticketId, entryTime, d.status || 'Received', 'Repair submitted (backdated)', '']);
       return corsOutput({ ok: true, ticketId });
     }
 

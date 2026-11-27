@@ -2,9 +2,11 @@
   // Resolve content.json path correctly on GitHub Pages (/cgz-service-center/) and locally
   var CONTENT_URL = (function() {
     var h = location.hostname;
-    if (h === 'casualgamerz-bn.github.io') return '/cgz-service-center/content.json';
-    // Local: detect if we're in a pages/ subdirectory
-    return location.pathname.indexOf('/pages/') !== -1 ? '../content.json' : 'content.json';
+    var base = h === 'casualgamerz-bn.github.io'
+      ? '/cgz-service-center/content.json'
+      : (location.pathname.indexOf('/pages/') !== -1 ? '../content.json' : 'content.json');
+    // Cache-bust so browsers always fetch the latest version after an admin save
+    return base + '?v=' + Date.now();
   })();
   var FALLBACK_URL = 'https://raw.githubusercontent.com/casualgamerz-bn/cgz-service-center/main/content.json';
 

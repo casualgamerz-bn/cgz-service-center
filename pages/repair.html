@@ -10,6 +10,15 @@
   <link rel="stylesheet" href="../css/style.css">
   <script src="../js/content-loader.js" defer></script>
   <style>
+    /* ── Fix optgroup labels in dark mode ── */
+    select option, select optgroup {
+      background-color: #0a0f1e;
+      color: #e2e8f0;
+    }
+    select optgroup {
+      color: #00f5ff;
+      font-weight: 700;
+    }
     .ticket-modal-overlay {
       position:fixed; inset:0; background:rgba(5,10,20,0.92);
       backdrop-filter:blur(10px); z-index:3000;

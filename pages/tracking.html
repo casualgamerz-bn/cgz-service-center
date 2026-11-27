@@ -190,10 +190,19 @@
 
     const stepsHTML = STEPS.map((s, i) => {
       const done = i < currentIdx, active = i === currentIdx;
-      const color = (done || active) ? CasualGamerzDB.statusColor(repair.status) : 'rgba(255,255,255,0.1)';
-      return `<div style="flex:1;text-align:center;">
-        <div style="background:${color};border:2px solid ${color};margin:0 auto 0.5rem;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.95rem;">${STEP_ICONS[s]||'•'}</div>
-        <div style="font-size:0.62rem;color:${active?'var(--neon-cyan)':done?'rgba(255,255,255,0.5)':'rgba(255,255,255,0.2)'};">${s}</div>
+      const color = (done || active) ? CasualGamerzDB.statusColor(repair.status) : 'rgba(255,255,255,0.08)';
+      const borderColor = active ? CasualGamerzDB.statusColor(repair.status) : done ? CasualGamerzDB.statusColor(repair.status)+'88' : 'rgba(255,255,255,0.1)';
+      const glowStyle = active ? `box-shadow:0 0 16px ${CasualGamerzDB.statusColor(repair.status)}55,inset 0 1px 0 rgba(255,255,255,0.15);` : done ? `box-shadow:0 2px 8px ${CasualGamerzDB.statusColor(repair.status)}33;` : '';
+      const bgStyle = active
+        ? `background:linear-gradient(135deg,${CasualGamerzDB.statusColor(repair.status)}33,${CasualGamerzDB.statusColor(repair.status)}18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);`
+        : done
+        ? `background:linear-gradient(135deg,${CasualGamerzDB.statusColor(repair.status)}22,${CasualGamerzDB.statusColor(repair.status)}0d);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);`
+        : `background:rgba(255,255,255,0.03);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);`;
+      return `<div style="flex:1;min-width:0;">
+        <div style="margin:0 2px;padding:0.55rem 0.3rem 0.5rem;border-radius:10px;border:1px solid ${borderColor};${bgStyle}${glowStyle}text-align:center;transition:all 0.3s;">
+          <div style="font-size:1.05rem;margin-bottom:0.3rem;line-height:1;">${STEP_ICONS[s]||'•'}</div>
+          <div style="font-size:0.58rem;letter-spacing:0.06em;font-family:var(--font-display);color:${active?CasualGamerzDB.statusColor(repair.status):done?'rgba(255,255,255,0.55)':'rgba(255,255,255,0.2)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s}</div>
+        </div>
       </div>`;
     }).join('');
 

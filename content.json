@@ -90,7 +90,7 @@
           "Workstation",
           "RGB"
         ],
-        "visible": true
+        "visible": false
       },
       {
         "icon": "🕹️",

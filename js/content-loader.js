@@ -270,6 +270,7 @@
 
   /* ── master apply ── */
   function apply(content) {
+    window.cgzContent = content; // expose for other scripts (e.g. top-games.js)
     applyText(content);
     applyHomeSectionVisibility(content);
     renderServiceCards(content);

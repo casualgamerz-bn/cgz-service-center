@@ -1,14 +1,19 @@
 (function () {
-  // Resolve content.json path correctly on GitHub Pages (/cgz-service-center/) and locally
-  var CONTENT_URL = (function() {
+  // On GitHub Pages: fetch from raw.githubusercontent.com (no CDN cache, always latest).
+  // Locally: fetch the local file with cache-bust, fall back to raw if needed.
+  var RAW_URL = 'https://raw.githubusercontent.com/casualgamerz-bn/cgz-service-center/main/content.json';
+  var CONTENT_URL, FALLBACK_URL;
+  (function() {
     var h = location.hostname;
-    var base = h === 'casualgamerz-bn.github.io'
-      ? '/cgz-service-center/content.json'
-      : (location.pathname.indexOf('/pages/') !== -1 ? '../content.json' : 'content.json');
-    // Cache-bust so browsers always fetch the latest version after an admin save
-    return base + '?v=' + Date.now();
+    if (h === 'casualgamerz-bn.github.io') {
+      CONTENT_URL  = RAW_URL;
+      FALLBACK_URL = '/cgz-service-center/content.json';
+    } else {
+      var local = location.pathname.indexOf('/pages/') !== -1 ? '../content.json' : 'content.json';
+      CONTENT_URL  = local + '?v=' + Date.now();
+      FALLBACK_URL = RAW_URL;
+    }
   })();
-  var FALLBACK_URL = 'https://raw.githubusercontent.com/casualgamerz-bn/cgz-service-center/main/content.json';
 
   var SECTION_COLORS = { pc:'cyan', laptop:'pink', console:'green', sw:'orange', peri:'purple' };
 

@@ -329,6 +329,40 @@
     .rcbt-email:hover { background:rgba(99,102,241,0.25); }
     .rcbt-wa   { background:rgba(37,211,102,0.1); color:#25d366; border:1px solid rgba(37,211,102,0.3); }
     .rcbt-wa:hover    { background:rgba(37,211,102,0.22); }
+    .rcbt-cust { background:rgba(255,255,255,0.07); color:#ccc; border:1px solid rgba(255,255,255,0.18); }
+    .rcbt-cust:hover { background:rgba(255,255,255,0.14); color:#fff; }
+    .rcbt-cust.active { background:rgba(0,245,255,0.12); color:var(--neon-cyan); border-color:rgba(0,245,255,0.35); }
+
+    /* Receipt customise panel */
+    .rcpt-custom-panel {
+      display:none; background:var(--dark-card); border:var(--border-glow); border-radius:14px;
+      padding:1.25rem 1.5rem; gap:1rem;
+    }
+    .rcpt-custom-panel.open { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); }
+    .rcs-label { font-size:0.72rem; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.3rem; display:block; }
+    .rcs-input {
+      width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12);
+      border-radius:7px; padding:0.5rem 0.75rem; color:#e0e0f0;
+      font-family:'Exo 2',sans-serif; font-size:0.84rem; outline:none;
+    }
+    .rcs-input:focus { border-color:var(--neon-cyan); }
+    .rcs-logo-row { grid-column:1/-1; display:flex; align-items:center; gap:1.1rem; flex-wrap:wrap; }
+    .rcs-logo-box {
+      width:88px; height:56px; border:1px dashed rgba(255,255,255,0.2); border-radius:8px;
+      background:rgba(255,255,255,0.03); display:flex; align-items:center; justify-content:center;
+      overflow:hidden; flex-shrink:0;
+    }
+    .rcs-logo-box img { max-width:100%; max-height:100%; object-fit:contain; }
+    .rcs-logo-box span { font-size:1.6rem; }
+    .rcs-logo-info { flex:1; min-width:160px; }
+    .rcs-logo-info p { font-size:0.78rem; color:var(--muted); line-height:1.5; margin-top:0.3rem; }
+    .rcs-btn { display:inline-flex; align-items:center; gap:0.4rem; padding:0.5rem 1rem;
+      border-radius:7px; font-family:var(--font-display); font-size:0.68rem; letter-spacing:0.06em;
+      text-transform:uppercase; cursor:pointer; border:none; transition:var(--transition); }
+    .rcs-btn-upload { background:rgba(0,245,255,0.1); color:var(--neon-cyan); border:1px solid rgba(0,245,255,0.3); }
+    .rcs-btn-upload:hover { background:rgba(0,245,255,0.22); }
+    .rcs-btn-clear  { background:rgba(255,68,102,0.1); color:#ff4466; border:1px solid rgba(255,68,102,0.25); }
+    .rcs-btn-clear:hover { background:rgba(255,68,102,0.22); }
 
     /* Actual receipt (white, print-style) */
     #receiptDoc {
@@ -736,9 +770,69 @@
           <button class="rcpt-btn rcbt-pdf"  onclick="exportReceipt('pdf')">⬇ PDF</button>
           <button class="rcpt-btn rcbt-email" onclick="emailReceipt()">📧 Email</button>
           <button class="rcpt-btn rcbt-wa"    onclick="whatsappReceipt()">💬 WhatsApp</button>
+          <button class="rcpt-btn rcbt-cust" id="rcptCustBtn" onclick="toggleReceiptCustom()">⚙️ Customize</button>
           <button class="rcpt-btn rcbt-close" onclick="closeReceipt()">✕ Close</button>
         </div>
       </div>
+
+      <!-- Customisation panel (hidden by default) -->
+      <div class="rcpt-custom-panel" id="rcptCustomPanel">
+        <!-- Logo row -->
+        <div class="rcs-logo-row">
+          <div class="rcs-logo-box" id="rcsLogoBox"><span>🎮</span></div>
+          <div class="rcs-logo-info">
+            <span class="rcs-label">Business Logo</span>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.4rem;">
+              <button class="rcs-btn rcs-btn-upload" onclick="document.getElementById('rcsLogoInput').click()">📁 Upload Logo</button>
+              <button class="rcs-btn rcs-btn-clear"  onclick="clearRcptLogo()">✕ Remove</button>
+            </div>
+            <p>PNG or JPG recommended. Max 2 MB.<br>Appears in place of the 🎮 icon on all receipt sizes.</p>
+            <input type="file" id="rcsLogoInput" accept="image/png,image/jpeg,image/jpg" style="display:none" onchange="uploadRcptLogo(this)">
+          </div>
+        </div>
+        <!-- Text fields -->
+        <div>
+          <label class="rcs-label">Business Name</label>
+          <input class="rcs-input" id="rcs_bizName" placeholder="CASUAL GAMERZ"
+                 oninput="saveRcptSetting('bizName',this.value);applyReceiptSize()">
+        </div>
+        <div>
+          <label class="rcs-label">Tagline / Sub-heading</label>
+          <input class="rcs-input" id="rcs_tagline" placeholder="CGZ Service Center"
+                 oninput="saveRcptSetting('tagline',this.value);applyReceiptSize()">
+        </div>
+        <div>
+          <label class="rcs-label">Address Line</label>
+          <input class="rcs-input" id="rcs_address" placeholder="Brunei Darussalam"
+                 oninput="saveRcptSetting('address',this.value);applyReceiptSize()">
+        </div>
+        <div>
+          <label class="rcs-label">Phone (optional)</label>
+          <input class="rcs-input" id="rcs_phone" placeholder="+673 XXX XXXX"
+                 oninput="saveRcptSetting('phone',this.value);applyReceiptSize()">
+        </div>
+        <div>
+          <label class="rcs-label">Thank You Message</label>
+          <input class="rcs-input" id="rcs_thankYou" placeholder="Thank you for choosing Casual Gamerz!"
+                 oninput="saveRcptSetting('thankYou',this.value);applyReceiptSize()">
+        </div>
+        <div>
+          <label class="rcs-label">Warranty Note</label>
+          <input class="rcs-input" id="rcs_warranty" placeholder="90-day warranty on all completed repairs"
+                 oninput="saveRcptSetting('warranty',this.value);applyReceiptSize()">
+        </div>
+        <div>
+          <label class="rcs-label">Footer Line 2</label>
+          <input class="rcs-input" id="rcs_footer2" placeholder="Keep this receipt for warranty claims."
+                 oninput="saveRcptSetting('footer2',this.value);applyReceiptSize()">
+        </div>
+        <div>
+          <label class="rcs-label">Footer Line 3</label>
+          <input class="rcs-input" id="rcs_footer3" placeholder="Uncollected devices after 90 days may be disposed"
+                 oninput="saveRcptSetting('footer3',this.value);applyReceiptSize()">
+        </div>
+      </div>
+
       <!-- Receipt document -->
       <div id="receiptDoc"></div>
     </div>
@@ -1386,6 +1480,77 @@
   //  RECEIPT GENERATOR
   // ══════════════════════════════════════════════════════
 
+  /* ── Receipt customisation (persisted in localStorage) ── */
+  const RCPT_DEFAULTS = {
+    bizName:  'CASUAL GAMERZ',
+    tagline:  'CGZ Service Center',
+    address:  'Brunei Darussalam',
+    phone:    '',
+    thankYou: 'Thank you for choosing Casual Gamerz!',
+    warranty: '90-day warranty on all completed repairs',
+    footer2:  'Keep this receipt for warranty claims.',
+    footer3:  'Uncollected devices after 90 days may be disposed',
+  };
+
+  function getRcptSetting(key) {
+    const v = localStorage.getItem('cgz_rcpt_' + key);
+    return (v !== null && v !== '') ? v : RCPT_DEFAULTS[key] || '';
+  }
+  function saveRcptSetting(key, val) {
+    localStorage.setItem('cgz_rcpt_' + key, val);
+  }
+  function getRcptLogo() {
+    return localStorage.getItem('cgz_rcpt_logo') || '';
+  }
+
+  function loadRcptCustomPanel() {
+    Object.keys(RCPT_DEFAULTS).forEach(key => {
+      const el = document.getElementById('rcs_' + key);
+      if (el) el.value = localStorage.getItem('cgz_rcpt_' + key) || '';
+    });
+    _updateLogoPreview();
+  }
+
+  function _updateLogoPreview() {
+    const box = document.getElementById('rcsLogoBox');
+    if (!box) return;
+    const logo = getRcptLogo();
+    box.innerHTML = logo
+      ? `<img src="${logo}" alt="Logo">`
+      : `<span>🎮</span>`;
+  }
+
+  function uploadRcptLogo(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { showToast('Logo must be under 2 MB', '❌'); return; }
+    if (!file.type.startsWith('image/')) { showToast('Please upload a PNG or JPG image', '❌'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      localStorage.setItem('cgz_rcpt_logo', e.target.result);
+      _updateLogoPreview();
+      applyReceiptSize();
+      showToast('Logo uploaded!', '✅');
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  function clearRcptLogo() {
+    localStorage.removeItem('cgz_rcpt_logo');
+    _updateLogoPreview();
+    applyReceiptSize();
+    showToast('Logo removed', '🗑️');
+  }
+
+  function toggleReceiptCustom() {
+    const panel = document.getElementById('rcptCustomPanel');
+    const btn   = document.getElementById('rcptCustBtn');
+    const isOpen = panel.classList.toggle('open');
+    btn.classList.toggle('active', isOpen);
+    if (isOpen) loadRcptCustomPanel();
+  }
+
   // Size configs: { widthPx, label, thermal }
   const RCPT_SIZES = {
     a4:  { widthPx: 794,  label: 'A4',          thermal: false },
@@ -1539,6 +1704,20 @@
     const fBig    = thermal ? '15px' : '20px';
     const fTitle  = thermal ? '13px' : '17px';
     const logoSz  = thermal ? '28px' : '48px';
+
+    // ── Branding from customisation settings ──
+    const bizName  = getRcptSetting('bizName');
+    const tagline  = getRcptSetting('tagline');
+    const address  = getRcptSetting('address');
+    const phone    = getRcptSetting('phone');
+    const thankYou = getRcptSetting('thankYou');
+    const warranty = getRcptSetting('warranty');
+    const footer2  = getRcptSetting('footer2');
+    const footer3  = getRcptSetting('footer3');
+    const logoSrc  = getRcptLogo();
+    const logoHTML = logoSrc
+      ? `<img src="${logoSrc}" style="height:${logoSz};max-width:${thermal?'80':'140'}px;object-fit:contain;" alt="Logo">`
+      : `<span style="font-size:${logoSz};line-height:1;">🎮</span>`;
     const divider = thermal
       ? `<div style="border-top:1px dashed #bbb;margin:10px 0;"></div>`
       : `<div style="border-top:2px solid #e0e0e0;margin:18px 0;"></div>`;
@@ -1571,10 +1750,11 @@
       return `
       <div style="font-family:monospace;font-size:${fBase};color:#111;padding:${pad};line-height:1.5;width:100%;box-sizing:border-box;">
         <div style="text-align:center;margin-bottom:12px;">
-          <div style="font-size:${logoSz};line-height:1;">🎮</div>
-          <div style="font-size:${fBig};font-weight:900;letter-spacing:0.08em;text-transform:uppercase;margin:4px 0 2px;">CASUAL GAMERZ</div>
-          <div style="font-size:${fSmall};color:#555;">CGZ Service Center</div>
-          <div style="font-size:${fSmall};color:#555;">Brunei Darussalam</div>
+          <div style="margin-bottom:4px;">${logoHTML}</div>
+          <div style="font-size:${fBig};font-weight:900;letter-spacing:0.08em;text-transform:uppercase;margin:4px 0 2px;">${bizName}</div>
+          <div style="font-size:${fSmall};color:#555;">${tagline}</div>
+          <div style="font-size:${fSmall};color:#555;">${address}</div>
+          ${phone?`<div style="font-size:${fSmall};color:#555;">${phone}</div>`:''}
         </div>
         ${divider}
         <div style="text-align:center;margin:8px 0;">
@@ -1611,9 +1791,9 @@
         ${r.warrantyExpiry?`<div style="font-size:${fSmall};color:#555;">Warranty: ${fmtDate(r.warrantyExpiry)}</div>`:''}
         ${divider}
         <div style="text-align:center;font-size:${fSmall};color:#777;line-height:1.6;">
-          <div>Thank you for choosing Casual Gamerz!</div>
-          <div>Keep this receipt for warranty claims.</div>
-          <div>90-day warranty on completed repairs.</div>
+          <div>${thankYou}</div>
+          <div>${footer2}</div>
+          <div>${warranty}</div>
         </div>
         <div style="text-align:center;margin-top:10px;color:#bbb;font-size:8px;">
           ${new Date().toLocaleString('en-GB')}
@@ -1629,10 +1809,11 @@
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:20px;border-bottom:3px solid #111;">
         <div>
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-            <span style="font-size:${logoSz};line-height:1;">🎮</span>
+            ${logoHTML}
             <div>
-              <div style="font-size:${fBig};font-weight:900;letter-spacing:0.06em;text-transform:uppercase;line-height:1.1;">CASUAL GAMERZ</div>
-              <div style="font-size:${fSmall};color:#666;letter-spacing:0.04em;">CGZ Service Center — Brunei Darussalam</div>
+              <div style="font-size:${fBig};font-weight:900;letter-spacing:0.06em;text-transform:uppercase;line-height:1.1;">${bizName}</div>
+              <div style="font-size:${fSmall};color:#666;letter-spacing:0.04em;">${tagline}${address?' — '+address:''}</div>
+              ${phone?`<div style="font-size:${fSmall};color:#888;">${phone}</div>`:''}
             </div>
           </div>
         </div>
@@ -1728,13 +1909,13 @@
       <div style="border-top:2px solid #111;padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:${fSmall};color:#666;">
         <div>
           <div style="font-weight:700;color:#111;margin-bottom:4px;">Terms &amp; Warranty</div>
-          <div>• 90-day warranty on all completed repairs</div>
-          <div>• Keep this receipt for warranty claims</div>
-          <div>• Uncollected devices after 90 days may be disposed</div>
+          <div>• ${warranty}</div>
+          <div>• ${footer2}</div>
+          <div>• ${footer3}</div>
         </div>
         <div style="text-align:right;">
-          <div style="font-weight:700;color:#111;margin-bottom:4px;">Thank You!</div>
-          <div>Casual Gamerz Service Center</div>
+          <div style="font-weight:700;color:#111;margin-bottom:4px;">${thankYou}</div>
+          <div>${bizName}</div>
           <div style="margin-top:8px;color:#aaa;font-size:10px;">Printed: ${new Date().toLocaleString('en-GB')}</div>
         </div>
       </div>

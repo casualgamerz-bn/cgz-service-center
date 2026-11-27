@@ -48,6 +48,41 @@
     return '#ffb347';
   }
 
+  /* ── Lightbox ── */
+  function openLightbox(src, title) {
+    var existing = document.getElementById('cgz-lb');
+    if (existing) existing.remove();
+    var lb = document.createElement('div');
+    lb.id = 'cgz-lb';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;' +
+                       'justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);' +
+                       'cursor:zoom-out;animation:cgzFadeIn 0.18s ease;';
+    lb.innerHTML =
+      '<div style="position:relative;max-width:min(92vw,860px);width:100%;" onclick="event.stopPropagation()">' +
+        '<img src="' + src + '" alt="' + title + '" ' +
+             'style="width:100%;border-radius:14px;box-shadow:0 8px 60px rgba(0,0,0,0.7);display:block;" />' +
+        '<div style="text-align:center;margin-top:0.75rem;font-size:0.85rem;color:rgba(255,255,255,0.75);">' + title + '</div>' +
+        '<button onclick="document.getElementById(\'cgz-lb\').remove()" ' +
+                'style="position:absolute;top:-14px;right:-14px;width:32px;height:32px;border-radius:50%;' +
+                'border:none;background:rgba(255,255,255,0.15);color:#fff;font-size:1.1rem;cursor:pointer;' +
+                'display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">✕</button>' +
+      '</div>';
+    lb.addEventListener('click', function() { lb.remove(); });
+    lb.addEventListener('keydown', function(e) { if (e.key === 'Escape') lb.remove(); });
+    document.body.appendChild(lb);
+    lb.focus();
+    // inject animation keyframe once
+    if (!document.getElementById('cgz-lb-style')) {
+      var s = document.createElement('style');
+      s.id = 'cgz-lb-style';
+      s.textContent = '@keyframes cgzFadeIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}';
+      document.head.appendChild(s);
+    }
+  }
+  window._cgzLightbox = openLightbox;
+
   /* ── Render one game card ── */
   function gameCard(game, rank) {
     var score = game.metacritic || game.score || '—';
@@ -56,6 +91,8 @@
     var name  = game.name || '';
     var genre = game.genre || (game.genres && game.genres[0] && game.genres[0].name) || '';
     var year  = game.released ? game.released.slice(0, 4) : (game.year || '');
+    var safeImg  = img.replace(/'/g, "\\'");
+    var safeName = name.replace(/'/g, "\\'");
 
     return '<div style="display:flex;align-items:center;gap:1rem;padding:0.85rem 1rem;' +
            'background:var(--gradient-card);border:var(--border-glow);border-radius:14px;' +
@@ -66,10 +103,15 @@
              'color:var(--neon-cyan);min-width:28px;text-align:center;opacity:0.6;">' + rank + '</div>' +
              (img
                ? '<img src="' + img + '" alt="' + name + '" loading="lazy" ' +
-                 'style="width:60px;height:40px;object-fit:cover;border-radius:8px;flex-shrink:0;" />'
-               : '<div style="width:60px;height:40px;border-radius:8px;flex-shrink:0;' +
+                 'title="Click to enlarge" ' +
+                 'onclick="window._cgzLightbox(\'' + safeImg + '\',\'' + safeName + '\')" ' +
+                 'style="width:100px;height:67px;object-fit:cover;border-radius:10px;flex-shrink:0;' +
+                 'cursor:zoom-in;transition:transform 0.2s,box-shadow 0.2s;" ' +
+                 'onmouseover="this.style.transform=\'scale(1.08)\';this.style.boxShadow=\'0 4px 20px rgba(0,245,255,0.35)\'" ' +
+                 'onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\'" />'
+               : '<div style="width:100px;height:67px;border-radius:10px;flex-shrink:0;' +
                  'background:linear-gradient(135deg,rgba(0,245,255,0.15),rgba(255,0,128,0.15));' +
-                 'display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🎮</div>') +
+                 'display:flex;align-items:center;justify-content:center;font-size:1.5rem;">🎮</div>') +
              '<div style="flex:1;min-width:0;">' +
                '<div style="font-weight:700;font-size:0.88rem;white-space:nowrap;overflow:hidden;' +
                'text-overflow:ellipsis;color:var(--text-primary);">' + name + '</div>' +

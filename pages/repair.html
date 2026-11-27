@@ -226,8 +226,17 @@
                 </optgroup>
                 <optgroup label="── Other ──">
                   <option>Other Issue</option>
+                  <option value="__custom__">✏️ Custom Service (specify below)</option>
                 </optgroup>
               </select>
+            </div>
+
+            <!-- Shown only when "Custom Service" is chosen -->
+            <div class="form-group" id="customIssueGroup" style="display:none;">
+              <label for="customIssue">Describe Your Service *</label>
+              <input type="text" id="customIssue" name="customIssue"
+                     placeholder="e.g. PS5 Remote Play Setup, Steam Account Help…"
+                     maxlength="120">
             </div>
 
             <div class="form-group">
@@ -393,6 +402,21 @@
   <style>@media(max-width:900px){.repair-layout{grid-template-columns:1fr!important}}</style>
 
   <script>
+  // ── Custom service field toggle ───────────────────────────────────────
+  document.getElementById('issue').addEventListener('change', function() {
+    const group = document.getElementById('customIssueGroup');
+    const input = document.getElementById('customIssue');
+    if (this.value === '__custom__') {
+      group.style.display = 'block';
+      input.required = true;
+      input.focus();
+    } else {
+      group.style.display = 'none';
+      input.required = false;
+      input.value = '';
+    }
+  });
+
   // ── Live stats ────────────────────────────────────────────────────────
   async function loadStats() {
     if (!CasualGamerzDB.isConfigured()) return;
@@ -425,6 +449,16 @@
       }
     }
 
+    // If custom service selected, require the text input
+    const issueVal = form.issue.value === '__custom__'
+      ? (form.customIssue && form.customIssue.value.trim())
+      : form.issue.value;
+    if (form.issue.value === '__custom__' && !issueVal) {
+      alert('Please describe your custom service.');
+      document.getElementById('customIssue').focus();
+      return;
+    }
+
     if (!CasualGamerzDB.isConfigured()) {
       alert('⚠️ Google Sheets is not connected yet.\n\nPlease deploy the Apps Script backend and add the URL to js/sheets-config.js first.\n\nSee google-apps-script/Code.gs for instructions.');
       return;
@@ -438,7 +472,7 @@
         deviceType:   deviceEl.value,
         brand:        form.brand.value.trim(),
         model:        form.model.value.trim(),
-        issue:        form.issue.value,
+        issue:        issueVal,
         issueDetail:  form.issueDetail ? form.issueDetail.value.trim() : '',
         firstName:    form.firstName.value.trim(),
         lastName:     form.lastName.value.trim(),

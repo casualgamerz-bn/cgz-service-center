@@ -16,6 +16,12 @@
     "hours_weekend_time": "12:00 PM – 10:00 PM"
   },
   "home": {
+    "section_visibility": {
+      "consoles_gallery": true,
+      "creative_apps": true,
+      "brands_logos": true,
+      "home_reviews": true
+    },
     "hero_title_line1": "Revive Your",
     "hero_title_line2": "Gaming Setup",
     "hero_description": "Expert repair and maintenance for computers, laptops, and all gaming consoles. Fast turnaround, genuine parts, and warranty on every fix.",

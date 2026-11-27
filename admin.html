@@ -327,6 +327,28 @@
           <button class="btn-add" onclick="addCard('home_review')">+ Add Card</button>
         </div>
         <div class="field-group">
+          <div class="field-group-title">👁️ Section Visibility</div>
+          <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;">Toggle these sections on or off on the homepage.</p>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:0.88rem;padding:0.6rem 0.75rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:8px;text-transform:none;letter-spacing:normal;">
+              <span>🖥️ <strong>Consoles Gallery</strong> <span style="color:var(--muted);font-size:0.78rem;">— Hardware / PlayStation, Xbox, Nintendo photos</span></span>
+              <input type="checkbox" data-field="home.section_visibility.consoles_gallery" style="width:18px;height:18px;cursor:pointer;accent-color:var(--cyan);" />
+            </label>
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:0.88rem;padding:0.6rem 0.75rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:8px;text-transform:none;letter-spacing:normal;">
+              <span>🛠️ <strong>Creative Apps Gallery</strong> <span style="color:var(--muted);font-size:0.78rem;">— Tools We Use / software &amp; tools</span></span>
+              <input type="checkbox" data-field="home.section_visibility.creative_apps" style="width:18px;height:18px;cursor:pointer;accent-color:var(--cyan);" />
+            </label>
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:0.88rem;padding:0.6rem 0.75rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:8px;text-transform:none;letter-spacing:normal;">
+              <span>🏷️ <strong>Partners &amp; Brands</strong> <span style="color:var(--muted);font-size:0.78rem;">— Brands We Support / logos</span></span>
+              <input type="checkbox" data-field="home.section_visibility.brands_logos" style="width:18px;height:18px;cursor:pointer;accent-color:var(--cyan);" />
+            </label>
+            <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:0.88rem;padding:0.6rem 0.75rem;background:rgba(0,245,255,0.04);border:1px solid rgba(0,245,255,0.1);border-radius:8px;text-transform:none;letter-spacing:normal;">
+              <span>⭐ <strong>What Gamers Say</strong> <span style="color:var(--muted);font-size:0.78rem;">— Reviews / customer testimonials</span></span>
+              <input type="checkbox" data-field="home.section_visibility.home_reviews" style="width:18px;height:18px;cursor:pointer;accent-color:var(--cyan);" />
+            </label>
+          </div>
+        </div>
+        <div class="field-group">
           <div class="field-group-title">🧩 Custom Sections on Home Page</div>
           <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">Sections added via the <strong style="color:var(--cyan)">🧩 Sections</strong> tab that appear on the Home page, in page order.</p>
           <div id="cs-summary-home"></div>
@@ -928,10 +950,12 @@
 
   /* ─── FILL FORM ─── */
   function fillAll(content) {
-    // Fill standard data-field inputs
+    // Fill standard data-field inputs (text, textarea) and checkboxes
     document.querySelectorAll('[data-field]').forEach(function(el) {
       var val = get(content, el.getAttribute('data-field'));
-      if (val !== undefined && val !== null) el.value = val;
+      if (val === undefined || val === null) return;
+      if (el.type === 'checkbox') el.checked = (val !== false);
+      else el.value = val;
     });
     // Fill all card sections from CARD_MAP
     Object.keys(CARD_MAP).forEach(function(key) {
@@ -953,7 +977,8 @@
   function buildContentObj() {
     var obj = {};
     document.querySelectorAll('[data-field]').forEach(function(el) {
-      set(obj, el.getAttribute('data-field'), el.value);
+      var val = el.type === 'checkbox' ? el.checked : el.value;
+      set(obj, el.getAttribute('data-field'), val);
     });
     // Inject card arrays from cardData using CARD_MAP paths
     Object.keys(CARD_MAP).forEach(function(key) {

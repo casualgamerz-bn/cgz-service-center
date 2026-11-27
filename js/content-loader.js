@@ -165,6 +165,24 @@
     grid.innerHTML = html;
   }
 
+  /* ── HOME — static section show/hide ── */
+  function applyHomeSectionVisibility(content) {
+    var vis = get(content, 'home.section_visibility');
+    if (!vis) return;
+    var map = {
+      consoles_gallery: 'consoles-gallery',
+      creative_apps:    'creative-apps',
+      brands_logos:     'brands-logos',
+      home_reviews:     'home-reviews'
+    };
+    Object.keys(map).forEach(function(key) {
+      var el = document.getElementById(map[key]);
+      if (!el) return;
+      var show = vis[key] !== false; // default visible if key missing
+      el.style.display = show ? '' : 'none';
+    });
+  }
+
   /* ── CUSTOM SECTIONS — slot-based rendering across all pages ── */
   function renderCustomSections(content) {
     var sections = content.custom_sections;
@@ -253,6 +271,7 @@
   /* ── master apply ── */
   function apply(content) {
     applyText(content);
+    applyHomeSectionVisibility(content);
     renderServiceCards(content);
     renderHomeServiceCards(content);
     renderHomeReviewCards(content);

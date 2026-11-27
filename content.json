@@ -32,7 +32,7 @@
       "creative_apps": false,
       "brands_logos": false,
       "home_reviews": false,
-      "pc_games": true
+      "pc_games": false
     },
     "service_cards": [
       {

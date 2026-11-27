@@ -112,21 +112,21 @@
         "name": "Ahmad Razif",
         "role": "PS5 Repair · Brunei",
         "initials": "AR",
-        "visible": true
+        "visible": false
       },
       {
         "text": "Got my gaming laptop screen replaced here after a nasty drop. The screen looks perfect — you'd never know it was replaced. Pricing was fair and they finished ahead of schedule.",
         "name": "Sarah Lim",
         "role": "Laptop Repair · Bandar",
         "initials": "SL",
-        "visible": true
+        "visible": false
       },
       {
         "text": "They built my entire gaming PC from scratch. The cable management is immaculate and they walked me through every part choice. Best 1.2k BND I've ever spent on gaming gear.",
         "name": "Daniel Jayden",
         "role": "Custom PC Build · Seria",
         "initials": "DJ",
-        "visible": true
+        "visible": false
       }
     ]
   },

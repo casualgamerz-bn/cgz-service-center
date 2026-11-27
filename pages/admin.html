@@ -818,7 +818,7 @@
         </div>
         <div>
           <label class="rcs-label">Warranty Note</label>
-          <input class="rcs-input" id="rcs_warranty" placeholder="90-day warranty on all completed repairs"
+          <input class="rcs-input" id="rcs_warranty" placeholder="30-day warranty on all completed repairs"
                  oninput="saveRcptSetting('warranty',this.value);applyReceiptSize()">
         </div>
         <div>
@@ -828,7 +828,7 @@
         </div>
         <div>
           <label class="rcs-label">Footer Line 3</label>
-          <input class="rcs-input" id="rcs_footer3" placeholder="Uncollected devices after 90 days may be disposed"
+          <input class="rcs-input" id="rcs_footer3" placeholder="Uncollected devices after 30 days may be disposed"
                  oninput="saveRcptSetting('footer3',this.value);applyReceiptSize()">
         </div>
       </div>
@@ -1487,9 +1487,9 @@
     address:  'Brunei Darussalam',
     phone:    '',
     thankYou: 'Thank you for choosing Casual Gamerz!',
-    warranty: '90-day warranty on all completed repairs',
+    warranty: '30-day warranty on all completed repairs',
     footer2:  'Keep this receipt for warranty claims.',
-    footer3:  'Uncollected devices after 90 days may be disposed',
+    footer3:  'Uncollected devices after 30 days may be disposed',
   };
 
   function getRcptSetting(key) {
@@ -1627,7 +1627,7 @@
       r.completedAt    ? `*Completed:* ${fmtDate(r.completedAt)}` : '',
       r.warrantyExpiry ? `*Warranty Until:* ${fmtDate(r.warrantyExpiry)}` : '',
       '',
-      '✅ 90-day warranty on completed repairs.',
+      '✅ 30-day warranty on completed repairs.',
       'Thank you for choosing Casual Gamerz!',
     ].filter(l => l !== null && l !== undefined).join('\n').replace(/\n{3,}/g,'\n\n');
 

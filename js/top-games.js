@@ -19,20 +19,21 @@
   };
 
   /* ── Curated fallback data (shown when no API key is set) ── */
+  var STEAM = 'https://cdn.akamai.steamstatic.com/steam/apps/';
   var STATIC = {
     pc: [
-      { name: 'Baldur\'s Gate 3',      score: 96, genre: 'RPG',         year: 2023, img: '' },
-      { name: 'Elden Ring',             score: 95, genre: 'Action RPG',  year: 2022, img: '' },
-      { name: 'Red Dead Redemption 2',  score: 97, genre: 'Open World',  year: 2019, img: '' },
-      { name: 'The Witcher 3',          score: 93, genre: 'RPG',         year: 2015, img: '' },
-      { name: 'Cyberpunk 2077',         score: 86, genre: 'Action RPG',  year: 2020, img: '' }
+      { name: 'Baldur\'s Gate 3',     score: 96, genre: 'RPG',        year: 2023, img: STEAM + '1086940/header.jpg' },
+      { name: 'Elden Ring',            score: 95, genre: 'Action RPG', year: 2022, img: STEAM + '1245620/header.jpg' },
+      { name: 'Red Dead Redemption 2', score: 97, genre: 'Open World', year: 2019, img: STEAM + '1174180/header.jpg' },
+      { name: 'The Witcher 3',         score: 93, genre: 'RPG',        year: 2015, img: STEAM + '292030/header.jpg'  },
+      { name: 'Cyberpunk 2077',        score: 86, genre: 'Action RPG', year: 2020, img: STEAM + '1091500/header.jpg' }
     ],
     console: [
-      { name: 'God of War Ragnarök',               score: 94, genre: 'Action',    year: 2022, img: '' },
-      { name: 'The Legend of Zelda: Tears of the Kingdom', score: 96, genre: 'Adventure', year: 2023, img: '' },
-      { name: 'Marvel\'s Spider-Man 2',            score: 90, genre: 'Action',    year: 2023, img: '' },
-      { name: 'Hades',                             score: 93, genre: 'Roguelite', year: 2020, img: '' },
-      { name: 'Horizon Forbidden West',            score: 88, genre: 'Action RPG',year: 2022, img: '' }
+      { name: 'God of War Ragnarök',          score: 94, genre: 'Action',    year: 2022, img: STEAM + '2322010/header.jpg' },
+      { name: 'Ghost of Tsushima',            score: 91, genre: 'Action',    year: 2024, img: STEAM + '2215430/header.jpg' },
+      { name: 'Spider-Man Remastered',        score: 90, genre: 'Action',    year: 2022, img: STEAM + '1817070/header.jpg' },
+      { name: 'Hades',                        score: 93, genre: 'Roguelite', year: 2020, img: STEAM + '1145360/header.jpg' },
+      { name: 'Horizon Forbidden West',       score: 88, genre: 'Action RPG',year: 2022, img: STEAM + '2420110/header.jpg' }
     ]
   };
 

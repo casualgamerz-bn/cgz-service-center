@@ -48,40 +48,69 @@
     return '#ffb347';
   }
 
-  /* ── Lightbox ── */
-  function openLightbox(src, title) {
-    var existing = document.getElementById('cgz-lb');
-    if (existing) existing.remove();
-    var lb = document.createElement('div');
-    lb.id = 'cgz-lb';
-    lb.setAttribute('role', 'dialog');
-    lb.setAttribute('aria-modal', 'true');
-    lb.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;' +
-                       'justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);' +
-                       'cursor:zoom-out;animation:cgzFadeIn 0.18s ease;';
-    lb.innerHTML =
-      '<div style="position:relative;max-width:min(92vw,860px);width:100%;" onclick="event.stopPropagation()">' +
-        '<img src="' + src + '" alt="' + title + '" ' +
-             'style="width:100%;border-radius:14px;box-shadow:0 8px 60px rgba(0,0,0,0.7);display:block;" />' +
-        '<div style="text-align:center;margin-top:0.75rem;font-size:0.85rem;color:rgba(255,255,255,0.75);">' + title + '</div>' +
-        '<button onclick="document.getElementById(\'cgz-lb\').remove()" ' +
-                'style="position:absolute;top:-14px;right:-14px;width:32px;height:32px;border-radius:50%;' +
-                'border:none;background:rgba(255,255,255,0.15);color:#fff;font-size:1.1rem;cursor:pointer;' +
-                'display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">✕</button>' +
-      '</div>';
-    lb.addEventListener('click', function() { lb.remove(); });
-    lb.addEventListener('keydown', function(e) { if (e.key === 'Escape') lb.remove(); });
-    document.body.appendChild(lb);
-    lb.focus();
-    // inject animation keyframe once
-    if (!document.getElementById('cgz-lb-style')) {
-      var s = document.createElement('style');
-      s.id = 'cgz-lb-style';
-      s.textContent = '@keyframes cgzFadeIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}';
-      document.head.appendChild(s);
-    }
+  /* ── Shared lightbox (works on all devices incl. touch) ── */
+  if (!window._cgzLightbox) {
+    window._cgzLightbox = function openLightbox(src, title) {
+      var existing = document.getElementById('cgz-lb');
+      if (existing) existing.remove();
+
+      // lock body scroll
+      document.body.style.overflow = 'hidden';
+
+      // inject keyframe + base styles once
+      if (!document.getElementById('cgz-lb-style')) {
+        var s = document.createElement('style');
+        s.id = 'cgz-lb-style';
+        s.textContent =
+          '@keyframes cgzFadeIn{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}' +
+          '#cgz-lb{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;' +
+          'background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);' +
+          'cursor:zoom-out;animation:cgzFadeIn 0.2s ease;padding:1rem;box-sizing:border-box;' +
+          'touch-action:manipulation;-webkit-tap-highlight-color:transparent;}' +
+          '#cgz-lb .cgz-lb-inner{position:relative;max-width:min(94vw,900px);width:100%;' +
+          'animation:cgzFadeIn 0.22s ease;}' +
+          '#cgz-lb img{width:100%;max-height:82vh;object-fit:contain;border-radius:14px;' +
+          'box-shadow:0 12px 70px rgba(0,0,0,0.75);display:block;}' +
+          '#cgz-lb .cgz-lb-title{text-align:center;margin-top:0.7rem;font-size:0.9rem;' +
+          'color:rgba(255,255,255,0.8);font-weight:600;}' +
+          '#cgz-lb .cgz-lb-close{position:absolute;top:-16px;right:-16px;width:36px;height:36px;' +
+          'border-radius:50%;border:2px solid rgba(255,255,255,0.3);background:rgba(0,0,0,0.5);' +
+          'color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;' +
+          'touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:background 0.2s;}' +
+          '#cgz-lb .cgz-lb-close:hover,#cgz-lb .cgz-lb-close:active{background:rgba(255,0,80,0.6);}';
+        document.head.appendChild(s);
+      }
+
+      var lb = document.createElement('div');
+      lb.id = 'cgz-lb';
+      lb.setAttribute('role', 'dialog');
+      lb.setAttribute('aria-modal', 'true');
+      lb.setAttribute('tabindex', '-1');
+      lb.innerHTML =
+        '<div class="cgz-lb-inner" onclick="event.stopPropagation()">' +
+          '<img src="' + src + '" alt="' + title + '" />' +
+          '<div class="cgz-lb-title">' + title + '</div>' +
+          '<button class="cgz-lb-close" aria-label="Close">✕</button>' +
+        '</div>';
+
+      function close() {
+        lb.remove();
+        document.body.style.overflow = '';
+      }
+      lb.addEventListener('click', close);
+      lb.querySelector('.cgz-lb-close').addEventListener('click', function(e) { e.stopPropagation(); close(); });
+      lb.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+      // swipe down to close on touch
+      var touchY = 0;
+      lb.addEventListener('touchstart', function(e) { touchY = e.touches[0].clientY; }, { passive: true });
+      lb.addEventListener('touchend', function(e) {
+        if (e.changedTouches[0].clientY - touchY > 60) close();
+      }, { passive: true });
+
+      document.body.appendChild(lb);
+      lb.focus();
+    };
   }
-  window._cgzLightbox = openLightbox;
 
   /* ── Render one game card ── */
   function gameCard(game, rank) {
